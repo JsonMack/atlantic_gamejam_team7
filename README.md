@@ -1,1 +1,1 @@
-# atlantic_gamejam_team7
+# Billy Bluenose: Battle of The Atlantic
