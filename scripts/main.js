@@ -1,3 +1,7 @@
+// images to load
+window.LOAD_IMAGES = [];//['building-blocks.jpg', 'texture.jpg', 'etc.png']; // => { "building-blocks": Image, "texture": Image, "etc": Image }
+
+// adding objects from Box2D library to window object for easier access
 window.b2Vec2 = Box2D.Common.Math.b2Vec2;
 window.b2BodyDef = Box2D.Dynamics.b2BodyDef;
 window.b2Body = Box2D.Dynamics.b2Body;
@@ -8,10 +12,12 @@ window.b2MassData = Box2D.Collision.Shapes.b2MassData;
 window.b2PolygonShape = Box2D.Collision.Shapes.b2PolygonShape;
 window.b2CircleShape = Box2D.Collision.Shapes.b2CircleShape;
 
+// gives time now in seconds
 window.Timestamp = function () {
   return new Date().getTime() / 1000;
 };
 
+// starts the game, it is called onload body
 window.StartGame = function () {
   window.GAME = {
     time: 0,
@@ -24,19 +30,19 @@ window.StartGame = function () {
     mouseScreen: new THREE.Vector2(0, 0),
     mouseWorld: new THREE.Vector3(0, 0, 0),
     mouseLeft: false,
-    gravity: 10,
+    gravity: 10, // g != 10 it is 9.8 but ok
   };
   GAME.gameHeight = GAME.gameWidth / 1.6;
+  GAME.canvas2D = document.getElementById('canvas2d');
+  GAME.canvas3D = document.getElementById('canvas3d');
+  GAME.ctx = GAME.canvas2D.getContext('2d');
 
-  GAME.canvas2D = document.getElementById("canvas2d");
-  GAME.canvas3D = document.getElementById("canvas3d");
-  GAME.ctx = GAME.canvas2D.getContext("2d");
   GAME.scene = new THREE.Scene();
   GAME.renderer = new THREE.WebGLRenderer({
     antialias: true,
     canvas: GAME.canvas3D,
   });
-  GAME.renderer.setClearColor("#000000");
+  GAME.renderer.setClearColor('#000000');
   GAME.camera = new THREE.OrthographicCamera(
     GAME.gameWidth / -2,
     GAME.gameWidth / 2,
@@ -46,7 +52,6 @@ window.StartGame = function () {
     1000
   );
   GAME.scene.add(GAME.camera);
-
   document.addEventListener("mousemove", (e) => {
     e = e || window.event;
     GAME.mouseScreen.x = e.pageX || 0;
@@ -86,7 +91,8 @@ window.LoadGame = function (onDone) {
   GAME.camera.position.set(0, 0, -10);
   GAME.camera.up.set(0, -1, 0);
   GAME.camera.lookAt(new THREE.Vector3(0, 0, 0));
-  onDone();
+
+  GAME.images = image_generator(LOAD_IMAGES, onDone);
 };
 
 window.GameLoop = function () {
@@ -136,6 +142,82 @@ window.GameLoop = function () {
   GAME.objects.updateRender(GAME.dt, GAME.time, GAME.ctx);
 
   GAME.renderer.render(GAME.scene, GAME.camera);
+
+  GAME.mouseClickLeft = false;
+};
+
+// takes in array of image file names and generates a hash map with names as keys and image html tags as values
+function image_generator(imageEntries, onComplete) {
+    const imageHashMap = {};
+    let tmpImg;
+    let remaining = imageEntries.length;
+    imageEntries.forEach((name) => {
+        tmpImg = new Image();
+        tmpImg.src = '../assets/images/' + name;
+        tmpImg.onload = function() {
+            remaining --;
+            if (remaining <= 0) {
+                onComplete();
+            }
+        }
+        imageHashMap[name.split('.')[0]] = tmpImg;
+    });
+
+    if (!remaining) {
+        setTimeout(onComplete, 10);
+    }
+
+    return imageHashMap;
+}
+
+// game loop
+window.GameLoop = function () {
+  requestAnimationFrame(GameLoop);
+
+  GAME.lastTimeStamp = GAME.timeStamp;
+  GAME.timeStamp = Timestamp();
+  GAME.dt = GAME.dt * 0.5 + (GAME.timeStamp - GAME.lastTimeStamp) * 0.5; // smooth jitter
+  GAME.time += GAME.dt;
+
+  // handle resize
+  if (
+    GAME.vpWidth != window.innerWidth ||
+    GAME.vpHeight != window.innerHeight
+  ) {
+    GAME.vpWidth = window.innerWidth;
+    GAME.vpHeight = window.innerHeight;
+    GAME.canvas2D.width = GAME.vpWidth;
+    GAME.canvas2D.height = GAME.vpHeight;
+    GAME.renderer.setSize(GAME.vpWidth, GAME.vpHeight);
+    GAME.gameHeight = GAME.gameWidth / (GAME.vpWidth / GAME.vpHeight);
+    GAME.camera.left = GAME.gameWidth / -2;
+    GAME.camera.right = GAME.gameWidth / 2;
+    GAME.camera.top = GAME.gameHeight / 2;
+    GAME.camera.bottom = -GAME.gameHeight / 2;
+    GAME.camera.updateProjectionMatrix();
+  }
+
+  GAME.ctx.clearRect(0, 0, GAME.vpWidth, GAME.vpHeight);
+  GAME.ctx.fillStyle = '#FFF';
+  GAME.ctx.font = '20px Arial';
+  GAME.ctx.fillText(
+    `${Math.round(1 / GAME.dt)} fps - mouse screen: ${GAME.mouseScreen.x},${
+      GAME.mouseScreen.y
+    }, mouse world: ${GAME.mouseWorld.x},${GAME.mouseWorld.y}, mouse left: ${
+      GAME.mouseLeft
+    }`,
+    20,
+    20
+  );
+
+  GAME.world.Step(GAME.dt, 10, 10);
+  GAME.world.ClearForces();
+
+  GAME.objects.updateRender(GAME.dt, GAME.time, GAME.ctx); //updates the renderer (ObjectSystem function)
+
+  GAME.level.updateRender(GAME.dt, GAME.time, GAME.ctx);
+
+  GAME.renderer.render(GAME.scene, GAME.camera); // render the scene and camera (one time thing)
 
   GAME.mouseClickLeft = false;
 };
