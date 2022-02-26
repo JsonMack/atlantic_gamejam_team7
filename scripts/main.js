@@ -1,5 +1,5 @@
 // images to load
-window.LOAD_IMAGES = [];//['building-blocks.jpg', 'texture.jpg', 'etc.png']; // => { "building-blocks": Image, "texture": Image, "etc": Image }
+window.LOAD_IMAGES = [ 'building-wall.png', 'building-ledge.png', 'building-scafolding.png', 'building-window.png' ];//['building-blocks.jpg', 'texture.jpg', 'etc.png']; // => { "building-blocks": Image, "texture": Image, "etc": Image }
 
 // adding objects from Box2D library to window object for easier access
 window.b2Vec2 = Box2D.Common.Math.b2Vec2;
@@ -84,17 +84,20 @@ window.StartGame = function () {
 };
 
 window.LoadGame = function (onDone) {
-  GAME.timeStamp = Timestamp();
-  GAME.objects = new ObjectSystem();
-  GAME.world = new b2World(new b2Vec2(0, GAME.gravity), false);
+  GAME.images = image_generator(LOAD_IMAGES, () => {
+    InitBuildingMaterials();
+    GAME.timeStamp = Timestamp();
+    GAME.objects = new ObjectSystem();
+    GAME.world = new b2World(new b2Vec2(0, GAME.gravity), false);
 
-  GAME.level = new RandomizedLevel(1);
+    GAME.level = new RandomizedLevel(1);
 
-  GAME.camera.position.set(0, 0, -10);
-  GAME.camera.up.set(0, -1, 0);
-  GAME.camera.lookAt(new THREE.Vector3(0, 0, 0));
+    GAME.camera.position.set(0, 0, -10);
+    GAME.camera.up.set(0, -1, 0);
+    GAME.camera.lookAt(new THREE.Vector3(0, 0, 0));
+    onDone();
+  });
 
-  GAME.images = image_generator(LOAD_IMAGES, onDone);
 };
 
 window.GameLoop = function () {
@@ -155,7 +158,7 @@ function image_generator(imageEntries, onComplete) {
     let remaining = imageEntries.length;
     imageEntries.forEach((name) => {
         tmpImg = new Image();
-        tmpImg.src = '../assets/images/' + name;
+        tmpImg.src = 'images/' + name;
         tmpImg.onload = function() {
             remaining --;
             if (remaining <= 0) {

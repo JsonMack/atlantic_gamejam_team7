@@ -21,6 +21,7 @@ window.GroundObject = function () {
     4
   );
   this.body = GAME.world.CreateBody(bodyDef);
+  this.body._IsGround = true;
   this.fixture = this.body.CreateFixture(fixDef);
 
   this.geometry = new THREE.PlaneBufferGeometry(this.width, this.height);

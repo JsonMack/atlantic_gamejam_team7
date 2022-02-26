@@ -2,11 +2,54 @@ window.BT_SIZE = 2;
 window.BT_SIZE_PIXELS = 32;
 window.BT_EXP_FORCE = 50000.;
 
+window.InitBuildingMaterials = function () {
+    const MkMaterial = function(image) {
+        if (!image._texture) {
+            image._texture = new THREE.Texture(image)
+            image._texture.wrapS = THREE.RepeatWrapping;
+            image._texture.wrapT = THREE.RepeatWrapping;
+            image._texture.mapping = THREE.UVMapping;
+            image._texture.needsUpdate = true;
+        }
+        const material = new THREE.ShaderMaterial( {
+            uniforms: {
+                time: { value: 1.0 },
+                tex: { value: image._texture }
+            },
+            vertexShader: `
+                varying vec2 vUv;
+
+                void main() {
+                    vUv = uv; 
+        
+                    vec4 mvp = modelViewMatrix * vec4(position, 1.0);
+                    gl_Position = projectionMatrix * mvp; 
+                }
+            `,
+            fragmentShader: `
+                uniform sampler2D tex;
+                varying vec2 vUv;
+
+                void main() {
+                    gl_FragColor = texture2D(tex, vUv);
+                }
+            `
+        });
+        material.side = THREE.DoubleSide;
+        material.transparent = true;
+        material.needsUpdate = true;
+        return material;
+    }
+    GAME.buildingMaterials = {};
+    GAME.buildingMaterials["wall"] = MkMaterial(GAME.images['building-wall']);
+    GAME.buildingMaterials["window"] = MkMaterial(GAME.images['building-window']);
+}
+
 window.GenerateBuilding = function (tileX, width, height) {
   let lookup = {};
   for (let y = height - 1; y >= 0; y--) {
     for (let x = tileX; x < tileX + width; x++) {
-      let type = "not implemented";
+      let type = (x+y)%2 ? 'wall' : 'window';
       let tile = new BuildingTile(x, y, type, false, lookup[x + "," + (y + 1)]);
       lookup[x + "," + y] = tile;
       GAME.objects.add(tile);
@@ -62,11 +105,7 @@ window.BuildingTile = function (tileX, tileY, type, falling, tileAbove) {
   this.body._IsBuildingBlock = true;
 
   this.geometry = new THREE.PlaneBufferGeometry(this.width, this.height);
-  this.material = new THREE.MeshBasicMaterial({
-    color: 0x888888 + Math.floor(Math.random() * 255),
-    side: THREE.DoubleSide,
-  });
-  this.mesh = new THREE.Mesh(this.geometry, this.material);
+  this.mesh = new THREE.Mesh(this.geometry, GAME.buildingMaterials[this.type]);
   let pos = this.body.GetWorldCenter();
   this.mesh.position.set(pos.x, pos.y, 1);
   this.mesh.rotation.set(0, 0, this.body.GetAngle(), "ZXY");
@@ -118,7 +157,7 @@ BuildingTile.prototype.updateRender = function (dt, time, ctx) {
                 else {
                     otherBody = fixB.GetBody();
                 }
-                if (otherBody._IsBuildingBlock && otherBody.GetWorldCenter().y < pos.y) {
+                if ((otherBody._IsBuildingBlock && otherBody.GetWorldCenter().y < pos.y) || otherBody._IsGround) {
                     this.hp -= dt * (20 + Math.random() * 10);
                 }
             }
