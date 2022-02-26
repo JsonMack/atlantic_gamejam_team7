@@ -132,9 +132,18 @@ window.BuildingTile = function (tileX, tileY, type, falling, tileAbove, hasLedge
   }
   this.body._IsBuildingBlock = true;
 
+  let pos = this.body.GetWorldCenter();
+
+  if (this.hasLedge) {
+    this.geometry2 = new THREE.PlaneBufferGeometry(this.width, this.height);
+    this.mesh2 = new THREE.Mesh(this.geometry2, GAME.buildingMaterials['ledge' + (this.falling ? '-f' : '')]);
+    this.mesh2.position.set(pos.x, pos.y, -0.5);
+    this.mesh2.rotation.set(0, 0, this.body.GetAngle(), 'ZXY');
+    GAME.scene.add(this.mesh2);
+  }
+
   this.geometry = new THREE.PlaneBufferGeometry(this.width, this.height);
   this.mesh = new THREE.Mesh(this.geometry, GAME.buildingMaterials[this.type + (this.falling ? '-f' : '')]);
-  let pos = this.body.GetWorldCenter();
   if (this.type === 'ledge') {
     pos.y += BT_SIZE * 0.4;
   }
@@ -170,6 +179,10 @@ BuildingTile.prototype.updateRender = function (dt, time, ctx) {
     let pos = this.body.GetWorldCenter();
     this.mesh.position.set(pos.x, pos.y, 1);
     this.mesh.rotation.set(0, 0, this.body.GetAngle(), 'ZXY');
+    if (this.mesh2) {
+      this.mesh2.position.set(pos.x, pos.y, 1);
+      this.mesh2.rotation.set(0, 0, this.body.GetAngle(), 'ZXY');
+    }
     this.body.SetAwake(true);
 
     let vel = this.body.GetLinearVelocity();
@@ -217,4 +230,7 @@ BuildingTile.prototype.onRemove = function () {
   this.body.DestroyFixture(this.fixture);
   GAME.world.DestroyBody(this.body);
   this.removed = true;
+  if (this.mesh2) {
+    GAME.scene.remove(this.mesh2);
+  }
 };
