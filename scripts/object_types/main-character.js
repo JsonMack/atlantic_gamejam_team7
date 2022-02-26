@@ -23,8 +23,8 @@ window.MainCharacter = function () {
   bodyDef.position.x = 0;
   bodyDef.position.y = (GROUND_LEVEL - 2) * BT_SIZE - 20 + BT_SIZE * 1.5;
 
-  fixDef.shape = new b2PolygonShape();
-  fixDef.shape.SetAsBox(BT_SIZE * 0.5, BT_SIZE * 0.5);
+  fixDef.shape = new b2CircleShape(BT_SIZE * 0.5);
+  //fixDef.shape.SetAsBox(BT_SIZE * 0.5, BT_SIZE * 0.5);
   fixDef.density = 1;
   fixDef.fricton = 10;
   fixDef.restitution = 0.0;
@@ -164,7 +164,7 @@ MainCharacter.prototype.moveRight = function (onGround) {
 
 MainCharacter.prototype.jump = function () {
   this.body.ApplyForce(
-    new b2Vec2(0, -this.body.GetMass() * 2200),
+    new b2Vec2(0, -this.body.GetMass() * 2800),
     this.body.GetWorldCenter()
   );
 };
