@@ -15,7 +15,7 @@ ctx  = context (used with canvas 2d)
 ObjectSystem.prototype.updateRender = function (dt, time, ctx) {
   // "this" refers to the ObjectSystem in this function
   for (let i = 0; i < this.objectList.length; i++) {
-    if (!this.objectList[i].updateRender(dt, time, ctx)) {
+    if (!this.objectList[i].updateRender(dt, time, ctx)) { // if an object's updateRender function doesn't return true, it is deleted
       this.remove(this.objectList[i]);
       i--;
       continue;
