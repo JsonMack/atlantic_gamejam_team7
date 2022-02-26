@@ -11,6 +11,8 @@ window.GroundObject = function () {
   bodyDef.position.y = this.pos.y;
   fixDef.shape = new b2PolygonShape();
   fixDef.restitution = 0.1;
+  fixDef.fricton = 100.;
+  fixDef.density = 10.;
   fixDef.shape.SetAsArray(
     [
       new b2Vec2(-this.width * 0.5, -this.height * 0.5),
