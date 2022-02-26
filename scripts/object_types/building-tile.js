@@ -28,6 +28,7 @@ window.BuildingTile = function (tileX, tileY, type, falling, tileAbove) {
   this.tileAbove = tileAbove;
   this.tileX = tileX;
   this.tileY = tileY;
+  this.hp = 100;
 
   let bodyDef = new b2BodyDef();
   let fixDef = new b2FixtureDef();
@@ -39,7 +40,7 @@ window.BuildingTile = function (tileX, tileY, type, falling, tileAbove) {
   fixDef.shape = new b2PolygonShape();
   fixDef.shape.SetAsBox(this.width*0.5, this.height*0.5);
   fixDef.density = 5.0;
-  fixDef.restitution = 0.1;
+  fixDef.restitution = 0.5;
   this.body = GAME.world.CreateBody(bodyDef);
   this.fixture = this.body.CreateFixture(fixDef);
   this.body.ResetMassData();
@@ -58,6 +59,7 @@ window.BuildingTile = function (tileX, tileY, type, falling, tileAbove) {
     this.body.SetLinearDamping(0.25);
     this.body.SetAngularDamping(0.01);
   }
+  this.body._IsBuildingBlock = true;
 
   this.geometry = new THREE.PlaneBufferGeometry(this.width, this.height);
   this.material = new THREE.MeshBasicMaterial({
@@ -97,8 +99,30 @@ BuildingTile.prototype.updateRender = function (dt, time, ctx) {
     this.mesh.position.set(pos.x, pos.y, 1);
     this.mesh.rotation.set(0, 0, this.body.GetAngle(), "ZXY");
     this.body.SetAwake(true);
+
+    // Crushing force
+    let firstContact = this.body.GetContactList();
+    let c = firstContact;
+    while (c) {
+        if (c.contact.IsTouching()) {
+            let fixA = c.contact.GetFixtureA();
+            let fixB = c.contact.GetFixtureB();
+            let otherBody = null;
+            if (fixA != this.fixture) {
+                otherBody = fixA.GetBody();
+            }
+            else {
+                otherBody = fixB.GetBody();
+            }
+            if (otherBody._IsBuildingBlock && otherBody.GetWorldCenter().y < pos.y) {
+                this.hp -= dt * (20 + Math.random() * 20);
+            }
+        }
+        c = c.next;
+    }
+    this.hp -= dt * 10;
   }
-  return true;
+  return this.hp > 0;
 };
 
 BuildingTile.prototype.onRemove = function () {
