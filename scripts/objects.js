@@ -28,6 +28,9 @@ ObjectSystem.prototype.remove = function(obj) {
 
     if (idx >= 0) {
         this.objectList.splice(idx, 1);
+        if (obj.onRemove) {
+            obj.onRemove();
+        }   
         return true;
     }
 
