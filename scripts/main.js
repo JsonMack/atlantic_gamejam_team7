@@ -13,6 +13,8 @@ window.LOAD_IMAGES = [
   'billy-guarding.png',
   'billy-standing.png',
   'billy-jump.png',
+  'bg-2.png',
+  'bg-1.png'
 ]; //['building-blocks.jpg', 'texture.jpg', 'etc.png']; // => { "building-blocks": Image, "texture": Image, "etc": Image }
 
 // adding objects from Box2D library to window object for easier access
@@ -58,7 +60,7 @@ window.StartGame = function () {
     antialias: true,
     canvas: GAME.canvas3D,
   });
-  GAME.renderer.setClearColor('#000000');
+  GAME.renderer.setClearColor('#293681');
   GAME.camera = new THREE.OrthographicCamera(
     GAME.gameWidth / -2,
     GAME.gameWidth / 2,

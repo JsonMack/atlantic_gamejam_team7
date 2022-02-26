@@ -14,7 +14,7 @@ window.InitBuildingMaterials = function () {
     const material = new THREE.ShaderMaterial({
       uniforms: {
         time: { value: 1.0 },
-        tex: { value: image._texture },
+        tex: { value: image._texture }
       },
       vertexShader: `
                 varying vec2 vUv;
@@ -43,11 +43,13 @@ window.InitBuildingMaterials = function () {
   };
   GAME.buildingMaterials = {};
   GAME.buildingMaterials['wall'] = MkMaterial(GAME.images['building-wall']);
+  GAME.buildingMaterials['ledge'] = MkMaterial(GAME.images['building-ledge']);
   GAME.buildingMaterials['window'] = MkMaterial(GAME.images['building-window']);
   GAME.buildingMaterials['door'] = MkMaterial(GAME.images['building-door']);
   GAME.buildingMaterials['wall-f'] = MkMaterial(GAME.images['building-wall'], true);
   GAME.buildingMaterials['window-f'] = MkMaterial(GAME.images['building-window'], true);
   GAME.buildingMaterials['door-f'] = MkMaterial(GAME.images['building-door'], true);
+  GAME.buildingMaterials['ledge-f'] = MkMaterial(GAME.images['building-ledge'], true);
 };
 
 window.GenerateBuilding = function (tileX, width, height) {
@@ -58,9 +60,21 @@ window.GenerateBuilding = function (tileX, width, height) {
       if (y == 0 && Math.floor(Math.abs(x - (tileX + width*0.5))) < width*0.1) {
         type = 'door';
       }
-      let tile = new BuildingTile(x, y, type, false, lookup[x + ',' + (y + 1)]);
+      let hasLedge = false;
+      if (!((y+2)%3) && y < (height-1)) {
+        hasLedge = true;
+      }
+      let tile = new BuildingTile(x, y, type, false, lookup[x + ',' + (y + 1)], hasLedge);
       lookup[x + ',' + y] = tile;
       GAME.objects.add(tile);
+      if (hasLedge) {
+        if (x == tileX) {
+          GAME.objects.add(new BuildingTile(x-1, y, 'ledge', false, null, false, tile))
+        }
+        else if (x == (tileX+width-1)) {
+          GAME.objects.add(new BuildingTile(x+1, y, 'ledge', false, null, false, tile))
+        }
+      }
     }
   }
 
@@ -73,13 +87,15 @@ window.GenerateBuilding = function (tileX, width, height) {
   }, 5000);
 };
 
-window.BuildingTile = function (tileX, tileY, type, falling, tileAbove) {
+window.BuildingTile = function (tileX, tileY, type, falling, tileAbove, hasLedge, heldUpBy) {
   this.falling = !!falling;
   this.type = type;
   this.tileAbove = tileAbove;
   this.tileX = tileX;
   this.tileY = tileY;
   this.hp = 100;
+  this.hasLedge = !!hasLedge;
+  this.heldUpBy = heldUpBy || null;
 
   let bodyDef = new b2BodyDef();
   let fixDef = new b2FixtureDef();
@@ -88,8 +104,11 @@ window.BuildingTile = function (tileX, tileY, type, falling, tileAbove) {
   bodyDef.type = this.falling ? b2Body.b2_dynamicBody : b2Body.b2_staticBody;
   bodyDef.position.x = tileX * BT_SIZE;
   bodyDef.position.y = (GROUND_LEVEL - tileY) * BT_SIZE - 20 - BT_SIZE * 0.5;
+  if (this.type === 'ledge') {
+    bodyDef.position.y -= BT_SIZE * 0.4;
+  }
   fixDef.shape = new b2PolygonShape();
-  fixDef.shape.SetAsBox(this.width * 0.5, this.height * 0.5);
+  fixDef.shape.SetAsBox(this.width * 0.5, type == 'ledge' ? this.height * 0.25 * 0.5 : this.height * 0.5);
   fixDef.density = 5.0;
   fixDef.restitution = 0.5;
   this.body = GAME.world.CreateBody(bodyDef);
@@ -116,6 +135,9 @@ window.BuildingTile = function (tileX, tileY, type, falling, tileAbove) {
   this.geometry = new THREE.PlaneBufferGeometry(this.width, this.height);
   this.mesh = new THREE.Mesh(this.geometry, GAME.buildingMaterials[this.type + (this.falling ? '-f' : '')]);
   let pos = this.body.GetWorldCenter();
+  if (this.type === 'ledge') {
+    pos.y += BT_SIZE * 0.4;
+  }
   this.mesh.position.set(pos.x, pos.y, 1);
   this.mesh.rotation.set(0, 0, this.body.GetAngle(), 'ZXY');
   GAME.scene.add(this.mesh);
@@ -140,6 +162,7 @@ BuildingTile.prototype.explode = function () {
   // remove
   GAME.particles.explosion(this.body.GetWorldCenter(), 20);
   GAME.objects.remove(this);
+  this.destroyed = true;
 };
 
 BuildingTile.prototype.updateRender = function (dt, time, ctx) {
@@ -179,8 +202,12 @@ BuildingTile.prototype.updateRender = function (dt, time, ctx) {
     }
     this.hp -= dt * 20;
   }
+  if (this.heldUpBy && this.heldUpBy.removed) {
+    this.hp = 0.;
+  }
   if (this.hp <= 0.) {
     GAME.particles.explosion(this.body.GetWorldCenter(), 20);
+    this.destroyed = true;
   }
   return this.hp > 0;
 };
@@ -189,4 +216,5 @@ BuildingTile.prototype.onRemove = function () {
   GAME.scene.remove(this.mesh);
   this.body.DestroyFixture(this.fixture);
   GAME.world.DestroyBody(this.body);
+  this.removed = true;
 };
