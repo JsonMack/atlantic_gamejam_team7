@@ -100,25 +100,30 @@ BuildingTile.prototype.updateRender = function (dt, time, ctx) {
     this.mesh.rotation.set(0, 0, this.body.GetAngle(), "ZXY");
     this.body.SetAwake(true);
 
-    // Crushing force
-    let firstContact = this.body.GetContactList();
-    let c = firstContact;
-    while (c) {
-        if (c.contact.IsTouching()) {
-            let fixA = c.contact.GetFixtureA();
-            let fixB = c.contact.GetFixtureB();
-            let otherBody = null;
-            if (fixA != this.fixture) {
-                otherBody = fixA.GetBody();
+    let vel = this.body.GetLinearVelocity();
+    let speed = Math.sqrt(vel.x*vel.x+vel.y*vel.y);
+
+    if (speed < 1) {
+        // Crushing force
+        let firstContact = this.body.GetContactList();
+        let c = firstContact;
+        while (c) {
+            if (c.contact.IsTouching()) {
+                let fixA = c.contact.GetFixtureA();
+                let fixB = c.contact.GetFixtureB();
+                let otherBody = null;
+                if (fixA != this.fixture) {
+                    otherBody = fixA.GetBody();
+                }
+                else {
+                    otherBody = fixB.GetBody();
+                }
+                if (otherBody._IsBuildingBlock && otherBody.GetWorldCenter().y < pos.y) {
+                    this.hp -= dt * (20 + Math.random() * 10);
+                }
             }
-            else {
-                otherBody = fixB.GetBody();
-            }
-            if (otherBody._IsBuildingBlock && otherBody.GetWorldCenter().y < pos.y) {
-                this.hp -= dt * (20 + Math.random() * 20);
-            }
+            c = c.next;
         }
-        c = c.next;
     }
     this.hp -= dt * 10;
   }
