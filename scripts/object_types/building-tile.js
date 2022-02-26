@@ -133,6 +133,7 @@ window.BuildingTile = function (tileX, tileY, type, falling, tileAbove, hasLedge
   this.body._IsBuildingBlock = true;
 
   let pos = this.body.GetWorldCenter();
+  pos = new b2Vec2(pos.x, pos.y);
 
   if (this.hasLedge) {
     this.geometry2 = new THREE.PlaneBufferGeometry(this.width, this.height);
