@@ -14,7 +14,7 @@ window.RandomizedLevel = function (levelNo) {
 
   GenerateBuilding(-8, 6, 15);
 
-  GenerateBuilding(-15, 5, 10);
+  GenerateBuilding(-17, 5, 10);
 
   GenerateBuilding(7, 5, 6);
   GenerateMainCharacter();

@@ -159,8 +159,7 @@ BuildingTile.prototype.makeFalling = function () {
 };
 
 BuildingTile.prototype.explode = function () {
-  // <-- explosion fx
-
+  // cascade
   if (!this.falling) {
     let n = this.tileAbove;
     while (n) {
