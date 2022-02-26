@@ -1,6 +1,6 @@
 window.BT_SIZE = 2;
 window.BT_SIZE_PIXELS = 32;
-window.BT_EXP_FORCE = 0.01;
+window.BT_EXP_FORCE = 50000.;
 
 window.GenerateBuilding = function (tileX, width, height) {
   let lookup = {};
@@ -37,26 +37,26 @@ window.BuildingTile = function (tileX, tileY, type, falling, tileAbove) {
   bodyDef.position.x = tileX * BT_SIZE;
   bodyDef.position.y = (GROUND_LEVEL - tileY) * BT_SIZE - 20 - BT_SIZE * 0.5;
   fixDef.shape = new b2PolygonShape();
-  fixDef.shape.SetAsArray(
-    [
-      new b2Vec2(-this.width * 0.5, -this.height * 0.5),
-      new b2Vec2(this.width * 0.5, -this.height * 0.5),
-      new b2Vec2(this.width * 0.5, this.height * 0.5),
-      new b2Vec2(-this.width * 0.5, this.height * 0.5),
-    ],
-    4
-  );
+  fixDef.shape.SetAsBox(this.width*0.5, this.height*0.5);
+  fixDef.density = 5.0;
+  fixDef.restitution = 0.1;
   this.body = GAME.world.CreateBody(bodyDef);
   this.fixture = this.body.CreateFixture(fixDef);
+  this.body.ResetMassData();
 
   if (this.falling) {
-    this.body.SetLinearVelocity(
+    this.body.ApplyForce(
       new b2Vec2(
         Math.random() * BT_EXP_FORCE - BT_EXP_FORCE * 0.5,
         Math.random() * BT_EXP_FORCE - BT_EXP_FORCE * 0.5
+      ),
+      new b2Vec2(
+        this.body.GetPosition().x + Math.random() * BT_SIZE - BT_SIZE * 0.5,
+        this.body.GetPosition().y + Math.random() * BT_SIZE - BT_SIZE * 0.5
       )
     );
-    this.body.SetAngularVelocity(Math.random() * Math.PI - Math.PI * 0.5);
+    this.body.SetLinearDamping(0.25);
+    this.body.SetAngularDamping(0.01);
   }
 
   this.geometry = new THREE.PlaneBufferGeometry(this.width, this.height);
@@ -96,9 +96,9 @@ BuildingTile.prototype.updateRender = function (dt, time, ctx) {
     let pos = this.body.GetWorldCenter();
     this.mesh.position.set(pos.x, pos.y, 1);
     this.mesh.rotation.set(0, 0, this.body.GetAngle(), "ZXY");
+    this.body.SetAwake(true);
   }
-
-  return !this.removeNext;
+  return true;
 };
 
 BuildingTile.prototype.onRemove = function () {
