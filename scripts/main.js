@@ -4,6 +4,13 @@ window.LOAD_IMAGES = [
   "building-ledge.png",
   "building-scafolding.png",
   "building-window.png",
+  "building-door.png",
+  "billy-run-1.png",
+  "billy-run-2.png",
+  "billy-crouching.png",
+  "billy-guarding.png",
+  "billy-standing.png",
+  "billy-jump.png"
 ]; //['building-blocks.jpg', 'texture.jpg', 'etc.png']; // => { "building-blocks": Image, "texture": Image, "etc": Image }
 
 // adding objects from Box2D library to window object for easier access
@@ -107,7 +114,18 @@ window.StartGame = function () {
 };
 
 window.LoadGame = function (onDone) {
-  GAME.images = image_generator(LOAD_IMAGES, () => {
+  image_generator(LOAD_IMAGES, (images) => {
+    GAME.images = images;
+
+    GAME.images['billy-spritesheet'] = make_spritesheet([
+      "billy-run-1",
+      "billy-run-2",
+      "billy-crouching",
+      "billy-guarding",
+      "billy-standing",
+      "billy-jump"
+    ], BT_SIZE_PIXELS, 8, 8);
+
     InitBuildingMaterials();
     GAME.timeStamp = Timestamp();
     GAME.objects = new ObjectSystem();
@@ -184,7 +202,7 @@ function image_generator(imageEntries, onComplete) {
     tmpImg.onload = function () {
       remaining--;
       if (remaining <= 0) {
-        onComplete();
+        onComplete(imageHashMap);
       }
     };
     imageHashMap[name.split(".")[0]] = tmpImg;
@@ -195,6 +213,23 @@ function image_generator(imageEntries, onComplete) {
   }
 
   return imageHashMap;
+}
+
+// takes images and makes a sprite sheet
+function make_spritesheet(imageNames, tileSize, widthTiles, heightTiles) {
+  let canvas = document.createElement('canvas');
+  canvas.width = tileSize * widthTiles;
+  canvas.height = tileSize * heightTiles;
+  let ctx = canvas.getContext('2d');
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  let i = 0;
+  for (let key of imageNames) {
+    let tileX = i % widthTiles;
+    let tileY = (i - tileX) / widthTiles;
+    ctx.drawImage(GAME.images[key], tileX*tileSize, tileY*tileSize);
+    i ++;
+  }
+  return canvas;
 }
 
 // game loop

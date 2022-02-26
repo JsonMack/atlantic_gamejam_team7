@@ -31,7 +31,7 @@ window.InitBuildingMaterials = function () {
                 varying vec2 vUv;
 
                 void main() {
-                    gl_FragColor = texture2D(tex, vUv);
+                    gl_FragColor = texture2D(tex, vUv * vec2(1., -1.));
                 }
             `,
     });
@@ -43,6 +43,7 @@ window.InitBuildingMaterials = function () {
   GAME.buildingMaterials = {};
   GAME.buildingMaterials['wall'] = MkMaterial(GAME.images['building-wall']);
   GAME.buildingMaterials['window'] = MkMaterial(GAME.images['building-window']);
+  GAME.buildingMaterials['door'] = MkMaterial(GAME.images['building-door']);
 };
 
 window.GenerateBuilding = function (tileX, width, height) {
@@ -50,6 +51,9 @@ window.GenerateBuilding = function (tileX, width, height) {
   for (let y = height - 1; y >= 0; y--) {
     for (let x = tileX; x < tileX + width; x++) {
       let type = (x + y) % 2 ? 'wall' : 'window';
+      if (y == 0 && Math.floor(Math.abs(x - (tileX + width*0.5))) < width*0.1) {
+        type = 'door';
+      }
       let tile = new BuildingTile(x, y, type, false, lookup[x + ',' + (y + 1)]);
       lookup[x + ',' + y] = tile;
       GAME.objects.add(tile);
