@@ -1,47 +1,51 @@
-window.ObjectSystem = function() {
+/*
+this script adds objects to the global (window) object to be used in main.js file later
+(abstracting the operations of ObjectSystem)
+*/
 
-    this.objectList = [];
-
+window.ObjectSystem = function () {
+  this.objectList = [];
 };
 
-ObjectSystem.prototype.updateRender = function(dt, time, ctx) {
-
-    for (let i=0; i<this.objectList.length; i++) {
-        if (!this.objectList[i].updateRender(dt, time, ctx)) {
-            this.remove(this.objectList[i]);
-            i --;
-            continue;
-        }
+/*
+dt   = delta time between frames in seconds
+time = time in seconds since the game started, basically the sum of every dt from every frame
+ctx  = context (used with canvas 2d) 
+*/
+ObjectSystem.prototype.updateRender = function (dt, time, ctx) {
+  // "this" refers to the ObjectSystem in this function
+  for (let i = 0; i < this.objectList.length; i++) {
+    if (!this.objectList[i].updateRender(dt, time, ctx)) {
+      this.remove(this.objectList[i]);
+      i--;
+      continue;
     }
-
+  }
 };
 
-ObjectSystem.prototype.add = function(obj) {
-
-    this.objectList.push(obj);
-
+// pushes object to ObjectSystem
+ObjectSystem.prototype.add = function (obj) {
+  this.objectList.push(obj);
 };
 
-ObjectSystem.prototype.remove = function(obj) {
+// removes object from ObjectSystem
+ObjectSystem.prototype.remove = function (obj) {
+  let idx = this.objectList.indexOf(obj);
 
-    let idx = this.objectList.indexOf(obj);
-
-    if (idx >= 0) {
-        this.objectList.splice(idx, 1);
-        if (obj.onRemove) {
-            obj.onRemove();
-        }   
-        return true;
+  if (idx >= 0) {
+    this.objectList.splice(idx, 1);
+    if (obj.onRemove) {
+      obj.onRemove();
     }
+    return true;
+  }
 
-    return false;
-
+  return false;
 };
 
-ObjectSystem.prototype.clear = function() {
-
-    while (this.objectList.length) {
-        this.remove(this.objectList[0]);
-    }
-
+// clears entire ObjectSystem
+ObjectSystem.prototype.clear = function () {
+  while (this.objectList.length) {
+    this.remove(this.objectList[0]);
+  }
 };
