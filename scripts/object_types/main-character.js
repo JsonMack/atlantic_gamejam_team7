@@ -40,6 +40,7 @@ window.MainCharacter = function () {
     e.preventDefault();
     if (e.code === 'KeyA') this.moveLeft();
     if (e.code === 'KeyD') this.moveRight();
+    if (e.code === 'Space') this.jump();
   };
 
   GAME.scene.add(this.mesh);
@@ -60,9 +61,13 @@ MainCharacter.prototype.updateRender = function (dt, time, ctx) {
 };
 
 MainCharacter.prototype.moveLeft = function () {
-  this.body.ApplyForce(new b2Vec2(-200, 0));
+  this.body.ApplyForce(new b2Vec2(-this.body.GetMass() * 50, 0));
 };
 
 MainCharacter.prototype.moveRight = function () {
-  this.body.ApplyForce(new b2Vec2(200, 0));
+  this.body.ApplyForce(new b2Vec2(-this.body.GetMass() * 50, 0));
+};
+
+MainCharacter.prototype.jump = function () {
+  this.body.ApplyForce(new b2Vec2(0, -this.body.GetMass() * 20));
 };
