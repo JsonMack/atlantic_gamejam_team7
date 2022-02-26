@@ -1,22 +1,22 @@
 window.BT_SIZE = 2;
 window.BT_SIZE_PIXELS = 32;
-window.BT_EXP_FORCE = 50000.;
+window.BT_EXP_FORCE = 50000;
 
 window.InitBuildingMaterials = function () {
-    const MkMaterial = function(image) {
-        if (!image._texture) {
-            image._texture = new THREE.Texture(image)
-            image._texture.wrapS = THREE.RepeatWrapping;
-            image._texture.wrapT = THREE.RepeatWrapping;
-            image._texture.mapping = THREE.UVMapping;
-            image._texture.needsUpdate = true;
-        }
-        const material = new THREE.ShaderMaterial( {
-            uniforms: {
-                time: { value: 1.0 },
-                tex: { value: image._texture }
-            },
-            vertexShader: `
+  const MkMaterial = function (image) {
+    if (!image._texture) {
+      image._texture = new THREE.Texture(image);
+      image._texture.wrapS = THREE.RepeatWrapping;
+      image._texture.wrapT = THREE.RepeatWrapping;
+      image._texture.mapping = THREE.UVMapping;
+      image._texture.needsUpdate = true;
+    }
+    const material = new THREE.ShaderMaterial({
+      uniforms: {
+        time: { value: 1.0 },
+        tex: { value: image._texture },
+      },
+      vertexShader: `
                 varying vec2 vUv;
 
                 void main() {
@@ -26,30 +26,30 @@ window.InitBuildingMaterials = function () {
                     gl_Position = projectionMatrix * mvp; 
                 }
             `,
-            fragmentShader: `
+      fragmentShader: `
                 uniform sampler2D tex;
                 varying vec2 vUv;
 
                 void main() {
                     gl_FragColor = texture2D(tex, vUv);
                 }
-            `
-        });
-        material.side = THREE.DoubleSide;
-        material.transparent = true;
-        material.needsUpdate = true;
-        return material;
-    }
-    GAME.buildingMaterials = {};
-    GAME.buildingMaterials["wall"] = MkMaterial(GAME.images['building-wall']);
-    GAME.buildingMaterials["window"] = MkMaterial(GAME.images['building-window']);
-}
+            `,
+    });
+    material.side = THREE.DoubleSide;
+    material.transparent = true;
+    material.needsUpdate = true;
+    return material;
+  };
+  GAME.buildingMaterials = {};
+  GAME.buildingMaterials["wall"] = MkMaterial(GAME.images["building-wall"]);
+  GAME.buildingMaterials["window"] = MkMaterial(GAME.images["building-window"]);
+};
 
 window.GenerateBuilding = function (tileX, width, height) {
   let lookup = {};
   for (let y = height - 1; y >= 0; y--) {
     for (let x = tileX; x < tileX + width; x++) {
-      let type = (x+y)%2 ? 'wall' : 'window';
+      let type = (x + y) % 2 ? "wall" : "window";
       let tile = new BuildingTile(x, y, type, false, lookup[x + "," + (y + 1)]);
       lookup[x + "," + y] = tile;
       GAME.objects.add(tile);
@@ -59,8 +59,8 @@ window.GenerateBuilding = function (tileX, width, height) {
   // TEST
   setTimeout(() => {
     console.log(GAME.objects.objectList.length);
-    lookup[(0 + tileX) + "," + 4].explode();
-    lookup[(1 + tileX) + "," + 5].explode();
+    lookup[0 + tileX + "," + 4].explode();
+    lookup[1 + tileX + "," + 5].explode();
     console.log(GAME.objects.objectList.length);
   }, 5000);
 };
@@ -81,7 +81,7 @@ window.BuildingTile = function (tileX, tileY, type, falling, tileAbove) {
   bodyDef.position.x = tileX * BT_SIZE;
   bodyDef.position.y = (GROUND_LEVEL - tileY) * BT_SIZE - 20 - BT_SIZE * 0.5;
   fixDef.shape = new b2PolygonShape();
-  fixDef.shape.SetAsBox(this.width*0.5, this.height*0.5);
+  fixDef.shape.SetAsBox(this.width * 0.5, this.height * 0.5);
   fixDef.density = 5.0;
   fixDef.restitution = 0.5;
   this.body = GAME.world.CreateBody(bodyDef);
@@ -140,29 +140,32 @@ BuildingTile.prototype.updateRender = function (dt, time, ctx) {
     this.body.SetAwake(true);
 
     let vel = this.body.GetLinearVelocity();
-    let speed = Math.sqrt(vel.x*vel.x+vel.y*vel.y);
+    let speed = Math.sqrt(vel.x * vel.x + vel.y * vel.y);
 
     if (speed < 1) {
-        // Crushing force
-        let firstContact = this.body.GetContactList();
-        let c = firstContact;
-        while (c) {
-            if (c.contact.IsTouching()) {
-                let fixA = c.contact.GetFixtureA();
-                let fixB = c.contact.GetFixtureB();
-                let otherBody = null;
-                if (fixA != this.fixture) {
-                    otherBody = fixA.GetBody();
-                }
-                else {
-                    otherBody = fixB.GetBody();
-                }
-                if ((otherBody._IsBuildingBlock && otherBody.GetWorldCenter().y < pos.y) || otherBody._IsGround) {
-                    this.hp -= dt * (20 + Math.random() * 10);
-                }
-            }
-            c = c.next;
+      // Crushing force
+      let firstContact = this.body.GetContactList();
+      let c = firstContact;
+      while (c) {
+        if (c.contact.IsTouching()) {
+          let fixA = c.contact.GetFixtureA();
+          let fixB = c.contact.GetFixtureB();
+          let otherBody = null;
+          if (fixA != this.fixture) {
+            otherBody = fixA.GetBody();
+          } else {
+            otherBody = fixB.GetBody();
+          }
+          if (
+            (otherBody._IsBuildingBlock &&
+              otherBody.GetWorldCenter().y < pos.y) ||
+            otherBody._IsGround
+          ) {
+            this.hp -= dt * (20 + Math.random() * 10);
+          }
         }
+        c = c.next;
+      }
     }
     this.hp -= dt * 10;
   }

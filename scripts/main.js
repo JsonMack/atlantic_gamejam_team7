@@ -1,5 +1,10 @@
 // images to load
-window.LOAD_IMAGES = [ 'building-wall.png', 'building-ledge.png', 'building-scafolding.png', 'building-window.png' ];//['building-blocks.jpg', 'texture.jpg', 'etc.png']; // => { "building-blocks": Image, "texture": Image, "etc": Image }
+window.LOAD_IMAGES = [
+  "building-wall.png",
+  "building-ledge.png",
+  "building-scafolding.png",
+  "building-window.png",
+]; //['building-blocks.jpg', 'texture.jpg', 'etc.png']; // => { "building-blocks": Image, "texture": Image, "etc": Image }
 
 // adding objects from Box2D library to window object for easier access
 window.b2Vec2 = Box2D.Common.Math.b2Vec2;
@@ -22,7 +27,7 @@ window.StartGame = function () {
   window.GAME = {
     time: 0,
     dt: 1 / 60,
-    physicsDt: 1/240,
+    physicsDt: 1 / 240,
     physicsDtAcc: 0,
     lastTimeStamp: 0,
     timeStamp: 0,
@@ -35,16 +40,16 @@ window.StartGame = function () {
     gravity: 10, // g != 10 it is 9.8 but ok
   };
   GAME.gameHeight = GAME.gameWidth / 1.6;
-  GAME.canvas2D = document.getElementById('canvas2d');
-  GAME.canvas3D = document.getElementById('canvas3d');
-  GAME.ctx = GAME.canvas2D.getContext('2d');
+  GAME.canvas2D = document.getElementById("canvas2d");
+  GAME.canvas3D = document.getElementById("canvas3d");
+  GAME.ctx = GAME.canvas2D.getContext("2d");
 
   GAME.scene = new THREE.Scene();
   GAME.renderer = new THREE.WebGLRenderer({
     antialias: true,
     canvas: GAME.canvas3D,
   });
-  GAME.renderer.setClearColor('#000000');
+  GAME.renderer.setClearColor("#000000");
   GAME.camera = new THREE.OrthographicCamera(
     GAME.gameWidth / -2,
     GAME.gameWidth / 2,
@@ -97,7 +102,6 @@ window.LoadGame = function (onDone) {
     GAME.camera.lookAt(new THREE.Vector3(0, 0, 0));
     onDone();
   });
-
 };
 
 window.GameLoop = function () {
@@ -153,26 +157,26 @@ window.GameLoop = function () {
 
 // takes in array of image file names and generates a hash map with names as keys and image html tags as values
 function image_generator(imageEntries, onComplete) {
-    const imageHashMap = {};
-    let tmpImg;
-    let remaining = imageEntries.length;
-    imageEntries.forEach((name) => {
-        tmpImg = new Image();
-        tmpImg.src = 'images/' + name;
-        tmpImg.onload = function() {
-            remaining --;
-            if (remaining <= 0) {
-                onComplete();
-            }
-        }
-        imageHashMap[name.split('.')[0]] = tmpImg;
-    });
+  const imageHashMap = {};
+  let tmpImg;
+  let remaining = imageEntries.length;
+  imageEntries.forEach((name) => {
+    tmpImg = new Image();
+    tmpImg.src = "images/" + name;
+    tmpImg.onload = function () {
+      remaining--;
+      if (remaining <= 0) {
+        onComplete();
+      }
+    };
+    imageHashMap[name.split(".")[0]] = tmpImg;
+  });
 
-    if (!remaining) {
-        setTimeout(onComplete, 10);
-    }
+  if (!remaining) {
+    setTimeout(onComplete, 10);
+  }
 
-    return imageHashMap;
+  return imageHashMap;
 }
 
 // game loop
@@ -182,11 +186,11 @@ window.GameLoop = function () {
   GAME.lastTimeStamp = GAME.timeStamp;
   GAME.timeStamp = Timestamp();
   GAME.dt = GAME.dt * 0.5 + (GAME.timeStamp - GAME.lastTimeStamp) * 0.5; // smooth jitter
-  if (GAME.dt > (1/10)) {
-      GAME.dt = 1/10;
+  if (GAME.dt > 1 / 10) {
+    GAME.dt = 1 / 10;
   }
-  if (GAME.dt < (1/300)) {
-      GAME.dt = 1/300;
+  if (GAME.dt < 1 / 300) {
+    GAME.dt = 1 / 300;
   }
   GAME.time += GAME.dt;
 
@@ -209,8 +213,8 @@ window.GameLoop = function () {
   }
 
   GAME.ctx.clearRect(0, 0, GAME.vpWidth, GAME.vpHeight);
-  GAME.ctx.fillStyle = '#FFF';
-  GAME.ctx.font = '20px Arial';
+  GAME.ctx.fillStyle = "#FFF";
+  GAME.ctx.font = "20px Arial";
   GAME.ctx.fillText(
     `${Math.round(1 / GAME.dt)} fps - mouse screen: ${GAME.mouseScreen.x},${
       GAME.mouseScreen.y
