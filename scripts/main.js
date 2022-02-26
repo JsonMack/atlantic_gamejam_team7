@@ -84,6 +84,24 @@ window.StartGame = function () {
       GAME.mouseClickLeft = true;
     }
   });
+  document.addEventListener("keydown", (e) => {
+    e = e || window.event;
+    switch (e.keyCode) {
+      case 37: case 65: GAME.keyLeft = true; break;
+      case 39: case 68: GAME.keyRight = true; break;
+      case 32: GAME.keyJump = true; break;
+      default: break;
+    }
+  });
+  document.addEventListener("keyup", (e) => {
+    e = e || window.event;
+    switch (e.keyCode) {
+      case 37: case 65: GAME.keyLeft = false; break;
+      case 39: case 68: GAME.keyRight = false; break;
+      case 32: GAME.keyJump = false; break;
+      default: break;
+    }
+  });
 
   LoadGame(() => GameLoop());
 };
