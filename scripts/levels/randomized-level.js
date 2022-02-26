@@ -2,8 +2,8 @@ window.RandomizedLevel = function (levelNo) {
   GAME.objects.clear();
 
   this.levelNo = levelNo;
-  this.ground = new GroundObject();
-  GAME.objects.add(this.ground);
+  this.earth = new EarthObject();
+  GAME.objects.add(this.earth);
   GAME.objects.add(new TestCircle(new THREE.Vector2(0, 0 - 20)));
   this.deleteMeTest = new TestCircle(new THREE.Vector2(2, -5 - 20));
   GAME.objects.add(this.deleteMeTest);
