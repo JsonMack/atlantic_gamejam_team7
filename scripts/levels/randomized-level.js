@@ -15,6 +15,7 @@ window.RandomizedLevel = function (levelNo) {
   GenerateBuilding(-8, 5, 10);
 
   GenerateBuilding(7, 5, 6);
+  GenerateMainCharacter();
 };
 
 RandomizedLevel.prototype.updateRender = function (dt, time, ctx) {

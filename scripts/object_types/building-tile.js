@@ -41,17 +41,17 @@ window.InitBuildingMaterials = function () {
     return material;
   };
   GAME.buildingMaterials = {};
-  GAME.buildingMaterials["wall"] = MkMaterial(GAME.images["building-wall"]);
-  GAME.buildingMaterials["window"] = MkMaterial(GAME.images["building-window"]);
+  GAME.buildingMaterials['wall'] = MkMaterial(GAME.images['building-wall']);
+  GAME.buildingMaterials['window'] = MkMaterial(GAME.images['building-window']);
 };
 
 window.GenerateBuilding = function (tileX, width, height) {
   let lookup = {};
   for (let y = height - 1; y >= 0; y--) {
     for (let x = tileX; x < tileX + width; x++) {
-      let type = (x + y) % 2 ? "wall" : "window";
-      let tile = new BuildingTile(x, y, type, false, lookup[x + "," + (y + 1)]);
-      lookup[x + "," + y] = tile;
+      let type = (x + y) % 2 ? 'wall' : 'window';
+      let tile = new BuildingTile(x, y, type, false, lookup[x + ',' + (y + 1)]);
+      lookup[x + ',' + y] = tile;
       GAME.objects.add(tile);
     }
   }
@@ -59,8 +59,8 @@ window.GenerateBuilding = function (tileX, width, height) {
   // TEST
   setTimeout(() => {
     console.log(GAME.objects.objectList.length);
-    lookup[0 + tileX + "," + 4].explode();
-    lookup[1 + tileX + "," + 5].explode();
+    lookup[0 + tileX + ',' + 4].explode();
+    lookup[1 + tileX + ',' + 5].explode();
     console.log(GAME.objects.objectList.length);
   }, 5000);
 };
@@ -85,6 +85,7 @@ window.BuildingTile = function (tileX, tileY, type, falling, tileAbove) {
   fixDef.density = 5.0;
   fixDef.restitution = 0.5;
   this.body = GAME.world.CreateBody(bodyDef);
+
   this.fixture = this.body.CreateFixture(fixDef);
   this.body.ResetMassData();
 
@@ -108,7 +109,7 @@ window.BuildingTile = function (tileX, tileY, type, falling, tileAbove) {
   this.mesh = new THREE.Mesh(this.geometry, GAME.buildingMaterials[this.type]);
   let pos = this.body.GetWorldCenter();
   this.mesh.position.set(pos.x, pos.y, 1);
-  this.mesh.rotation.set(0, 0, this.body.GetAngle(), "ZXY");
+  this.mesh.rotation.set(0, 0, this.body.GetAngle(), 'ZXY');
   GAME.scene.add(this.mesh);
 };
 
@@ -136,7 +137,7 @@ BuildingTile.prototype.updateRender = function (dt, time, ctx) {
   if (this.falling) {
     let pos = this.body.GetWorldCenter();
     this.mesh.position.set(pos.x, pos.y, 1);
-    this.mesh.rotation.set(0, 0, this.body.GetAngle(), "ZXY");
+    this.mesh.rotation.set(0, 0, this.body.GetAngle(), 'ZXY');
     this.body.SetAwake(true);
 
     let vel = this.body.GetLinearVelocity();
