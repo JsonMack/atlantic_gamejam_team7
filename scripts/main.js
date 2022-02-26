@@ -44,7 +44,7 @@ window.StartGame = function () {
     mouseScreen: new THREE.Vector2(0, 0),
     mouseWorld: new THREE.Vector3(0, 0, 0),
     mouseLeft: false,
-    gravity: 10, // g != 10 it is 9.8 but ok
+    gravity: 15
   };
   GAME.gameHeight = GAME.gameWidth / 1.6;
   GAME.canvas2D = document.getElementById("canvas2d");
@@ -129,6 +129,7 @@ window.LoadGame = function (onDone) {
     InitBuildingMaterials();
     GAME.timeStamp = Timestamp();
     GAME.objects = new ObjectSystem();
+    GAME.particles = new ParticleSystem();
     GAME.world = new b2World(new b2Vec2(0, GAME.gravity), false);
 
     GAME.level = new RandomizedLevel(1);
@@ -138,57 +139,6 @@ window.LoadGame = function (onDone) {
     GAME.camera.lookAt(new THREE.Vector3(0, 0, 0));
     onDone();
   });
-};
-
-window.GameLoop = function () {
-  requestAnimationFrame(GameLoop);
-
-  GAME.lastTimeStamp = GAME.timeStamp;
-  GAME.timeStamp = Timestamp();
-  GAME.dt = GAME.dt * 0.5 + (GAME.timeStamp - GAME.lastTimeStamp) * 0.5; // smooth jitter
-  GAME.time += GAME.dt;
-
-  // handle resize
-  if (
-    GAME.vpWidth != window.innerWidth ||
-    GAME.vpHeight != window.innerHeight
-  ) {
-    GAME.vpWidth = window.innerWidth;
-    GAME.vpHeight = window.innerHeight;
-    GAME.canvas2D.width = GAME.vpWidth;
-    GAME.canvas2D.height = GAME.vpHeight;
-    GAME.renderer.setSize(GAME.vpWidth, GAME.vpHeight);
-    GAME.gameHeight = GAME.gameWidth / (GAME.vpWidth / GAME.vpHeight);
-    GAME.camera.left = GAME.gameWidth / -2;
-    GAME.camera.right = GAME.gameWidth / 2;
-    GAME.camera.top = GAME.gameHeight / 2;
-    GAME.camera.bottom = -GAME.gameHeight / 2;
-    GAME.camera.updateProjectionMatrix();
-  }
-
-  GAME.ctx.clearRect(0, 0, GAME.vpWidth, GAME.vpHeight);
-  GAME.ctx.fillStyle = "#FFF";
-  GAME.ctx.font = "20px Arial";
-  GAME.ctx.fillText(
-    `${Math.round(1 / GAME.dt)} fps - mouse screen: ${GAME.mouseScreen.x},${
-      GAME.mouseScreen.y
-    }, mouse world: ${GAME.mouseWorld.x},${GAME.mouseWorld.y}, mouse left: ${
-      GAME.mouseLeft
-    }`,
-    20,
-    20
-  );
-
-  GAME.world.Step(GAME.dt, 10, 10);
-  GAME.world.ClearForces();
-
-  GAME.level.updateRender(GAME.dt, GAME.time, GAME.ctx);
-
-  GAME.objects.updateRender(GAME.dt, GAME.time, GAME.ctx);
-
-  GAME.renderer.render(GAME.scene, GAME.camera);
-
-  GAME.mouseClickLeft = false;
 };
 
 // takes in array of image file names and generates a hash map with names as keys and image html tags as values
@@ -287,6 +237,8 @@ window.GameLoop = function () {
   GAME.world.ClearForces();
 
   GAME.objects.updateRender(GAME.dt, GAME.time, GAME.ctx); //updates the renderer (ObjectSystem function)
+
+  GAME.particles.updateRender(GAME.dt, GAME.time, GAME.ctx);
 
   GAME.level.updateRender(GAME.dt, GAME.time, GAME.ctx);
 

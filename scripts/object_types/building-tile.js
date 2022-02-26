@@ -3,7 +3,7 @@ window.BT_SIZE_PIXELS = 32;
 window.BT_EXP_FORCE = 50000;
 
 window.InitBuildingMaterials = function () {
-  const MkMaterial = function (image) {
+  const MkMaterial = function (image, falling) {
     if (!image._texture) {
       image._texture = new THREE.Texture(image);
       image._texture.wrapS = THREE.RepeatWrapping;
@@ -32,6 +32,7 @@ window.InitBuildingMaterials = function () {
 
                 void main() {
                     gl_FragColor = texture2D(tex, vUv * vec2(1., -1.));
+                    ${falling ? `gl_FragColor.rgb *= 0.5;` : ``}
                 }
             `,
     });
@@ -44,6 +45,9 @@ window.InitBuildingMaterials = function () {
   GAME.buildingMaterials['wall'] = MkMaterial(GAME.images['building-wall']);
   GAME.buildingMaterials['window'] = MkMaterial(GAME.images['building-window']);
   GAME.buildingMaterials['door'] = MkMaterial(GAME.images['building-door']);
+  GAME.buildingMaterials['wall-f'] = MkMaterial(GAME.images['building-wall'], true);
+  GAME.buildingMaterials['window-f'] = MkMaterial(GAME.images['building-window'], true);
+  GAME.buildingMaterials['door-f'] = MkMaterial(GAME.images['building-door'], true);
 };
 
 window.GenerateBuilding = function (tileX, width, height) {
@@ -110,7 +114,7 @@ window.BuildingTile = function (tileX, tileY, type, falling, tileAbove) {
   this.body._IsBuildingBlock = true;
 
   this.geometry = new THREE.PlaneBufferGeometry(this.width, this.height);
-  this.mesh = new THREE.Mesh(this.geometry, GAME.buildingMaterials[this.type]);
+  this.mesh = new THREE.Mesh(this.geometry, GAME.buildingMaterials[this.type + (this.falling ? '-f' : '')]);
   let pos = this.body.GetWorldCenter();
   this.mesh.position.set(pos.x, pos.y, 1);
   this.mesh.rotation.set(0, 0, this.body.GetAngle(), 'ZXY');
@@ -134,6 +138,7 @@ BuildingTile.prototype.explode = function () {
   }
 
   // remove
+  GAME.particles.explosion(this.body.GetWorldCenter(), 20);
   GAME.objects.remove(this);
 };
 
@@ -166,13 +171,16 @@ BuildingTile.prototype.updateRender = function (dt, time, ctx) {
               otherBody.GetWorldCenter().y < pos.y) ||
             otherBody._IsGround
           ) {
-            this.hp -= dt * (20 + Math.random() * 10);
+            this.hp -= dt * (120 + Math.random() * 10);
           }
         }
         c = c.next;
       }
     }
-    this.hp -= dt * 10;
+    this.hp -= dt * 20;
+  }
+  if (this.hp <= 0.) {
+    GAME.particles.explosion(this.body.GetWorldCenter(), 20);
   }
   return this.hp > 0;
 };
