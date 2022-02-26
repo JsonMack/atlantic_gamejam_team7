@@ -39,6 +39,7 @@ window.BGRender = function() {
 };
 
 BGRender.prototype.updateRender = function(dt, time, ctx) {
+    this.mesh.position.set(GAME.camera.position.x * 0.8, GAME.camera.position.y * 0.8, 50.);
     return true;
 };
 

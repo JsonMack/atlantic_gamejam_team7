@@ -164,7 +164,7 @@ MainCharacter.prototype.moveRight = function (onGround) {
 
 MainCharacter.prototype.jump = function () {
   this.body.ApplyForce(
-    new b2Vec2(0, -this.body.GetMass() * 2200),
+    new b2Vec2(0, -this.body.GetMass() * 2800),
     this.body.GetWorldCenter()
   );
 };

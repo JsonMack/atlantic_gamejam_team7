@@ -110,7 +110,7 @@ window.BuildingTile = function (tileX, tileY, type, falling, tileAbove, hasLedge
   fixDef.shape = new b2PolygonShape();
   fixDef.shape.SetAsBox(this.width * 0.5, type == 'ledge' ? this.height * 0.25 * 0.5 : this.height * 0.5);
   fixDef.density = 5.0;
-  fixDef.restitution = 0.5;
+  fixDef.restitution = 0.;
   this.body = GAME.world.CreateBody(bodyDef);
 
   this.fixture = this.body.CreateFixture(fixDef);
