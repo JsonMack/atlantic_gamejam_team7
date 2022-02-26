@@ -11,14 +11,14 @@ window.GroundObject = function () {
   bodyDef.position.y = this.pos.y;
   fixDef.shape = new b2PolygonShape();
   fixDef.restitution = 0.1;
-  fixDef.fricton = 100.;
-  fixDef.density = 10.;
+  fixDef.fricton = 100;
+  fixDef.density = 10;
   fixDef.shape.SetAsArray(
     [
-      new b2Vec2(-this.width * 0.5, -this.height * 0.5),
-      new b2Vec2(this.width * 0.5, -this.height * 0.5),
-      new b2Vec2(this.width * 0.5, this.height * 0.5),
-      new b2Vec2(-this.width * 0.5, this.height * 0.5),
+      new b2Vec2(-this.width * 5, -this.height * 0.5),
+      new b2Vec2(this.width * 5, -this.height * 0.5),
+      new b2Vec2(this.width * 5, this.height * 0.5),
+      new b2Vec2(-this.width * 5, this.height * 0.5),
     ],
     4
   );
@@ -26,7 +26,7 @@ window.GroundObject = function () {
   this.body._IsGround = true;
   this.fixture = this.body.CreateFixture(fixDef);
 
-  this.geometry = new THREE.PlaneBufferGeometry(this.width, this.height);
+  this.geometry = new THREE.PlaneBufferGeometry(this.width * 10, this.height);
   this.material = new THREE.MeshBasicMaterial({
     color: 0x444444,
     side: THREE.DoubleSide,
