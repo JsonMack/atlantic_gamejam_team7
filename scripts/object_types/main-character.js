@@ -11,10 +11,10 @@ window.MainCharacter = function () {
 
   bodyDef.type = b2Body.b2_dynamicBody;
   bodyDef.position.x = 0;
-  bodyDef.position.y = 0;
+  bodyDef.position.y = (GROUND_LEVEL - 2) * BT_SIZE - 20 + BT_SIZE;
 
   fixDef.shape = new b2PolygonShape();
-  fixDef.shape.SetAsBox(BT_SIZE, BT_SIZE*2);
+  fixDef.shape.SetAsBox(BT_SIZE*0.5, BT_SIZE);
   fixDef.density = 1.;
   this.body = GAME.world.CreateBody(bodyDef);
   this.fixture = this.body.CreateFixture(fixDef);
