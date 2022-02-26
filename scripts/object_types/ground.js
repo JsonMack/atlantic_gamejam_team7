@@ -14,7 +14,7 @@ window.GroundObject = function (lcoordinate, rcoordinate) {
   bodyDef.position.y = this.pos.y;
   fixDef.shape = new b2PolygonShape();
   fixDef.restitution = 0.1;
-  fixDef.fricton = 100;
+  fixDef.friction = 1;
   fixDef.density = 10;
 
   fixDef.shape.SetAsBox(this.width * 0.5, this.height * 0.5);
