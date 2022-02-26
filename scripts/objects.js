@@ -8,7 +8,7 @@ ObjectSystem.prototype.updateRender = function(dt, time, ctx) {
 
     for (let i=0; i<this.objectList.length; i++) {
         if (!this.objectList[i].updateRender(dt, time, ctx)) {
-            this.objectList.splice(i, 1);
+            this.remove(this.objectList[i]);
             i --;
             continue;
         }
