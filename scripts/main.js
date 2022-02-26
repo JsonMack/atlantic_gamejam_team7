@@ -1,16 +1,18 @@
+window.PLAYER_X = 0;
+window.PLAYER_Y = 0;
 // images to load
 window.LOAD_IMAGES = [
-  "building-wall.png",
-  "building-ledge.png",
-  "building-scafolding.png",
-  "building-window.png",
-  "building-door.png",
-  "billy-run-1.png",
-  "billy-run-2.png",
-  "billy-crouching.png",
-  "billy-guarding.png",
-  "billy-standing.png",
-  "billy-jump.png"
+  'building-wall.png',
+  'building-ledge.png',
+  'building-scafolding.png',
+  'building-window.png',
+  'building-door.png',
+  'billy-run-1.png',
+  'billy-run-2.png',
+  'billy-crouching.png',
+  'billy-guarding.png',
+  'billy-standing.png',
+  'billy-jump.png',
 ]; //['building-blocks.jpg', 'texture.jpg', 'etc.png']; // => { "building-blocks": Image, "texture": Image, "etc": Image }
 
 // adding objects from Box2D library to window object for easier access
@@ -44,19 +46,19 @@ window.StartGame = function () {
     mouseScreen: new THREE.Vector2(0, 0),
     mouseWorld: new THREE.Vector3(0, 0, 0),
     mouseLeft: false,
-    gravity: 15
+    gravity: 15,
   };
   GAME.gameHeight = GAME.gameWidth / 1.6;
-  GAME.canvas2D = document.getElementById("canvas2d");
-  GAME.canvas3D = document.getElementById("canvas3d");
-  GAME.ctx = GAME.canvas2D.getContext("2d");
+  GAME.canvas2D = document.getElementById('canvas2d');
+  GAME.canvas3D = document.getElementById('canvas3d');
+  GAME.ctx = GAME.canvas2D.getContext('2d');
 
   GAME.scene = new THREE.Scene();
   GAME.renderer = new THREE.WebGLRenderer({
     antialias: true,
     canvas: GAME.canvas3D,
   });
-  GAME.renderer.setClearColor("#000000");
+  GAME.renderer.setClearColor('#000000');
   GAME.camera = new THREE.OrthographicCamera(
     GAME.gameWidth / -2,
     GAME.gameWidth / 2,
@@ -66,7 +68,7 @@ window.StartGame = function () {
     1000
   );
   GAME.scene.add(GAME.camera);
-  document.addEventListener("mousemove", (e) => {
+  document.addEventListener('mousemove', (e) => {
     e = e || window.event;
     GAME.mouseScreen.x = e.pageX || 0;
     GAME.mouseScreen.y = e.pageY || 0;
@@ -78,35 +80,53 @@ window.StartGame = function () {
     GAME.mouseWorld.unproject(GAME.camera);
   });
 
-  document.addEventListener("mousedown", (e) => {
+  document.addEventListener('mousedown', (e) => {
     e = e || window.event;
     if (e.which == 1) {
       GAME.mouseLeft = true;
     }
   });
-  document.addEventListener("mouseup", (e) => {
+  document.addEventListener('mouseup', (e) => {
     e = e || window.event;
     if (e.which == 1) {
       GAME.mouseLeft = false;
       GAME.mouseClickLeft = true;
     }
   });
-  document.addEventListener("keydown", (e) => {
+  document.addEventListener('keydown', (e) => {
     e = e || window.event;
     switch (e.keyCode) {
-      case 37: case 65: GAME.keyLeft = true; break;
-      case 39: case 68: GAME.keyRight = true; break;
-      case 32: GAME.keyJump = true; break;
-      default: break;
+      case 37:
+      case 65:
+        GAME.keyLeft = true;
+        break;
+      case 39:
+      case 68:
+        GAME.keyRight = true;
+        break;
+      case 32:
+        GAME.keyJump = true;
+        break;
+      default:
+        break;
     }
   });
-  document.addEventListener("keyup", (e) => {
+  document.addEventListener('keyup', (e) => {
     e = e || window.event;
     switch (e.keyCode) {
-      case 37: case 65: GAME.keyLeft = false; break;
-      case 39: case 68: GAME.keyRight = false; break;
-      case 32: GAME.keyJump = false; break;
-      default: break;
+      case 37:
+      case 65:
+        GAME.keyLeft = false;
+        break;
+      case 39:
+      case 68:
+        GAME.keyRight = false;
+        break;
+      case 32:
+        GAME.keyJump = false;
+        break;
+      default:
+        break;
     }
   });
 
@@ -117,14 +137,19 @@ window.LoadGame = function (onDone) {
   image_generator(LOAD_IMAGES, (images) => {
     GAME.images = images;
 
-    GAME.images['billy-spritesheet'] = make_spritesheet([
-      "billy-run-1",
-      "billy-run-2",
-      "billy-crouching",
-      "billy-guarding",
-      "billy-standing",
-      "billy-jump"
-    ], BT_SIZE_PIXELS, 8, 8);
+    GAME.images['billy-spritesheet'] = make_spritesheet(
+      [
+        'billy-run-1',
+        'billy-run-2',
+        'billy-crouching',
+        'billy-guarding',
+        'billy-standing',
+        'billy-jump',
+      ],
+      BT_SIZE_PIXELS,
+      8,
+      8
+    );
 
     InitBuildingMaterials();
     GAME.timeStamp = Timestamp();
@@ -133,10 +158,9 @@ window.LoadGame = function (onDone) {
     GAME.world = new b2World(new b2Vec2(0, GAME.gravity), false);
 
     GAME.level = new RandomizedLevel(1);
-
-    GAME.camera.position.set(0, 0, -10);
+    GAME.camera.position.set(window.PLAYER_X, 0, -10);
     GAME.camera.up.set(0, -1, 0);
-    GAME.camera.lookAt(new THREE.Vector3(0, 0, 0));
+    GAME.camera.lookAt(new THREE.Vector3(window.PLAYER_X, 0, 0));
     onDone();
   });
 };
@@ -148,14 +172,14 @@ function image_generator(imageEntries, onComplete) {
   let remaining = imageEntries.length;
   imageEntries.forEach((name) => {
     tmpImg = new Image();
-    tmpImg.src = "images/" + name;
+    tmpImg.src = 'images/' + name;
     tmpImg.onload = function () {
       remaining--;
       if (remaining <= 0) {
         onComplete(imageHashMap);
       }
     };
-    imageHashMap[name.split(".")[0]] = tmpImg;
+    imageHashMap[name.split('.')[0]] = tmpImg;
   });
 
   if (!remaining) {
@@ -176,8 +200,8 @@ function make_spritesheet(imageNames, tileSize, widthTiles, heightTiles) {
   for (let key of imageNames) {
     let tileX = i % widthTiles;
     let tileY = (i - tileX) / widthTiles;
-    ctx.drawImage(GAME.images[key], tileX*tileSize, tileY*tileSize);
-    i ++;
+    ctx.drawImage(GAME.images[key], tileX * tileSize, tileY * tileSize);
+    i++;
   }
   return canvas;
 }
@@ -212,12 +236,13 @@ window.GameLoop = function () {
     GAME.camera.right = GAME.gameWidth / 2;
     GAME.camera.top = GAME.gameHeight / 2;
     GAME.camera.bottom = -GAME.gameHeight / 2;
+
     GAME.camera.updateProjectionMatrix();
   }
 
   GAME.ctx.clearRect(0, 0, GAME.vpWidth, GAME.vpHeight);
-  GAME.ctx.fillStyle = "#FFF";
-  GAME.ctx.font = "20px Arial";
+  GAME.ctx.fillStyle = '#FFF';
+  GAME.ctx.font = '20px Arial';
   GAME.ctx.fillText(
     `${Math.round(1 / GAME.dt)} fps - mouse screen: ${GAME.mouseScreen.x},${
       GAME.mouseScreen.y

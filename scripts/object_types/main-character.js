@@ -1,5 +1,7 @@
-window.MC_POS_X = 0;
-window.MC_POS_Y = 0;
+window.PLAYER_X = 0;
+window.PLAYER_MIN_X = -500;
+window.PLAYER_MAX_X = 500;
+window.PLAYER_Y = 0;
 
 window.BILLY_RUN_1 = 0;
 window.BILLY_RUN_2 = 1;
@@ -22,9 +24,9 @@ window.MainCharacter = function () {
   bodyDef.position.y = (GROUND_LEVEL - 2) * BT_SIZE - 20 + BT_SIZE * 1.5;
 
   fixDef.shape = new b2PolygonShape();
-  fixDef.shape.SetAsBox(BT_SIZE*0.5, BT_SIZE*0.5);
-  fixDef.density = 1.;
-  fixDef.fricton = 10.;
+  fixDef.shape.SetAsBox(BT_SIZE * 0.5, BT_SIZE * 0.5);
+  fixDef.density = 1;
+  fixDef.fricton = 10;
   fixDef.restitution = 0.0;
   this.body = GAME.world.CreateBody(bodyDef);
   this.fixture = this.body.CreateFixture(fixDef);
@@ -71,10 +73,11 @@ window.MainCharacter = function () {
   this.material.transparent = true;
   this.material.needsUpdate = true;
   this.mesh = new THREE.Mesh(this.geometry, this.material);
+
   let pos = this.body.GetWorldCenter();
   this.mesh.position.set(pos.x, pos.y, 1);
   this.mesh.rotation.set(0, 0, this.body.GetAngle(), 'ZXY');
-  
+
   GAME.scene.add(this.mesh);
 };
 
@@ -86,8 +89,14 @@ MainCharacter.prototype.onRemove = function () {
 
 MainCharacter.prototype.updateRender = function (dt, time, ctx) {
   let pos = this.body.GetWorldCenter();
+  window.PLAYER_X = pos.x;
+  window.PLAYER_Y = pos.y;
   this.mesh.position.set(pos.x, pos.y, 1);
   this.mesh.rotation.set(0, 0, this.body.GetAngle(), 'ZXY');
+
+  GAME.camera.position.set(window.PLAYER_X, 0, -10);
+  GAME.camera.up.set(0, -1, 0);
+  GAME.camera.lookAt(new THREE.Vector3(window.PLAYER_X, 0, 0));
 
   let onGround = false;
   let firstContact = this.body.GetContactList();
@@ -103,7 +112,10 @@ MainCharacter.prototype.updateRender = function (dt, time, ctx) {
         otherBody = fixB.GetBody();
       }
       if (
-        Math.abs(c.contact.m_manifold.m_localPlaneNormal.y - (fixA == this.fixture ? 1 : -1)) < 0.5
+        Math.abs(
+          c.contact.m_manifold.m_localPlaneNormal.y -
+            (fixA == this.fixture ? 1 : -1)
+        ) < 0.5
       ) {
         onGround = true;
         break;
@@ -114,15 +126,14 @@ MainCharacter.prototype.updateRender = function (dt, time, ctx) {
 
   if (!onGround) {
     this.material.uniforms.spriteNo.value = BILLY_JUMP;
-  }
-  else if (GAME.keyLeft || GAME.keyRight) {
-    this.material.uniforms.spriteNo.value = (Math.floor(time * 15) % 2) ? BILLY_RUN_1 : BILLY_RUN_2;
-  }
-  else {
+  } else if (GAME.keyLeft || GAME.keyRight) {
+    this.material.uniforms.spriteNo.value =
+      Math.floor(time * 15) % 2 ? BILLY_RUN_1 : BILLY_RUN_2;
+  } else {
     this.material.uniforms.spriteNo.value = BILLY_STAND;
   }
 
-  this.body.SetLinearDamping(onGround ? 5.0 : 2.);
+  this.body.SetLinearDamping(onGround ? 5.0 : 2);
 
   if (GAME.keyLeft) this.moveLeft(onGround);
   if (GAME.keyRight) this.moveRight(onGround);
@@ -133,14 +144,27 @@ MainCharacter.prototype.updateRender = function (dt, time, ctx) {
 
 MainCharacter.prototype.moveLeft = function (onGround) {
   this.material.uniforms.hFlip.value = -1;
-  this.body.ApplyForce(new b2Vec2(-this.body.GetMass() * (onGround ? 50 : 20), 0), this.body.GetWorldCenter());
+  if (window.PLAYER_X > window.PLAYER_MIN_X) {
+    this.body.ApplyForce(
+      new b2Vec2(-this.body.GetMass() * (onGround ? 70 : 30), 0),
+      this.body.GetWorldCenter()
+    );
+  }
 };
 
 MainCharacter.prototype.moveRight = function (onGround) {
   this.material.uniforms.hFlip.value = 1;
-  this.body.ApplyForce(new b2Vec2(this.body.GetMass() * (onGround ? 50 : 20), 0), this.body.GetWorldCenter());
+  if (window.PLAYER_X < window.PLAYER_MAX_X) {
+    this.body.ApplyForce(
+      new b2Vec2(this.body.GetMass() * (onGround ? 70 : 20), 0),
+      this.body.GetWorldCenter()
+    );
+  }
 };
 
 MainCharacter.prototype.jump = function () {
-  this.body.ApplyForce(new b2Vec2(0, -this.body.GetMass() * 2000), this.body.GetWorldCenter());
+  this.body.ApplyForce(
+    new b2Vec2(0, -this.body.GetMass() * 2200),
+    this.body.GetWorldCenter()
+  );
 };
