@@ -76,6 +76,8 @@ window.LoadGame = function(onDone) {
     GAME.ground = new GroundObject();
     GAME.objects.add(GAME.ground);
     GAME.objects.add(new TestCircle(new THREE.Vector2(0, 0)));
+    GAME.deleteMeTest = new TestCircle(new THREE.Vector2(2, -5));
+    GAME.objects.add(GAME.deleteMeTest);
     GAME.objects.add(new TestCircle(new THREE.Vector2(-2, -5)));
     GAME.camera.position.set(0, 0, -10);
     GAME.camera.up.set(0, -1, 0);
@@ -112,9 +114,14 @@ window.GameLoop = function() {
     GAME.ctx.fillStyle = '#FFF';
     GAME.ctx.font = '20px Arial';
     GAME.ctx.fillText(`${Math.round(1/GAME.dt)} fps - mouse screen: ${GAME.mouseScreen.x},${GAME.mouseScreen.y}, mouse world: ${GAME.mouseWorld.x},${GAME.mouseWorld.y}, mouse left: ${GAME.mouseLeft}`, 20, 20);
+    
 
     GAME.world.Step(GAME.dt, 10, 10);
     GAME.world.ClearForces();
+
+    if (GAME.time > 5) {
+        GAME.objects.remove(GAME.deleteMeTest);
+    }
 
     GAME.objects.updateRender(GAME.dt, GAME.time, GAME.ctx);
 

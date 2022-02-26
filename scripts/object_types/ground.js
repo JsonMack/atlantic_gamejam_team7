@@ -29,5 +29,7 @@ GroundObject.prototype.updateRender = function(dt, time, ctx) {
 
 GroundObject.prototype.onRemove = function() {
     GAME.scene.remove(this.mesh);
-    // remove body
+    this.body.DestroyFixture(this.fixture);
+    GAME.world.DestroyBody(this.body);
+    
 };
