@@ -1,3 +1,7 @@
+// image array here
+
+const image_array = ['building-blocks.jpg', 'texture.jpg', 'etc.png'];
+
 // adding objects from Box2D library to window object for easier access
 window.b2Vec2 = Box2D.Common.Math.b2Vec2;
 window.b2BodyDef = Box2D.Dynamics.b2BodyDef;
@@ -29,6 +33,7 @@ window.StartGame = function () {
     mouseLeft: false,
     gravity: 10, // g != 10 it is 9.8 but ok
   };
+  GAME.images = image_generator(image_array);
   GAME.gameHeight = GAME.gameWidth / 1.6;
   GAME.canvas2D = document.getElementById('canvas2d');
   GAME.canvas3D = document.getElementById('canvas3d');
@@ -138,3 +143,16 @@ window.GameLoop = function () {
 
   GAME.mouseClickLeft = false;
 };
+
+// takes in array of image file names and generates a hash map with names as keys and image html tags as values
+function image_generator(imageEntries) {
+  const imageHashMap = {};
+  let tmpImg;
+  imageEntries.forEach((name) => {
+    tmpImg = new Image();
+    tmpImg.src = '../assets/images/' + name;
+    imageHashMap[name] = tmpImg;
+  });
+
+  return imageHashMap;
+}
