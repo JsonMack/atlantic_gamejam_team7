@@ -24,7 +24,7 @@ window.WatersObject = function (lcoordinate, rcoordinate) {
   GAME.scene.add(this.mesh);
 };
 
-WatesrObject.prototype.updateRender = function (dt, time, ctx) {
+WatersObject.prototype.updateRender = function (dt, time, ctx) {
   return true;
 };
 
