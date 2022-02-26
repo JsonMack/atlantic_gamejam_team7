@@ -30,7 +30,7 @@ window.MainCharacter = function () {
   fixDef.restitution = 0.0;
   this.body = GAME.world.CreateBody(bodyDef);
   this.fixture = this.body.CreateFixture(fixDef);
-
+  
   this.geometry = new THREE.PlaneBufferGeometry(BT_SIZE, BT_SIZE);
   this.texture = new THREE.CanvasTexture(GAME.images['billy-spritesheet']);
   this.texture.wrapS = THREE.RepeatWrapping;
