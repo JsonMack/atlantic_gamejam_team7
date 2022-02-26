@@ -22,6 +22,8 @@ window.StartGame = function () {
   window.GAME = {
     time: 0,
     dt: 1 / 60,
+    physicsDt: 1/240,
+    physicsDtAcc: 0,
     lastTimeStamp: 0,
     timeStamp: 0,
     vpWidth: 100,
@@ -177,6 +179,12 @@ window.GameLoop = function () {
   GAME.lastTimeStamp = GAME.timeStamp;
   GAME.timeStamp = Timestamp();
   GAME.dt = GAME.dt * 0.5 + (GAME.timeStamp - GAME.lastTimeStamp) * 0.5; // smooth jitter
+  if (GAME.dt > (1/10)) {
+      GAME.dt = 1/10;
+  }
+  if (GAME.dt < (1/300)) {
+      GAME.dt = 1/300;
+  }
   GAME.time += GAME.dt;
 
   // handle resize
@@ -210,7 +218,12 @@ window.GameLoop = function () {
     20
   );
 
-  GAME.world.Step(GAME.dt, 10, 10);
+  GAME.physicsDtAcc += GAME.dt;
+
+  while (GAME.physicsDtAcc >= GAME.physicsDt) {
+    GAME.world.Step(GAME.physicsDt, 2, 2);
+    GAME.physicsDtAcc -= GAME.physicsDt;
+  }
   GAME.world.ClearForces();
 
   GAME.objects.updateRender(GAME.dt, GAME.time, GAME.ctx); //updates the renderer (ObjectSystem function)
