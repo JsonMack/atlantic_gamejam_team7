@@ -10,6 +10,8 @@ window.RandomizedLevel = function (levelNo) {
   GAME.objects.add(new TestCircle(new THREE.Vector2(2, -30 - 20)));
   GAME.objects.add(new TestCircle(new THREE.Vector2(-2, -5 - 20)));
 
+  GAME.objects.add(new BGRender());
+
   GenerateBuilding(-8, 6, 15);
 
   GenerateBuilding(-15, 5, 10);
