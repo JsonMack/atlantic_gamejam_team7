@@ -44,6 +44,11 @@ window.Bullet = function (player, fromBody, fromOffset, pos, angle, op) {
 };
 
 Bullet.prototype.updateRender = function (dt, time, ctx) {
+
+  if (GAME.level.winTime > 0.) {
+    return false;
+  }
+
   let pos = this.body.GetWorldCenter();
   GAME.particles.addParticle(
     pos,
