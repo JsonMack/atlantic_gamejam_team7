@@ -29,8 +29,9 @@
     <link rel="stylesheet" href="css/main.css" />
   </head>
 
-  <body>
-    <div id="entry_animation">
+  <body onClick="LoadSound(); document.getElementById('entry_animation').style.display = 'block'; document.getElementById('play_button').style.display = 'none'; document.body.style.cursor = 'initial';">
+    <img id="play_button" src="images/play.png"></div>
+    <div id="entry_animation" style="display: none;">
       <img src="images/anim_ufo.png" id="anim_ufo" />
       <img src="images/anim_boy.png" id="anim_boy" />
       <img src="images/anim_title.png" id="anim_title" />

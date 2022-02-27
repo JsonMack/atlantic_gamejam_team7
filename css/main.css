@@ -6,6 +6,7 @@ body {
   height: 100%;
   background-color: black;
   overflow: hidden;
+  cursor: pointer;
 }
 canvas {
   position: fixed;
@@ -27,20 +28,20 @@ canvas {
 }
 
 #BB_AA_Start_Button {
-  /* visibility: hidden;
+  visibility: hidden;
   animation-name: showGame;
   animation-delay: 8s;
   animation-duration: 4s;
   animation-fill-mode: forwards;
   width: 300px;
-  height: 120px; */
+  height: 120px;
 
   position: absolute;
   left: 60%;
   top: 80%;
   border-radius: 10px;
 }
-/*
+
 #BB_AA_Start_Screen {
   visibility: hidden;
   animation-name: showGame;
@@ -49,6 +50,16 @@ canvas {
   animation-fill-mode: forwards;
   width: 100vw;
   height: 100vh;
+}
+
+#play_button {
+  position: fixed;
+  width: 300px;
+  height: 200px;
+  left: 50%;
+  top: 50%;
+  margin-left: -150px;
+  margin-top: -100px;
 }
 
 #anim_ufo {
@@ -99,4 +110,4 @@ canvas {
     visibility: visible;
     opacity: 100;
   }
-} */
+}
