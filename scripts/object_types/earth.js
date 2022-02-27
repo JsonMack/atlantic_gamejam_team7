@@ -10,5 +10,7 @@ EarthObject.prototype.updateRender = function (dt, time, ctx) {
 };
 
 EarthObject.prototype.onRemove = function () {
-  GAME.scene.remove(this.mesh);
+  this.objects.forEach((element) => {
+    element.onRemove();
+  });
 };
