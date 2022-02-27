@@ -1,11 +1,15 @@
 window.RandomizedLevel = function (levelNo) {
 
   this.lossTime = 0.;
+  this.winTime = 0.;
   GAME.objects.clear();
   GAME.LEVEL_NUMBER = levelNo;
   this.levelNo = levelNo;
   this.earth = new EarthObject();
   GAME.objects.add(this.earth);
+
+  GAME.MAX_ENEMY_COUNT = GAME.LEVEL_NUMBER * 5;
+  GAME.MAX_UFO_COUNT = GAME.LEVEL_NUMBER * 3;
 
   GAME.objects.add(new BGRender());
   GAME.cityHealth = 0;
@@ -32,7 +36,7 @@ window.RandomizedLevel = function (levelNo) {
   GenerateUFO();
   //GenerateHostage();
 
-  this.nextEnemyIn = (10 + (Math.random() * 20) / Math.sqrt(levelNo)) / 3;
+  this.nextEnemyIn = (10 + (Math.random() * 20) / Math.sqrt(this.levelNo)) / 3;
 };
 
 RandomizedLevel.prototype.lossConditionMet = function() {
@@ -43,6 +47,10 @@ RandomizedLevel.prototype.updateRender = function (dt, time, ctx) {
   // player dies
   if (this.lossConditionMet()) {
     this.renderLossScreen(dt, time, ctx);
+    return;
+  }
+  else if (GAME.ufo.hp <= 0) {
+    this.renderWinScreen(dt, time, ctx);
     return;
   }
 
@@ -170,6 +178,33 @@ RandomizedLevel.prototype.renderLossScreen = function(dt, time, ctx) {
 
   if (GAME.mouseClickLeft && this.lossTime > 1.5) {
     GAME.level.onRemove();
-    GAME.level = new RandomizedLevel(1);
+    GAME.level = new RandomizedLevel(window.LEVEL_NUM);
+  }
+};
+
+RandomizedLevel.prototype.renderWinScreen = function(dt, time, ctx) {
+  let canvas = GAME.canvas2D;
+
+  let width = canvas.width;
+
+  let height = canvas.height;
+
+  ctx.fillStyle = 'black';
+  ctx.globalAlpha = 0.5;
+  ctx.fillRect(0, 0, width, height);
+  ctx.globalAlpha = 1.0;
+  ctx.font = '128px aldrich';
+  ctx.fillStyle = 'white';
+  ctx.textAlign = 'center';
+  ctx.fillText("You Win!", width / 2, height / 2);
+  ctx.font = '24px aldrich';
+  ctx.fillText("Click anywhere to continue", width / 2, height / 2 + 128);
+  ctx.textAlign = 'left';
+
+  this.winTime += dt || 0;
+
+  if (GAME.mouseClickLeft && this.winTime > 1.5) {
+    GAME.level.onRemove();
+    GAME.level = new RandomizedLevel(Math.min(window.LEVEL_NUM + 1, 4));
   }
 };

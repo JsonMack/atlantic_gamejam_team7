@@ -68,9 +68,7 @@ window.StartGame = function () {
     gravity: 20,
     cityHealth: 0,
   };
-  GAME.LEVEL_NUMBER = LEVEL_NUM; // LEVEL SET HERE
-  GAME.MAX_ENEMY_COUNT = GAME.LEVEL_NUMBER * 5;
-  GAME.MAX_UFO_COUNT = GAME.LEVEL_NUMBER * 3;
+  GAME.LEVEL_NUMBER = LEVEL_NUM || 1; // LEVEL SET HERE
   GAME.CURRENT_UFO_COUNT = 0;
   GAME.CURRENT_ENEMY_COUNT = 0;
   GAME.MAX_HOSTAGE_COUNT = GAME.LEVEL_NUMBER * 5;
@@ -275,7 +273,7 @@ window.LoadGame = function (onDone) {
     //};
     GAME.world.SetContactListener(GAME.contactListener);
 
-    GAME.level = new RandomizedLevel(GAME.LEVEL_NUMBER);
+    GAME.level = new RandomizedLevel(window.LEVEL_NUM);
     GAME.camera.position.set(window.PLAYER_X, 0, -10);
     GAME.camera.up.set(0, -1, 0);
     GAME.camera.lookAt(new THREE.Vector3(window.PLAYER_X, 0, 0));

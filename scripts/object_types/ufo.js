@@ -110,5 +110,8 @@ UFO.prototype.updateRender = function (dt, time, ctx) {
     GAME.particles.explosion(new THREE.Vector3(this.x, this.y * BT_SIZE, 0.), 150, true);
     GAME.ufoDefeated = true;
   }
+  if (this.hp < 0) {
+    this.hp = 0;
+  }
   return this.hp > 0;
 };

@@ -89,6 +89,11 @@ Enemy.prototype.onRemove = function () {
 };
 
 Enemy.prototype.updateRender = function (dt, time, ctx) {
+
+  if (GAME.level.winTime > 0.) {
+    return true;
+  }
+  
   let pos = this.body.GetWorldCenter();
 
   this.mesh.position.set(pos.x, pos.y, 1);
