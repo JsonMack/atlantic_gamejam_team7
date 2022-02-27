@@ -16,7 +16,14 @@
     <script src="scripts/object_types/test-circle.js"></script>
     <script src="scripts/object_types/building-tile.js"></script>
     <script src="scripts/object_types/main-character.js"></script>
+    <script src="scripts/object_types/enemy.js"></script>
+    <script src="scripts/object_types/hostage.js"></script>
+    <script src="scripts/object_types/ufo.js"></script>
     <script src="scripts/object_types/bg-tile.js"></script>
+    <script src="scripts/object_types/bullet.js"></script>
+    <script src="scripts/object_types/alien-bullet.js"></script>
+    <script src="scripts/object_types/ufo-bullet.js"></script>
+
 
     <!--levels -->
     <script src="scripts/levels/randomized-level.js"></script>
@@ -27,8 +34,22 @@
     <script src="scripts/main.js"></script>
     <link rel="stylesheet" href="css/main.css" />
   </head>
-  <body onload="StartGame();">
-    <canvas id="canvas2d"></canvas>
+
+  <body onClick="LoadSound();if (document.getElementById('entry_animation')){ document.getElementById('entry_animation').style.display = 'block'; document.getElementById('play_button').style.display = 'none'; document.body.style.cursor = 'initial';}">
+    <img id="play_button" src="images/play.png"></div>
+    <div id="entry_animation" style="display: none;">
+      <img src="images/anim_ufo.png" id="anim_ufo" />
+      <img src="images/anim_boy.png" id="anim_boy" />
+      <img src="images/anim_title.png" id="anim_title" />
+      <img id="BB_AA_Start_Screen" src="images/BB_AA_Start_Screen_2.png" />
+
+      <img
+        id="BB_AA_Start_Button"
+        src="images/BB_AA_Start_Button.png"
+        onclick="StartGame();"
+      />
+    </div>
+    <canvas id="canvas2d"> </canvas>
     <canvas id="canvas3d"></canvas>
   </body>
 </html>

@@ -1,14 +1,19 @@
 window.EarthObject = function () {
   this.objects = [];
-  this.objects.push(new GroundObject(-200, 70));
-  this.objects.push(new WatersObject(70, 80));
-  this.objects.push(new GroundObject(80, 200));
+  this.objects.push(new GroundObject(-200, 50));
+  this.objects.push(new WatersObject(-800, -200));
+  this.objects.push(new WatersObject(50, 800));
 };
 
 EarthObject.prototype.updateRender = function (dt, time, ctx) {
+  this.objects.forEach((element) => {
+    element.updateRender(dt, time, ctx);
+  });
   return true;
 };
 
 EarthObject.prototype.onRemove = function () {
-  GAME.scene.remove(this.mesh);
+  this.objects.forEach((element) => {
+    element.onRemove();
+  });
 };

@@ -2,6 +2,18 @@ window.PLAYER_X = 0;
 window.PLAYER_Y = 0;
 // images to load
 window.LOAD_IMAGES = [
+  'BB_AA_Alien_1.1.png',
+  'BB_AA_Alien_1.2.png',
+  'BB_AA_Alien_2.1.png',
+  'BB_AA_Alien_2.2.png',
+  'BB_AA_Alien_3.1.png',
+  'BB_AA_Alien_3.2.png',
+  'BB_AA_Ship_1.1.png',
+  'BB_AA_Ship_1.2.png',
+  'BB_AA_Ship_2.1.png',
+  'BB_AA_Ship_2.2.png',
+  'BB_AA_Ship_3.1.png',
+  'BB_AA_Ship_3.2.png',
   'building-wall.png',
   'building-ledge.png',
   'building-scafolding.png',
@@ -14,7 +26,12 @@ window.LOAD_IMAGES = [
   'billy-standing.png',
   'billy-jump.png',
   'bg-2.png',
-  'bg-1.png'
+  'bg-1.png',
+  'BB_AA_Start_Screen_2.png',
+  'BB_AA_Start_Button.png',
+  'waterfront.png',
+  'ubisoft.png',
+  'bluenose.png',
 ]; //['building-blocks.jpg', 'texture.jpg', 'etc.png']; // => { "building-blocks": Image, "texture": Image, "etc": Image }
 
 // adding objects from Box2D library to window object for easier access
@@ -39,6 +56,10 @@ window.Timestamp = function () {
 
 // starts the game, it is called onload body
 window.StartGame = function () {
+  // removing after start
+  document.getElementById('BB_AA_Start_Screen').style.display = 'none';
+  document.getElementById('BB_AA_Start_Button').style.display = 'none';
+
   window.GAME = {
     time: 0,
     dt: 1 / 60,
@@ -54,6 +75,13 @@ window.StartGame = function () {
     mouseLeft: false,
     gravity: 15,
   };
+  GAME.LEVEL_NUMBER = 1; // LEVEL SET HERE
+  GAME.MAX_ENEMY_COUNT = GAME.LEVEL_NUMBER * 5;
+  GAME.MAX_UFO_COUNT = GAME.LEVEL_NUMBER * 3;
+  GAME.CURRENT_UFO_COUNT = 0;
+  GAME.CURRENT_ENEMY_COUNT = 0;
+  GAME.MAX_HOSTAGE_COUNT = GAME.LEVEL_NUMBER * 5;
+  GAME.CURRENT_HOSTAGE_COUNT = GAME.MAX_HOSTAGE_COUNT;
   GAME.gameHeight = GAME.gameWidth / 1.6;
   GAME.canvas2D = document.getElementById('canvas2d');
   GAME.canvas3D = document.getElementById('canvas3d');
@@ -74,6 +102,7 @@ window.StartGame = function () {
     1000
   );
   GAME.scene.add(GAME.camera);
+
   document.addEventListener('mousemove', (e) => {
     e = e || window.event;
     GAME.mouseScreen.x = e.pageX || 0;
@@ -99,6 +128,7 @@ window.StartGame = function () {
       GAME.mouseClickLeft = true;
     }
   });
+  document.body.style.cursor = 'none';
   document.addEventListener('keydown', (e) => {
     e = e || window.event;
     switch (e.keyCode) {
@@ -139,6 +169,28 @@ window.StartGame = function () {
   LoadGame(() => GameLoop());
 };
 
+window.LoadSound = function () {
+  sounds.load([
+    // 'audio/theme.mp3',
+    'audio/gun_boom.wav',
+    'audio/og_boom.wav',
+    'audio/alien_gun.wav',
+    'audio/ufo_gun.wav',
+  ]);
+  sounds.whenLoaded = () => {
+    sounds['audio/theme.mp3'].loop = true;
+    sounds['audio/theme.mp3'].volume = 0.5;
+    sounds['audio/theme.mp3'].play();
+  };
+  window.LoadSound = () => {
+    StartGame();
+    document
+      .getElementById('entry_animation')
+      .parentNode.removeChild(document.getElementById('entry_animation'));
+    window.LoadSound = () => {};
+  };
+};
+
 window.LoadGame = function (onDone) {
   image_generator(LOAD_IMAGES, (images) => {
     GAME.images = images;
@@ -157,11 +209,88 @@ window.LoadGame = function (onDone) {
       8
     );
 
+    GAME.images['enemy-spritesheet'] = make_spritesheet(
+      [
+        'billy-run-1',
+        'billy-run-2',
+        'billy-crouching',
+        'billy-guarding',
+        'billy-standing',
+        'billy-jump',
+        // 'BB_AA_Alien_1.1',
+        // 'BB_AA_Alien_1.2',
+        // 'BB_AA_Alien_2.1',
+        // 'BB_AA_Alien_2.2',
+        // 'BB_AA_Alien_3.1',
+        // 'BB_AA_Alien_3.2',
+      ],
+      BT_SIZE_PIXELS,
+      8,
+      8
+    );
+    GAME.images['ufo-spritesheet'] = make_spritesheet(
+      [
+        'billy-run-1',
+        'billy-run-2',
+        'billy-crouching',
+        'billy-guarding',
+        'billy-standing',
+        'billy-jump',
+        // 'BB_AA_Ship_1.1',
+        // 'BB_AA_Ship_1.2',
+        // 'BB_AA_Ship_2.1',
+        // 'BB_AA_Ship_2.2',
+        // 'BB_AA_Ship_3.1',
+        // 'BB_AA_Ship_3.2',
+      ],
+      BT_SIZE_PIXELS,
+      8,
+      8
+    );
+
     InitBuildingMaterials();
     GAME.timeStamp = Timestamp();
     GAME.objects = new ObjectSystem();
     GAME.particles = new ParticleSystem();
     GAME.world = new b2World(new b2Vec2(0, GAME.gravity), false);
+
+    GAME.contactListener = new b2ContactListener();
+    GAME.contactListener.PreSolve = (contact) => {
+      let fixA = contact.GetFixtureA();
+      let fixB = contact.GetFixtureB();
+      let bodyA = fixA.GetBody();
+      let bodyB = fixB.GetBody();
+      if (bodyA._IsFallingBT && !bodyB._IsGround && !bodyB._IsBuildingBlock) {
+        contact.SetEnabled(false);
+      }
+      if (bodyB._IsFallingBT && !bodyA._IsGround && !bodyA._IsBuildingBlock) {
+        contact.SetEnabled(false);
+      }
+      if (bodyA._BulletOP && !bodyB._IsGround) {
+        contact.SetEnabled(false);
+      }
+      if (bodyB._BulletOP && !bodyA._IsGround) {
+        contact.SetEnabled(false);
+      }
+      if (
+        bodyA._IsPlayer &&
+        bodyA.GetLinearVelocity().y < -1 &&
+        bodyB._IsLedge
+      ) {
+        contact.SetEnabled(false);
+      }
+      if (
+        bodyB._IsPlayer &&
+        bodyB.GetLinearVelocity().y < -1 &&
+        bodyA._IsLedge
+      ) {
+        contact.SetEnabled(false);
+      }
+    };
+    //GAME.contactListener.PostSolve = (contact) => {
+
+    //};
+    GAME.world.SetContactListener(GAME.contactListener);
 
     GAME.level = new RandomizedLevel(1);
     GAME.camera.position.set(window.PLAYER_X, 0, -10);
@@ -254,10 +383,14 @@ window.GameLoop = function () {
       GAME.mouseScreen.y
     }, mouse world: ${GAME.mouseWorld.x},${GAME.mouseWorld.y}, mouse left: ${
       GAME.mouseLeft
-    }`,
+    }, HEALTH: ${PLAYER_HEALTH}`,
     20,
     20
   );
+
+  GAME.ctx.fillStyle = '#ff0000';
+  GAME.ctx.fillRect(GAME.mouseScreen.x - 10, GAME.mouseScreen.y - 1, 20, 3);
+  GAME.ctx.fillRect(GAME.mouseScreen.x - 1, GAME.mouseScreen.y - 10, 3, 20);
 
   GAME.physicsDtAcc += GAME.dt;
 
@@ -271,7 +404,7 @@ window.GameLoop = function () {
 
   GAME.particles.updateRender(GAME.dt, GAME.time, GAME.ctx);
 
-  GAME.level.updateRender(GAME.dt, GAME.time, GAME.ctx);
+  GAME.level.updateRender(GAME.dt, GAME.time, GAME.ctx); // looping updates of game
 
   GAME.renderer.render(GAME.scene, GAME.camera); // render the scene and camera (one time thing)
 

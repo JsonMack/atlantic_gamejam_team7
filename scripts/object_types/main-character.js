@@ -1,3 +1,4 @@
+window.PLAYER_HEALTH = 100;
 window.PLAYER_X = 0;
 window.PLAYER_MIN_X = -500;
 window.PLAYER_MAX_X = 500;
@@ -23,12 +24,15 @@ window.MainCharacter = function () {
   bodyDef.position.x = 0;
   bodyDef.position.y = (GROUND_LEVEL - 2) * BT_SIZE - 20 + BT_SIZE * 1.5;
 
-  fixDef.shape = new b2CircleShape(BT_SIZE * 0.5);
+  this.radius = BT_SIZE * 0.5;
+  fixDef.shape = new b2CircleShape(this.radius);
   //fixDef.shape.SetAsBox(BT_SIZE * 0.5, BT_SIZE * 0.5);
+
   fixDef.density = 1;
-  fixDef.fricton = 10;
+  fixDef.friction = 1;
   fixDef.restitution = 0.0;
   this.body = GAME.world.CreateBody(bodyDef);
+  this.body._IsPlayer = true;
   this.fixture = this.body.CreateFixture(fixDef);
   
   this.geometry = new THREE.PlaneBufferGeometry(BT_SIZE, BT_SIZE);
@@ -43,6 +47,7 @@ window.MainCharacter = function () {
       spriteNo: { value: 0 },
       hFlip: { value: 1 },
       tex: { value: this.texture },
+      chargeT: { value: 0 },
     },
     vertexShader: `
               varying vec2 vUv;
@@ -63,9 +68,11 @@ window.MainCharacter = function () {
     fragmentShader: `
               uniform sampler2D tex;
               varying vec2 vUv;
+              uniform float chargeT;
 
               void main() {
                   gl_FragColor = texture2D(tex, vUv);
+                  gl_FragColor.rgb = mix(gl_FragColor.rgb, vec3(1.), chargeT);
               }
           `,
   });
@@ -79,6 +86,9 @@ window.MainCharacter = function () {
   this.mesh.rotation.set(0, 0, this.body.GetAngle(), 'ZXY');
 
   GAME.scene.add(this.mesh);
+
+  this.fireT = 0;
+  this.chargeT = 0;
 };
 
 MainCharacter.prototype.onRemove = function () {
@@ -89,11 +99,17 @@ MainCharacter.prototype.onRemove = function () {
 
 MainCharacter.prototype.updateRender = function (dt, time, ctx) {
   let pos = this.body.GetWorldCenter();
+  if (pos.y > 30) PLAYER_HEALTH = 0; // if player falls in water
   window.PLAYER_X = pos.x;
   window.PLAYER_Y = pos.y;
-  this.mesh.position.set(pos.x, pos.y, 1);
+  this.mesh.position.set(
+    pos.x + (Math.random() * 2 - 1) * this.chargeT * 0.5,
+    pos.y + (Math.random() * 2 - 1) * this.chargeT * 0.5,
+    1
+  );
   this.mesh.rotation.set(0, 0, this.body.GetAngle(), 'ZXY');
 
+  // auto scrolling
   GAME.camera.position.set(window.PLAYER_X, 0, -10);
   GAME.camera.up.set(0, -1, 0);
   GAME.camera.lookAt(new THREE.Vector3(window.PLAYER_X, 0, 0));
@@ -102,7 +118,7 @@ MainCharacter.prototype.updateRender = function (dt, time, ctx) {
   let firstContact = this.body.GetContactList();
   let c = firstContact;
   while (c) {
-    if (c.contact.IsTouching()) {
+    if (c.contact.IsTouching() && c.contact.IsEnabled()) {
       let fixA = c.contact.GetFixtureA();
       let fixB = c.contact.GetFixtureB();
       let otherBody = null;
@@ -132,14 +148,46 @@ MainCharacter.prototype.updateRender = function (dt, time, ctx) {
   } else {
     this.material.uniforms.spriteNo.value = BILLY_STAND;
   }
+  this.material.uniforms.chargeT.value = this.chargeT;
 
   this.body.SetLinearDamping(onGround ? 5.0 : 2);
 
   if (GAME.keyLeft) this.moveLeft(onGround);
   if (GAME.keyRight) this.moveRight(onGround);
   if (GAME.keyJump && onGround) this.jump();
+  if (GAME.mouseLeft) this.fire();
+
+  this.fireT -= dt * 2;
 
   return true;
+};
+
+MainCharacter.prototype.fire = function () {
+  if (this.fireT > 0) {
+    return;
+  }
+  let pos = this.body.GetWorldCenter();
+  let dx = GAME.mouseWorld.x - pos.x,
+    dy = GAME.mouseWorld.y - pos.y;
+  let angle = Math.atan2(dy, dx);
+
+  this.chargeT += 1 / (4 + Math.random());
+
+  GAME.objects.add(
+    new Bullet(
+      true,
+      this.body,
+      this.radius * 1.1,
+      new b2Vec2(pos.x, pos.y),
+      angle,
+      this.chargeT >= 1
+    )
+  );
+
+  if (this.chargeT >= 1) {
+    this.chargeT -= 1;
+  }
+  this.fireT = 1;
 };
 
 MainCharacter.prototype.moveLeft = function (onGround) {

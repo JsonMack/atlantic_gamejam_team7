@@ -32,7 +32,7 @@ window.InitBuildingMaterials = function () {
 
                 void main() {
                     gl_FragColor = texture2D(tex, vUv * vec2(1., -1.));
-                    ${falling ? `gl_FragColor.rgb *= 0.5;` : ``}
+                    ${falling ? `gl_FragColor.rgb = pow(gl_FragColor.rgb, vec3(3.)) * 0.5; gl_FragColor.r *= 2.;` : ``}
                 }
             `,
     });
@@ -104,12 +104,12 @@ window.GenerateBuilding = function (tileX, width, height) {
   }
 
   // TEST
-  setTimeout(() => {
+  /*setTimeout(() => {
     console.log(GAME.objects.objectList.length);
     lookup[0 + tileX + ',' + 4].explode();
     lookup[1 + tileX + ',' + 5].explode();
     console.log(GAME.objects.objectList.length);
-  }, 5000);
+  }, 5000);*/
 };
 
 window.BuildingTile = function (
@@ -148,6 +148,8 @@ window.BuildingTile = function (
   fixDef.density = 5.0;
   fixDef.restitution = 0;
   this.body = GAME.world.CreateBody(bodyDef);
+  this.body._IsFallingBT = this.falling;
+  this.body._IsLedge = (type == 'ledge') && !this.falling;
 
   this.fixture = this.body.CreateFixture(fixDef);
   this.body.ResetMassData();
@@ -201,11 +203,13 @@ BuildingTile.prototype.makeFalling = function () {
 };
 
 BuildingTile.prototype.explode = function () {
-  // <-- explosion fx
-
+  // cascade
   if (!this.falling) {
     let n = this.tileAbove;
     while (n) {
+      if (n.destroyed || n.removed) {
+        break;
+      }
       n.makeFalling();
       n = n.tileAbove;
     }
@@ -236,7 +240,7 @@ BuildingTile.prototype.updateRender = function (dt, time, ctx) {
       let firstContact = this.body.GetContactList();
       let c = firstContact;
       while (c) {
-        if (c.contact.IsTouching()) {
+        if (c.contact.IsTouching() && c.contact.IsEnabled()) {
           let fixA = c.contact.GetFixtureA();
           let fixB = c.contact.GetFixtureB();
           let otherBody = null;
@@ -252,11 +256,40 @@ BuildingTile.prototype.updateRender = function (dt, time, ctx) {
           ) {
             this.hp -= dt * (120 + Math.random() * 10);
           }
+          if (otherBody._IsBullet) {
+            this.hp = 0.;
+            if (!otherBody._BulletOP) {
+              otherBody._BulletDestroyed = true;
+            }
+          }
         }
         c = c.next;
       }
     }
     this.hp -= dt * 20;
+  }
+  else {
+    let firstContact = this.body.GetContactList();
+    let c = firstContact;
+    while (c) {
+      if (c.contact.IsTouching()) {
+        let fixA = c.contact.GetFixtureA();
+        let fixB = c.contact.GetFixtureB();
+        let otherBody = null;
+        if (fixA != this.fixture) {
+          otherBody = fixA.GetBody();
+        } else {
+          otherBody = fixB.GetBody();
+        }
+        if (otherBody._IsBullet && (c.contact.IsEnabled() || otherBody._BulletOP)) {
+          this.explode();
+          if (!otherBody._BulletOP) {
+            otherBody._BulletDestroyed = true;
+          }
+        }
+      }
+      c = c.next;
+    }
   }
   if (this.heldUpBy && this.heldUpBy.removed) {
     this.hp = 0;
