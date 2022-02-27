@@ -104,12 +104,12 @@ window.GenerateBuilding = function (tileX, width, height) {
   }
 
   // TEST
-  setTimeout(() => {
+  /*setTimeout(() => {
     console.log(GAME.objects.objectList.length);
     lookup[0 + tileX + ',' + 4].explode();
     lookup[1 + tileX + ',' + 5].explode();
     console.log(GAME.objects.objectList.length);
-  }, 5000);
+  }, 5000);*/
 };
 
 window.BuildingTile = function (
@@ -205,6 +205,9 @@ BuildingTile.prototype.explode = function () {
   if (!this.falling) {
     let n = this.tileAbove;
     while (n) {
+      if (n.destroyed || n.removed) {
+        break;
+      }
       n.makeFalling();
       n = n.tileAbove;
     }
@@ -251,11 +254,36 @@ BuildingTile.prototype.updateRender = function (dt, time, ctx) {
           ) {
             this.hp -= dt * (120 + Math.random() * 10);
           }
+          if (otherBody._IsBullet) {
+            this.hp = 0.;
+            otherBody._BulletDestroyed = true;
+          }
         }
         c = c.next;
       }
     }
     this.hp -= dt * 20;
+  }
+  else {
+    let firstContact = this.body.GetContactList();
+    let c = firstContact;
+    while (c) {
+      if (c.contact.IsTouching()) {
+        let fixA = c.contact.GetFixtureA();
+        let fixB = c.contact.GetFixtureB();
+        let otherBody = null;
+        if (fixA != this.fixture) {
+          otherBody = fixA.GetBody();
+        } else {
+          otherBody = fixB.GetBody();
+        }
+        if (otherBody._IsBullet) {
+          this.explode();
+          otherBody._BulletDestroyed = true;
+        }
+      }
+      c = c.next;
+    }
   }
   if (this.heldUpBy && this.heldUpBy.removed) {
     this.hp = 0;

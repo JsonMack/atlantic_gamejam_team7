@@ -23,8 +23,10 @@ window.MainCharacter = function () {
   bodyDef.position.x = 0;
   bodyDef.position.y = (GROUND_LEVEL - 2) * BT_SIZE - 20 + BT_SIZE * 1.5;
 
-  fixDef.shape = new b2CircleShape(BT_SIZE * 0.5);
+  this.radius = BT_SIZE * 0.5;
+  fixDef.shape = new b2CircleShape(this.radius);
   //fixDef.shape.SetAsBox(BT_SIZE * 0.5, BT_SIZE * 0.5);
+  
   fixDef.density = 1;
   fixDef.fricton = 10;
   fixDef.restitution = 0.0;
@@ -79,6 +81,8 @@ window.MainCharacter = function () {
   this.mesh.rotation.set(0, 0, this.body.GetAngle(), 'ZXY');
 
   GAME.scene.add(this.mesh);
+
+  this.fireT = 0.;
 };
 
 MainCharacter.prototype.onRemove = function () {
@@ -138,8 +142,22 @@ MainCharacter.prototype.updateRender = function (dt, time, ctx) {
   if (GAME.keyLeft) this.moveLeft(onGround);
   if (GAME.keyRight) this.moveRight(onGround);
   if (GAME.keyJump && onGround) this.jump();
+  if (GAME.mouseLeft) this.fire();
+
+  this.fireT -= dt * 2;
 
   return true;
+};
+
+MainCharacter.prototype.fire = function() {
+  if (this.fireT > 0.) {
+    return;
+  }
+  let pos = this.body.GetWorldCenter();
+  let dx = GAME.mouseWorld.x - pos.x, dy = GAME.mouseWorld.y - pos.y;
+  let angle = Math.atan2(dy, dx);
+  GAME.objects.add(new Bullet(true, this.body, this.radius * 1.1, new b2Vec2(pos.x, pos.y), angle, false));
+  this.fireT = 1.;
 };
 
 MainCharacter.prototype.moveLeft = function (onGround) {
