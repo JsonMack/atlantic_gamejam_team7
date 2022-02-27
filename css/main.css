@@ -58,15 +58,17 @@ canvas {
   margin: 10px;
   animation-name: boom;
   animation-duration: 1s;
+  animation-delay: 1s;
+  right: 10%;
 }
 #anim_boy {
   position: absolute;
   visibility: hidden;
-  border-radius: 50%;
   margin: 10px;
+  backdrop-filter: blur(10px);
   animation-name: boom;
-  animation-delay: 1s;
-  animation-duration: 1s;
+  animation-delay: 2.5s;
+  animation-duration: 1.5s;
 }
 #anim_title {
   position: absolute;
@@ -74,8 +76,8 @@ canvas {
   top: 10%;
   width: 100%;
   animation-name: boom;
-  animation-duration: 4s;
-  animation-delay: 2s;
+  animation-duration: 6s;
+  animation-delay: 4.5s;
 }
 
 @keyframes boom {
