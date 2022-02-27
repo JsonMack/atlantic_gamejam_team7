@@ -1,7 +1,6 @@
 @font-face {
-  font-family: 'minecraftiaregular';
-  src: url('minecraftia-regular-webfont.woff2') format('woff2'),
-    url('minecraftia-regular-webfont.woff') format('woff');
+  font-family: 'aldrich';
+  src: url('fonts/Aldrich-Regular.ttf') format('ttf');
   font-weight: normal;
   font-style: normal;
 }
@@ -22,7 +21,7 @@ canvas {
   top: 0px;
   left: 0px;
   pointer-events: none;
-  font-family: minecraftiaregular !important;
+  font-family: 'aldrich', Arial, Helvetica, sans-serif !important;
 }
 #canvas3d {
   z-index: 2;
