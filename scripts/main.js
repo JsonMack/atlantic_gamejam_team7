@@ -201,18 +201,17 @@ window.LoadGame = function (onDone) {
       ) {
         contact.SetEnabled(false);
       }
-
-      //GAME.contactListener.PostSolve = (contact) => {
-
-      //};
-      GAME.world.SetContactListener(GAME.contactListener);
-
-      GAME.level = new RandomizedLevel(1);
-      GAME.camera.position.set(window.PLAYER_X, 0, -10);
-      GAME.camera.up.set(0, -1, 0);
-      GAME.camera.lookAt(new THREE.Vector3(window.PLAYER_X, 0, 0));
-      onDone();
     };
+    //GAME.contactListener.PostSolve = (contact) => {
+
+    //};
+    GAME.world.SetContactListener(GAME.contactListener);
+
+    GAME.level = new RandomizedLevel(1);
+    GAME.camera.position.set(window.PLAYER_X, 0, -10);
+    GAME.camera.up.set(0, -1, 0);
+    GAME.camera.lookAt(new THREE.Vector3(window.PLAYER_X, 0, 0));
+    onDone();
   });
 };
 
