@@ -184,6 +184,9 @@ window.LoadSound = function () {
     window.LoadSound = () => {
       if (LEVEL_NUM) {
         StartGame();
+        document
+          .getElementById('difficulty')
+          .parentNode.removeChild(document.getElementById('difficulty'));
         window.LoadSound = () => {};
       }
     };
