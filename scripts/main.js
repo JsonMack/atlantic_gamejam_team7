@@ -8,12 +8,8 @@ window.LOAD_IMAGES = [
   'alien-2-2.png',
   'alien-3-1.png',
   'alien-3-2.png',
-  'BB_AA_Ship_1.1.png',
-  'BB_AA_Ship_1.2.png',
-  'BB_AA_Ship_2.1.png',
-  'BB_AA_Ship_2.2.png',
-  'BB_AA_Ship_3.1.png',
-  'BB_AA_Ship_3.2.png',
+  'ufo-1.png',
+  'ufo-2.png',
   'building-wall.png',
   'building-ledge.png',
   'building-scafolding.png',
@@ -225,20 +221,10 @@ window.LoadGame = function (onDone) {
     );
     GAME.images['ufo-spritesheet'] = make_spritesheet(
       [
-        'billy-run-1',
-        'billy-run-2',
-        'billy-crouching',
-        'billy-guarding',
-        'billy-standing',
-        'billy-jump',
-        // 'BB_AA_Ship_1.1',
-        // 'BB_AA_Ship_1.2',
-        // 'BB_AA_Ship_2.1',
-        // 'BB_AA_Ship_2.2',
-        // 'BB_AA_Ship_3.1',
-        // 'BB_AA_Ship_3.2',
+        'ufo-1',
+        'ufo-2'
       ],
-      BT_SIZE_PIXELS,
+      BT_SIZE_PIXELS*8,
       8,
       8
     );

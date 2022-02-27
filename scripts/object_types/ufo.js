@@ -1,40 +1,24 @@
 window.GenerateUFO = function () {
-  GAME.objects.add(new UFO(PLAYER_X + Math.random() * 50));
+  GAME.objects.add(GAME.ufo = new UFO(PLAYER_X + Math.random() * 50));
   GAME.CURRENT_UFO_COUNT++;
 };
 
-window.UFO = function (xpos) {
-  let bodyDef = new b2BodyDef();
-  let fixDef = new b2FixtureDef();
-
-  bodyDef.type = b2Body.b2_dynamicBody;
-  bodyDef.fixedRotation = true;
-  bodyDef.position.x = xpos;
-  bodyDef.position.y = -10;
-
-  this.radius = BT_SIZE * 0.5;
-  fixDef.shape = new b2CircleShape(this.radius);
-  //fixDef.shape.SetAsBox(BT_SIZE * 0.5, BT_SIZE * 0.5);
-
-  fixDef.density = 1;
-  fixDef.friction = 10;
-  fixDef.restitution = 0.0;
-  this.body = GAME.world.CreateBody(bodyDef);
-  this.body._IsPlayer = true;
-  this.fixture = this.body.CreateFixture(fixDef);
-
-  this.geometry = new THREE.PlaneBufferGeometry(BT_SIZE, BT_SIZE);
+window.UFO = function () {
+  this.geometry = new THREE.PlaneBufferGeometry(BT_SIZE*8, BT_SIZE*8);
   this.texture = new THREE.CanvasTexture(GAME.images['ufo-spritesheet']);
   this.texture.wrapS = THREE.RepeatWrapping;
   this.texture.wrapT = THREE.RepeatWrapping;
   this.texture.mapping = THREE.UVMapping;
   this.texture.needsUpdate = true;
+  this.hp = this.maxHP = 100;
+  GAME.ufoDefeated = false;
   this.material = new THREE.ShaderMaterial({
     uniforms: {
       time: { value: 1.0 },
       spriteNo: { value: 0 },
       hFlip: { value: 1 },
       tex: { value: this.texture },
+      damage: { value: 0 }
     },
     vertexShader: `
                 varying vec2 vUv;
@@ -55,9 +39,11 @@ window.UFO = function (xpos) {
     fragmentShader: `
                 uniform sampler2D tex;
                 varying vec2 vUv;
+                uniform float damage;
   
                 void main() {
                     gl_FragColor = texture2D(tex, vUv);
+                    gl_FragColor.rgb = mix(gl_FragColor.rgb, vec3(1., 0., 0.), damage);
                 }
             `,
   });
@@ -66,114 +52,48 @@ window.UFO = function (xpos) {
   this.material.needsUpdate = true;
   this.mesh = new THREE.Mesh(this.geometry, this.material);
 
-  let pos = this.body.GetWorldCenter();
-  this.mesh.position.set(pos.x, pos.y, 1);
-  this.mesh.rotation.set(0, 0, this.body.GetAngle(), 'ZXY');
+  this.mesh.position.set(PLAYER_X, -10 * BT_SIZE, 0.);
 
   GAME.scene.add(this.mesh);
+
+  this.timeUp = 10;
+  this.timeDown = 0;
+  this.up = false;
+  this.toY = this.y = -10;
+  this.x = PLAYER_X;
+  this.toX = this.x;
 };
 
 UFO.prototype.onRemove = function () {
   GAME.scene.remove(this.mesh);
-  this.body.DestroyFixture(this.fixture);
-  GAME.world.DestroyBody(this.body);
 };
 
 UFO.prototype.updateRender = function (dt, time, ctx) {
-  let pos = this.body.GetWorldCenter();
-
-  this.mesh.position.set(pos.x, pos.y, 1);
-  this.mesh.rotation.set(0, 0, this.body.GetAngle(), 'ZXY');
-
-  let firstContact = this.body.GetContactList();
-  let c = firstContact;
-  while (c) {
-    if (c.contact.IsTouching() && c.contact.IsEnabled()) {
-      let fixA = c.contact.GetFixtureA();
-      let fixB = c.contact.GetFixtureB();
-      let otherBody = null;
-      if (fixA != this.fixture) {
-        otherBody = fixA.GetBody();
-      } else {
-        otherBody = fixB.GetBody();
-      }
-      if (
-        Math.abs(
-          c.contact.m_manifold.m_localPlaneNormal.y -
-            (fixA == this.fixture ? 1 : -1)
-        ) < 0.5
-      ) {
-        break;
-      }
+  if (this.up) {
+    this.timeUp -= dt;
+    if (this.timeUp < 0.) {
+      this.up = false;
+      this.toY = -30;
+      this.timeDown = Math.random() * 5 + 5;
     }
-    c = c.next;
   }
-
-  this.material.uniforms.spriteNo.value =
-    Math.floor(time * 15) % 2 ? BILLY_RUN_1 : BILLY_RUN_2;
-
-  // UFO falls in pit
-  if (pos.y > 30 || pos.y < -40) {
-    GAME.CURRENT_UFO_COUNT--;
-    pos.y = 0; // workaround
-    return false;
+  else {
+    this.timeDown -= dt;
+    if (this.timeDown < 0.) {
+      this.up = true;
+      this.toY = -10;
+      this.timeUp = Math.random() * 5 + 5;
+    }
   }
-  this.body.ApplyForce(
-    new b2Vec2(0, this.body.GetMass() * -14.99999),
-    this.body.GetWorldCenter()
-  );
-  if (PLAYER_Y - pos.y < 0)
-    this.body.ApplyForce(
-      new b2Vec2(0, this.body.GetMass() * -4),
-      this.body.GetWorldCenter()
-    );
-
-  if (pos.y + 10 > 0)
-    this.body.ApplyForce(
-      new b2Vec2(0, this.body.GetMass() * -3),
-      this.body.GetWorldCenter()
-    );
-  if (pos.y + 10 < 0)
-    this.body.ApplyForce(
-      new b2Vec2(0, this.body.GetMass() * 3),
-      this.body.GetWorldCenter()
-    );
-  if (PLAYER_X - pos.x <= 0) this.moveLeft();
-  if (PLAYER_X - pos.x > 0) this.moveRight();
-  setInterval(() => this.fire(), 6000 * Math.random());
-
-  return true;
-};
-
-UFO.prototype.fire = function () {
-  let pos = this.body.GetWorldCenter();
-  let dx = PLAYER_X * (1 + 1 / GAME.LEVEL_NUMBER) - pos.x,
-    dy = PLAYER_Y * (1 + 1 / GAME.LEVEL_NUMBER) - pos.y;
-  let angle = Math.atan2(dy, dx);
-
-  GAME.objects.add(
-    new UFOBullet(
-      true,
-      this.body,
-      this.radius * 0.6,
-      new b2Vec2(pos.x, pos.y),
-      angle
-    )
-  );
-};
-
-UFO.prototype.moveLeft = function () {
-  this.material.uniforms.hFlip.value = -1;
-  this.body.ApplyForce(
-    new b2Vec2(-this.body.GetMass() * 10, 0),
-    this.body.GetWorldCenter()
-  );
-};
-
-UFO.prototype.moveRight = function () {
-  this.material.uniforms.hFlip.value = 1;
-  this.body.ApplyForce(
-    new b2Vec2(this.body.GetMass() * 10, 0),
-    this.body.GetWorldCenter()
-  );
+  this.material.uniforms.damage.value = Math.max(0, 1 - this.hp / this.maxHP);
+  this.y += (this.toY - this.y) * dt * 4;
+  this.toX = PLAYER_X;
+  this.x += (this.toX - this.x) * dt * 1;
+  this.material.uniforms.spriteNo.value = Math.floor(time * 5) % 2;
+  this.mesh.position.set(this.x + (Math.random() * 2 - 1) * this.material.uniforms.damage.value* 0.5, (this.y + Math.sin(time*Math.PI)) * BT_SIZE + (Math.random() * 2 - 1) * this.material.uniforms.damage.value*0.5, 0.);
+  if (!(this.hp > 0)) {
+    GAME.particles.explosion(new THREE.Vector3(this.x, this.y * BT_SIZE, 0.), 150);
+    GAME.ufoDefeated = true;
+  }
+  return this.hp > 0;
 };

@@ -44,8 +44,9 @@ window.Bullet = function (player, fromBody, fromOffset, pos, angle, op) {
 };
 
 Bullet.prototype.updateRender = function (dt, time, ctx) {
+  let pos = this.body.GetWorldCenter();
   GAME.particles.addParticle(
-    this.body.GetWorldCenter(),
+    pos,
     new THREE.Vector3(
       Math.random() * 2 - 1,
       Math.random() * 2 - 1,
@@ -77,6 +78,13 @@ Bullet.prototype.updateRender = function (dt, time, ctx) {
     c = c.next;
   }
   this.life -= dt;
+  if (GAME.ufo && GAME.ufo.hp > 0 && this.player) {
+    let dist = Math.sqrt(Math.pow(pos.x - GAME.ufo.x, 2.) * 0.75 + 1.25 * Math.pow(pos.y - GAME.ufo.y * BT_SIZE, 2.));
+    if (dist < BT_SIZE*3.5) {
+      GAME.ufo.hp -= (this.op ? 10 : 1);
+      this.life = 0;
+    }
+  }
   return this.life > 0;
 };
 
