@@ -65,7 +65,7 @@ window.StartGame = function () {
     mouseScreen: new THREE.Vector2(0, 0),
     mouseWorld: new THREE.Vector3(0, 0, 0),
     mouseLeft: false,
-    gravity: 15,
+    gravity: 20,
     cityHealth: 0,
   };
   GAME.LEVEL_NUMBER = LEVEL_NUM; // LEVEL SET HERE
