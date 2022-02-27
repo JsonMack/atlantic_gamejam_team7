@@ -80,7 +80,7 @@ Bullet.prototype.updateRender = function (dt, time, ctx) {
   }
   this.life -= dt;
   if (GAME.ufo && GAME.ufo.hp > 0 && this.player) {
-    let dist = Math.sqrt(Math.pow(pos.x - GAME.ufo.x, 2.) * 0.75 + 0.75 * Math.pow(pos.y - GAME.ufo.y * BT_SIZE, 2.));
+    let dist = Math.sqrt(Math.pow(pos.x - GAME.ufo.x, 2.) * 0.75 + 2. * Math.pow(pos.y - GAME.ufo.y * BT_SIZE, 2.));
     if (dist < BT_SIZE*3.5) {
       GAME.ufo.hp -= (this.op ? 10 : 1);
       this.life = 0;

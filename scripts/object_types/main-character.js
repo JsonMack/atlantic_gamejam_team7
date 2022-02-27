@@ -162,7 +162,7 @@ MainCharacter.prototype.updateRender = function (dt, time, ctx) {
         if (!otherBody._BulletOP) {
           otherBody._BulletDestroyed = true;
         } else {
-          GAME.PLAYER_HEALTH -= dt * 50;
+          GAME.PLAYER_HEALTH -= dt * 10;
         }
       }
       if (otherBody._IsEnemy) {
