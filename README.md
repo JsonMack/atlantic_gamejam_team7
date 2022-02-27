@@ -11,6 +11,7 @@
 * [Chadams77](https://github.com/chadams77)
 * [Kanjurer](https://github.com/kanjurer)
 * [Chris Boudreau](https://github.com/chrisboudreau1999)
+* [Michelle](https://michellegaudet5.artstation.com/)
 
 # [Play on Itch.io!](https://itch.io/jam/atlantic-game-jam/rate/1421264)
 
