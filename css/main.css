@@ -27,20 +27,20 @@ canvas {
 }
 
 #BB_AA_Start_Button {
-  visibility: hidden;
+  /* visibility: hidden;
   animation-name: showGame;
   animation-delay: 8s;
   animation-duration: 4s;
   animation-fill-mode: forwards;
   width: 300px;
-  height: 120px;
+  height: 120px; */
 
   position: absolute;
   left: 60%;
   top: 80%;
   border-radius: 10px;
 }
-
+/*
 #BB_AA_Start_Screen {
   visibility: hidden;
   animation-name: showGame;
@@ -99,4 +99,4 @@ canvas {
     visibility: visible;
     opacity: 100;
   }
-}
+} */
