@@ -26,8 +26,7 @@ window.RandomizedLevel = function (levelNo) {
   GenerateUFO();
   //GenerateHostage();
 
-  this.nextEnemyIn = (10 + Math.random() * 20 / Math.sqrt(levelNo)) / 3.;
-  
+  this.nextEnemyIn = (10 + (Math.random() * 20) / Math.sqrt(levelNo)) / 3;
 };
 
 RandomizedLevel.prototype.updateRender = function (dt, time, ctx) {
@@ -42,7 +41,8 @@ RandomizedLevel.prototype.updateRender = function (dt, time, ctx) {
     GAME.CURRENT_ENEMY_COUNT++;
     console.log('current', GAME.CURRENT_ENEMY_COUNT);
     console.log('max', GAME.MAX_ENEMY_COUNT);
-    this.nextEnemyIn = (10 + Math.random() * 20 / Math.sqrt(this.levelNo)) / 2.;
+    this.nextEnemyIn =
+      (10 + (Math.random() * 20) / Math.sqrt(this.levelNo)) / 2;
   }
 
   const healthBarY = 16;
@@ -63,17 +63,24 @@ RandomizedLevel.prototype.updateRender = function (dt, time, ctx) {
   const fillWidth = (GAME.cityHealth / GAME.maxCityHealth) * healthBarWidth;
 
   ctx.fillStyle = fillColor;
-  ctx.fillRect(healthBarX + 2, healthBarY + 2, fillWidth - 4, healthBarHeight - 4);
+  ctx.fillRect(
+    healthBarX + 2,
+    healthBarY + 2,
+    fillWidth - 4,
+    healthBarHeight - 4
+  );
 
   ctx.fillStyle = 'white';
-  ctx.font = '16px Arial';
+  ctx.font = '16px minecraftiaregular';
   ctx.textAlign = 'center';
-  ctx.fillText(GAME.cityHealth + "/" + GAME.maxCityHealth, healthBarX + (healthBarWidth / 2), 
-      healthBarY + (healthBarHeight / 2) + 6);
+  ctx.fillText(
+    GAME.cityHealth + '/' + GAME.maxCityHealth,
+    healthBarX + healthBarWidth / 2,
+    healthBarY + healthBarHeight / 2 + 6
+  );
 
   ctx.textAlign = 'left';
   ctx.drawImage(GAME.images['skyline-small'], healthBarX - 16, healthBarY - 4);
-
 };
 
 RandomizedLevel.prototype.onRemove = function () {
