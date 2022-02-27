@@ -4,26 +4,25 @@ window.RandomizedLevel = function (levelNo) {
   this.levelNo = levelNo;
   this.earth = new EarthObject();
   GAME.objects.add(this.earth);
-  //GAME.objects.add(new TestCircle(new THREE.Vector2(0, 0 - 20)));
-  //this.deleteMeTest = new TestCircle(new THREE.Vector2(2, -5 - 20));
-  //GAME.objects.add(this.deleteMeTest);
-  //GAME.objects.add(new TestCircle(new THREE.Vector2(2, -30 - 20)));
-  //GAME.objects.add(new TestCircle(new THREE.Vector2(-2, -5 - 20)));
 
   GAME.objects.add(new BGRender());
 
-  GenerateBuilding(-8, 6, 15);
+  let x = -80;
 
-  GenerateBuilding(-17, 5, 10);
+  while (x<80) {
+    let width = Math.round(Math.random() * 4 + 4);
 
-  GenerateBuilding(7, 5, 6);
+    if ((x+width) < -1 || x > 1) {
+      GenerateBuilding(x, width, Math.ceil(Math.random()*10+5));
+    }
+
+    x += width + 3 + Math.round(Math.random());
+  }
+
   GenerateMainCharacter();
 };
 
 RandomizedLevel.prototype.updateRender = function (dt, time, ctx) {
-  //if (GAME.time > 4) {
-  //  GAME.objects.remove(this.deleteMeTest);
-  // }
 };
 
 RandomizedLevel.prototype.onRemove = function () {
