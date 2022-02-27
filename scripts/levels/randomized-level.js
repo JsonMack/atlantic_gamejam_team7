@@ -31,7 +31,7 @@ window.RandomizedLevel = function (levelNo) {
 
 RandomizedLevel.prototype.updateRender = function (dt, time, ctx) {
   // player dies
-  if (PLAYER_HEALTH == 0) {
+  if (GAME.PLAYER_HEALTH == 0) {
     ctx.fillText('You died', 50, 50);
   }
 
@@ -57,8 +57,29 @@ RandomizedLevel.prototype.updateRender = function (dt, time, ctx) {
     GAME.images['skyline-small']
   );
 
-  RandomizedLevel.prototype.drawHealthBar(ctx, GAME.canvas2D.width - 192, 16, 192, 24, 'black',
-        GAME.ufo.hp, GAME.ufo.maxHP, GAME.images['ufo-1']);
+  RandomizedLevel.prototype.drawHealthBar(
+    ctx,
+    GAME.canvas2D.width - 192,
+    16,
+    192,
+    24,
+    'black',
+    GAME.ufo.hp,
+    GAME.ufo.maxHP,
+    GAME.images['ufo-1']
+  );
+
+  RandomizedLevel.prototype.drawHealthBar(
+    ctx,
+    GAME.canvas2D.width - 192,
+    64,
+    192,
+    24,
+    'black',
+    GAME.PLAYER_HEALTH,
+    100,
+    GAME.images['BB_AA_Billy_Health-Meter']
+  );
 };
 
 RandomizedLevel.prototype.drawHealthBar = function (
@@ -109,7 +130,7 @@ RandomizedLevel.prototype.drawHealthBar = function (
 
   ctx.textAlign = 'left';
   ctx.drawImage(image, healthBarX - 16, healthBarY - 4, 32, 32);
-}
+};
 
 RandomizedLevel.prototype.onRemove = function () {
   GAME.objects.clear();

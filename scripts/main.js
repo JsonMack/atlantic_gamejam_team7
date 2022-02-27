@@ -9,6 +9,7 @@ window.LOAD_IMAGES = [
   'alien-3-1.png',
   'alien-3-2.png',
   'ufo-1.png',
+  'BB_AA_Billy_Health-Meter.png',
   'ufo-2.png',
   'building-wall.png',
   'building-ledge.png',
@@ -28,7 +29,7 @@ window.LOAD_IMAGES = [
   'waterfront.png',
   'ubisoft.png',
   'bluenose.png',
-  'skyline-small.png'
+  'skyline-small.png',
 ]; //['building-blocks.jpg', 'texture.jpg', 'etc.png']; // => { "building-blocks": Image, "texture": Image, "etc": Image }
 
 // adding objects from Box2D library to window object for easier access
@@ -44,8 +45,8 @@ window.b2CircleShape = Box2D.Collision.Shapes.b2CircleShape;
 window.b2ContactListener = Box2D.Dynamics.b2ContactListener;
 
 b2ContactListener.BeginContact = (contact) => {
-  console.log("What");
-}
+  console.log('What');
+};
 // gives time now in seconds
 window.Timestamp = function () {
   return new Date().getTime() / 1000;
@@ -71,7 +72,7 @@ window.StartGame = function () {
     mouseWorld: new THREE.Vector3(0, 0, 0),
     mouseLeft: false,
     gravity: 15,
-    cityHealth: 0
+    cityHealth: 0,
   };
   GAME.LEVEL_NUMBER = 1; // LEVEL SET HERE
   GAME.MAX_ENEMY_COUNT = GAME.LEVEL_NUMBER * 5;
@@ -81,6 +82,7 @@ window.StartGame = function () {
   GAME.MAX_HOSTAGE_COUNT = GAME.LEVEL_NUMBER * 5;
   GAME.CURRENT_HOSTAGE_COUNT = GAME.MAX_HOSTAGE_COUNT;
   GAME.gameHeight = GAME.gameWidth / 1.6;
+  GAME.PLAYER_HEALTH = 100;
   GAME.canvas2D = document.getElementById('canvas2d');
   GAME.canvas3D = document.getElementById('canvas3d');
   GAME.ctx = GAME.canvas2D.getContext('2d');
@@ -221,11 +223,8 @@ window.LoadGame = function (onDone) {
       8
     );
     GAME.images['ufo-spritesheet'] = make_spritesheet(
-      [
-        'ufo-1',
-        'ufo-2'
-      ],
-      BT_SIZE_PIXELS*8,
+      ['ufo-1', 'ufo-2'],
+      BT_SIZE_PIXELS * 8,
       8,
       8
     );
@@ -365,7 +364,7 @@ window.GameLoop = function () {
       GAME.mouseScreen.y
     }, mouse world: ${GAME.mouseWorld.x},${GAME.mouseWorld.y}, mouse left: ${
       GAME.mouseLeft
-    }, HEALTH: ${PLAYER_HEALTH}`,
+    }`,
     20,
     GAME.canvas2D.height - 32
   );

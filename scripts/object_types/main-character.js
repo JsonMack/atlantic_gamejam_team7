@@ -1,4 +1,3 @@
-window.PLAYER_HEALTH = 100;
 window.PLAYER_X = 0;
 window.PLAYER_MIN_X = -500;
 window.PLAYER_MAX_X = 500;
@@ -24,7 +23,7 @@ window.MainCharacter = function () {
   bodyDef.position.x = 0;
   bodyDef.position.y = (GROUND_LEVEL - 2) * BT_SIZE - 20 + BT_SIZE * 1.5;
 
-  window.PLAYER_HEALTH = 100;
+  GAME.PLAYER_HEALTH = 100;
 
   this.radius = BT_SIZE * 0.5;
   fixDef.shape = new b2CircleShape(this.radius);
@@ -36,7 +35,7 @@ window.MainCharacter = function () {
   this.body = GAME.world.CreateBody(bodyDef);
   this.body._IsPlayer = true;
   this.fixture = this.body.CreateFixture(fixDef);
-  
+
   this.geometry = new THREE.PlaneBufferGeometry(BT_SIZE, BT_SIZE);
   this.texture = new THREE.CanvasTexture(GAME.images['billy-spritesheet']);
   this.texture.wrapS = THREE.RepeatWrapping;
@@ -50,7 +49,7 @@ window.MainCharacter = function () {
       hFlip: { value: 1 },
       tex: { value: this.texture },
       chargeT: { value: 0 },
-      damage: { value: 0 }
+      damage: { value: 0 },
     },
     vertexShader: `
               varying vec2 vUv;
@@ -103,7 +102,7 @@ MainCharacter.prototype.onRemove = function () {
 
 MainCharacter.prototype.updateRender = function (dt, time, ctx) {
   let pos = this.body.GetWorldCenter();
-  if (pos.y > 30) PLAYER_HEALTH = 0; // if player falls in water
+  if (pos.y > 30) GAME.PLAYER_HEALTH = 0; // if player falls in water
   window.PLAYER_X = pos.x;
   window.PLAYER_Y = pos.y;
   this.mesh.position.set(
@@ -155,24 +154,26 @@ MainCharacter.prototype.updateRender = function (dt, time, ctx) {
       } else {
         otherBody = fixB.GetBody();
       }
-      if (otherBody._IsBullet && (c.contact.IsEnabled() || otherBody._BulletOP)) {
-        PLAYER_HEALTH -= 10;
+      if (
+        otherBody._IsBullet &&
+        (c.contact.IsEnabled() || otherBody._BulletOP)
+      ) {
+        GAME.PLAYER_HEALTH -= 10;
         if (!otherBody._BulletOP) {
           otherBody._BulletDestroyed = true;
-        }
-        else {
-          PLAYER_HEALTH -= 10;
+        } else {
+          GAME.PLAYER_HEALTH -= 10;
         }
       }
       if (otherBody._IsEnemy) {
-        PLAYER_HEALTH -= dt * 5;
+        GAME.PLAYER_HEALTH -= dt * 5;
       }
     }
     c = c.next;
   }
 
-  if (PLAYER_HEALTH < 0) {
-    PLAYER_HEALTH = 0;
+  if (GAME.PLAYER_HEALTH < 0) {
+    GAME.PLAYER_HEALTH = 0;
   }
 
   if (!onGround) {
@@ -184,7 +185,10 @@ MainCharacter.prototype.updateRender = function (dt, time, ctx) {
     this.material.uniforms.spriteNo.value = BILLY_STAND;
   }
   this.material.uniforms.chargeT.value = this.chargeT;
-  this.material.uniforms.damage.value = Math.max(0, 1 - PLAYER_HEALTH / 100);
+  this.material.uniforms.damage.value = Math.max(
+    0,
+    1 - GAME.PLAYER_HEALTH / 100
+  );
 
   this.body.SetLinearDamping(onGround ? 5.0 : 2);
 
@@ -195,11 +199,11 @@ MainCharacter.prototype.updateRender = function (dt, time, ctx) {
 
   this.fireT -= dt * 2;
 
-  if (!(PLAYER_HEALTH > 0)) {
-    GAME.particles.explosion(new THREE.Vector3(pos.x, pos.y, 0), 40) ;
+  if (!(GAME.PLAYER_HEALTH > 0)) {
+    GAME.particles.explosion(new THREE.Vector3(pos.x, pos.y, 0), 40);
   }
 
-  return PLAYER_HEALTH > 0;
+  return GAME.PLAYER_HEALTH > 0;
 };
 
 MainCharacter.prototype.fire = function () {
