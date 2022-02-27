@@ -1,3 +1,4 @@
+window.PLAYER_HEALTH = 100;
 window.PLAYER_X = 0;
 window.PLAYER_MIN_X = -500;
 window.PLAYER_MAX_X = 500;
@@ -93,6 +94,7 @@ MainCharacter.prototype.onRemove = function () {
 
 MainCharacter.prototype.updateRender = function (dt, time, ctx) {
   let pos = this.body.GetWorldCenter();
+  if (pos.y > 30) PLAYER_HEALTH = 0; // if player falls in water
   window.PLAYER_X = pos.x;
   window.PLAYER_Y = pos.y;
   this.mesh.position.set(pos.x, pos.y, 1);
