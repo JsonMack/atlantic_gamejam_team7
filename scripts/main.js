@@ -146,7 +146,7 @@ window.StartGame = function () {
 };
 
 window.LoadSound = function () {
-  sounds.load(['audio/theme.mp3', 'audio/gun_boom.wav']);
+  sounds.load(['audio/theme.mp3', 'audio/gun_boom.wav', 'audio/og_boom.wav']);
   sounds.whenLoaded = () => {
     sounds['audio/theme.mp3'].loop = true;
     sounds['audio/theme.mp3'].volume = 0.5;

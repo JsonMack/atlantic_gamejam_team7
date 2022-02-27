@@ -129,6 +129,12 @@ ParticleSystem.prototype.explosion = function(center, size) {
         this.addParticle(center, new THREE.Vector3(Math.random()*2-1, Math.random()*2-1, Math.random()*2-1).normalize().multiplyScalar(size * Math.random() * 0.25), 4. * Math.sqrt(size)*(0.2 + Math.random()*0.75));
     }
 
+    let dist = Math.sqrt(Math.pow(center.x - GAME.camera.position.x, 2.), Math.pow(center.y - GAME.camera.position.y, 2.));
+
+    sounds['audio/og_boom.wav'].volume = Math.min(0.5, 0.05 * size / Math.sqrt(dist));
+    sounds['audio/og_boom.wav'].playbackRate = 1. / Math.sqrt(size);
+    sounds['audio/og_boom.wav'].play();
+
 };
 
 ParticleSystem.prototype.destroy = function() {
