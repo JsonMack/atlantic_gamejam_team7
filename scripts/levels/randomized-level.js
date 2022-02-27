@@ -45,7 +45,11 @@ RandomizedLevel.prototype.updateRender = function (dt, time, ctx) {
     this.nextEnemyIn = (10 + Math.random() * 20 / Math.sqrt(this.levelNo)) / 2.;
   }
 
-  RandomizedLevel.prototype.drawHealthBar(ctx, 32, 16, 192, 24, 'black', GAME.cityHealth, GAME.maxCityHealth, GAME.images['skyline-small']);
+  RandomizedLevel.prototype.drawHealthBar(ctx, 32, 16, 192, 24, 'black', 
+        GAME.cityHealth, GAME.maxCityHealth, GAME.images['skyline-small']);
+
+  RandomizedLevel.prototype.drawHealthBar(ctx, GAME.canvas2D.width - 192, 16, 192, 24, 'black', 
+        GAME.ufo.hp, GAME.maxHP, GAME.images['ufo-1']);
 };
 
 RandomizedLevel.prototype.drawHealthBar = function(ctx, healthBarX, healthBarY, healthBarWidth, 
@@ -68,13 +72,13 @@ RandomizedLevel.prototype.drawHealthBar = function(ctx, healthBarX, healthBarY, 
   ctx.fillRect(healthBarX + 2, healthBarY + 2, fillWidth - 4, healthBarHeight - 4);
 
   ctx.fillStyle = 'white';
-  ctx.font = '16px Arial';
+  ctx.font = '16px minecraftregular';
   ctx.textAlign = 'center';
 
   ctx.fillText(currentHealth + "/" + maxHealth, healthBarX + (healthBarWidth / 2), healthBarY + (healthBarHeight / 2) + 6);
 
   ctx.textAlign = 'left';
-  ctx.drawImage(image, healthBarX - 16, healthBarY - 4);
+  ctx.drawImage(image, healthBarX - 16, healthBarY - 4, 32, 32);
 }
 
 RandomizedLevel.prototype.onRemove = function () {
