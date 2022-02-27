@@ -55,7 +55,14 @@ RandomizedLevel.prototype.updateRender = function (dt, time, ctx) {
 
   const backgroundColor = 'black';
 
-  const fillColor = 'blue';
+  const percentage = (GAME.cityHealth / GAME.maxCityHealth);
+
+
+  const fillColor = percentage < 0.3 ? 'red' 
+          : percentage <= .5 ? 'yellow' 
+          : percentage <= .8 ? 'orange'
+          : 'green';
+
 
   ctx.fillStyle = backgroundColor;
   ctx.fillRect(healthBarX, healthBarY, healthBarWidth, healthBarHeight);
