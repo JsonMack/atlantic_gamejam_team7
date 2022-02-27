@@ -1,10 +1,10 @@
 @font-face {
-  font-family: 'aldrich';
-  src: url('fonts/Aldrich-Regular.ttf') format('ttf');
+  font-family: 'aldrichregular';
+  src: url('aldrich-regular-webfont.woff2') format('woff2'),
+    url('aldrich-regular-webfont.woff') format('woff');
   font-weight: normal;
   font-style: normal;
 }
-html,
 body {
   margin: 0px;
   padding: 0px;

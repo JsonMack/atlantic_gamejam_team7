@@ -125,7 +125,7 @@ RandomizedLevel.prototype.drawHealthBar = function (
 
   ctx.fillText(
     currentHealth + '/' + maxHealth,
-    healthBarX + healthBarWidth / 2,
+    Math.round(healthBarX + healthBarWidth / 2),
     healthBarY + healthBarHeight - 8
   );
 
