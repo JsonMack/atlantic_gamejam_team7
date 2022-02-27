@@ -1,4 +1,6 @@
 window.RandomizedLevel = function (levelNo) {
+
+  this.lossTime = 0.;
   GAME.objects.clear();
   GAME.LEVEL_NUMBER = levelNo;
   this.levelNo = levelNo;
@@ -138,7 +140,7 @@ RandomizedLevel.prototype.onRemove = function () {
   GAME.objects.clear();
 };
 
-RandomizedLevel.prototype.renderLossScreen = (dt, time, ctx) => {
+RandomizedLevel.prototype.renderLossScreen = function (dt, time, ctx) {
   let canvas = GAME.canvas2D;
 
   let width = canvas.width;
@@ -157,7 +159,9 @@ RandomizedLevel.prototype.renderLossScreen = (dt, time, ctx) => {
   ctx.fillText("Click anywhere to restart", width / 2, height / 2 + 128);
   ctx.textAlign = 'left';
 
-  if (GAME.mouseClickLeft) {
+  this.lossTime += dt || 0;
+
+  if (GAME.mouseClickLeft && this.lossTime > 1.5) {
     GAME.level.onRemove();
     GAME.level = new RandomizedLevel(1);
   }
