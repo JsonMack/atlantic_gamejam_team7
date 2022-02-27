@@ -11,6 +11,6 @@
 * [Chadams77](https://github.com/chadams77)
 * [Kanjurer](https://github.com/kanjurer)
 
-# [Play on Twitch!](https://itch.io/jam/atlantic-game-jam/rate/1421264)
+# [Play on Itch.io!](https://itch.io/jam/atlantic-game-jam/rate/1421264)
 
 ## ![Itch.io Banner](images/itch-banner.jpg)
