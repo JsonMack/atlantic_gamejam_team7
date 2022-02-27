@@ -74,6 +74,7 @@ window.StartGame = function () {
     mouseWorld: new THREE.Vector3(0, 0, 0),
     mouseLeft: false,
     gravity: 15,
+    cityHealth: 0
   };
   GAME.LEVEL_NUMBER = 1; // LEVEL SET HERE
   GAME.MAX_ENEMY_COUNT = GAME.LEVEL_NUMBER * 5;
@@ -381,6 +382,7 @@ window.GameLoop = function () {
     20,
     20
   );
+  GAME.ctx.fillText(`City Health: ${GAME.cityHealth}`, 20, 40);
 
   GAME.ctx.fillStyle = '#ff0000';
   GAME.ctx.fillRect(GAME.mouseScreen.x - 10, GAME.mouseScreen.y - 1, 20, 3);

@@ -9,7 +9,7 @@
             "type": "pwa-chrome",
             "request": "launch",
             "name": "Launch Chrome against localhost",
-            "url": "https://localhost:9000",
+            "url": "http://localhost:9000",
             "webRoot": "${workspaceFolder}"
         }
     ]

@@ -89,6 +89,7 @@ window.GenerateBuilding = function (tileX, width, height) {
       );
       lookup[x + ',' + y] = tile;
       GAME.objects.add(tile);
+      GAME.cityHealth++;
       if (hasLedge) {
         if (x == tileX) {
           GAME.objects.add(
@@ -306,6 +307,7 @@ BuildingTile.prototype.onRemove = function () {
   this.body.DestroyFixture(this.fixture);
   GAME.world.DestroyBody(this.body);
   this.removed = true;
+  GAME.cityHealth--;
   if (this.mesh2) {
     GAME.scene.remove(this.mesh2);
   }
