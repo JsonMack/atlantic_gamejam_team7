@@ -89,7 +89,6 @@ window.GenerateBuilding = function (tileX, width, height) {
       );
       lookup[x + ',' + y] = tile;
       GAME.objects.add(tile);
-      GAME.cityHealth++;
       if (hasLedge) {
         if (x == tileX) {
           GAME.objects.add(
@@ -196,6 +195,9 @@ window.BuildingTile = function (
   this.mesh.position.set(pos.x, pos.y, 1);
   this.mesh.rotation.set(0, 0, this.body.GetAngle(), 'ZXY');
   GAME.scene.add(this.mesh);
+  if (!this.falling) {
+    GAME.cityHealth++;
+  }
 };
 
 BuildingTile.prototype.makeFalling = function () {
@@ -307,7 +309,9 @@ BuildingTile.prototype.onRemove = function () {
   this.body.DestroyFixture(this.fixture);
   GAME.world.DestroyBody(this.body);
   this.removed = true;
-  GAME.cityHealth--;
+  if (!this.falling) {
+    GAME.cityHealth --;
+  }
   if (this.mesh2) {
     GAME.scene.remove(this.mesh2);
   }

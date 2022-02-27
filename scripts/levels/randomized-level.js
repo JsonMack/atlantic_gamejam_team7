@@ -6,6 +6,7 @@ window.RandomizedLevel = function (levelNo) {
   GAME.objects.add(this.earth);
 
   GAME.objects.add(new BGRender());
+  GAME.cityHealth = 0;
 
   let x = -80;
 
