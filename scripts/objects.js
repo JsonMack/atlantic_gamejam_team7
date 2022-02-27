@@ -46,7 +46,9 @@ ObjectSystem.prototype.remove = function (obj) {
 
 // clears entire ObjectSystem
 ObjectSystem.prototype.clear = function () {
-  while (this.objectList.length) {
-    this.remove(this.objectList[0]);
-  }
+  // while (this.objectList.length) {
+  //   this.remove(this.objectList[0]);
+  // }
+
+  this.objectList = [];
 };

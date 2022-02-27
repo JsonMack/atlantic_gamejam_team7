@@ -118,3 +118,39 @@ canvas {
     opacity: 100;
   }
 }
+
+#slide1 {
+  animation-name: slides1;
+  animation-delay: 1s;
+  width: 100%;
+  visibility: hidden;
+  animation-duration: 2s;
+}
+#slide2 {
+  animation-name: slides;
+  animation-delay: 5s;
+  width: 100%;
+  visibility: hidden;
+  animation-duration: 2s;
+}
+
+@keyframes slides1 {
+  from {
+    visibility: hidden;
+    opacity: 0;
+  }
+  to {
+    visibility: visible;
+    opacity: 100;
+  }
+}
+@keyframes slides2 {
+  from {
+    visibility: hidden;
+    opacity: 0;
+  }
+  to {
+    visibility: visible;
+    opacity: 100;
+  }
+}

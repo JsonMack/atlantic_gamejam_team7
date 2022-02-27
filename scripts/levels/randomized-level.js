@@ -152,6 +152,6 @@ RandomizedLevel.prototype.renderLossScreen = (dt, time, ctx) => {
   ctx.font = '128px aldrich';
   ctx.fillStyle = 'white';
   ctx.textAlign = 'center';
-  ctx.fillText("Game Over", width / 2, height / 2);
+  ctx.fillText('Game Over', width / 2, height / 2);
   ctx.textAlign = 'left';
-}
+};

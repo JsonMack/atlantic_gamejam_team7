@@ -52,6 +52,9 @@ window.Timestamp = function () {
 
 // starts the game, it is called onload body
 window.StartGame = function () {
+  document
+    .getElementById('slideshow')
+    .parentNode.removeChild(document.getElementById('slideshow'));
   window.GAME = {
     time: 0,
     dt: 1 / 60,
@@ -183,10 +186,11 @@ window.LoadSound = function () {
     document.getElementById('difficulty').style.display = 'block';
     window.LoadSound = () => {
       if (LEVEL_NUM) {
-        StartGame();
+        setTimeout(() => StartGame(), 7000);
         document
           .getElementById('difficulty')
           .parentNode.removeChild(document.getElementById('difficulty'));
+        document.getElementById('slideshow').style.display = 'block';
         window.LoadSound = () => {};
       }
     };
@@ -275,7 +279,7 @@ window.LoadGame = function (onDone) {
     //};
     GAME.world.SetContactListener(GAME.contactListener);
 
-    GAME.level = new RandomizedLevel(window.LEVEL_);
+    GAME.level = new RandomizedLevel(GAME.LEVEL_NUMBER);
     GAME.camera.position.set(window.PLAYER_X, 0, -10);
     GAME.camera.up.set(0, -1, 0);
     GAME.camera.lookAt(new THREE.Vector3(window.PLAYER_X, 0, 0));
