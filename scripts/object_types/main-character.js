@@ -32,6 +32,7 @@ window.MainCharacter = function () {
   fixDef.fricton = 10;
   fixDef.restitution = 0.0;
   this.body = GAME.world.CreateBody(bodyDef);
+  this.body._IsPlayer = true;
   this.fixture = this.body.CreateFixture(fixDef);
 
   this.geometry = new THREE.PlaneBufferGeometry(BT_SIZE, BT_SIZE);

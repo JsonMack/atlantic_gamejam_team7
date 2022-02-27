@@ -187,6 +187,12 @@ window.LoadGame = function (onDone) {
       if (bodyB._BulletOP && !bodyA._IsGround) {
         contact.SetEnabled(false);
       }
+      if (bodyA._IsPlayer && bodyA.GetLinearVelocity().y < -1 && bodyB._IsLedge) {
+        contact.SetEnabled(false);
+      }
+      if (bodyB._IsPlayer && bodyB.GetLinearVelocity().y < -1 && bodyA._IsLedge) {
+        contact.SetEnabled(false);
+      }
     };
     //GAME.contactListener.PostSolve = (contact) => {
 

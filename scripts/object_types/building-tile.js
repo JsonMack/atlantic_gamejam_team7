@@ -149,6 +149,7 @@ window.BuildingTile = function (
   fixDef.restitution = 0;
   this.body = GAME.world.CreateBody(bodyDef);
   this.body._IsFallingBT = this.falling;
+  this.body._IsLedge = (type == 'ledge') && !this.falling;
 
   this.fixture = this.body.CreateFixture(fixDef);
   this.body.ResetMassData();
