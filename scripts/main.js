@@ -25,7 +25,7 @@ window.LOAD_IMAGES = [
   'bg-2.png',
   'bg-1.png',
   'BB_AA_Start_Screen_2.png',
-  'BB_AA_Start_Button.png',
+  'BB_AA_START_Button.png',
   'waterfront.png',
   'ubisoft.png',
   'bluenose.png',
@@ -178,9 +178,9 @@ window.LoadSound = function () {
     'audio/ufo_gun.wav',
   ]);
   sounds.whenLoaded = () => {
-    /*sounds['audio/theme.mp3'].loop = true;
+    sounds['audio/theme.mp3'].loop = true;
     sounds['audio/theme.mp3'].volume = 0.5;
-    sounds['audio/theme.mp3'].play();*/
+    sounds['audio/theme.mp3'].play();
   };
   window.LoadSound = () => {
     StartGame();
