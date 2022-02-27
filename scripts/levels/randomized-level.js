@@ -8,6 +8,9 @@ window.RandomizedLevel = function (levelNo) {
   this.earth = new EarthObject();
   GAME.objects.add(this.earth);
 
+  GAME.MAX_ENEMY_COUNT = GAME.LEVEL_NUMBER * 5;
+  GAME.MAX_UFO_COUNT = GAME.LEVEL_NUMBER * 3;
+
   GAME.objects.add(new BGRender());
   GAME.cityHealth = 0;
 
@@ -30,7 +33,7 @@ window.RandomizedLevel = function (levelNo) {
   GenerateUFO();
   //GenerateHostage();
 
-  this.nextEnemyIn = (10 + (Math.random() * 20) / Math.sqrt(levelNo)) / 3;
+  this.nextEnemyIn = (10 + (Math.random() * 20) / Math.sqrt(this.levelNo)) / 3;
 };
 
 RandomizedLevel.prototype.lossConditionMet = function() {
