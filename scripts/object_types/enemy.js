@@ -106,7 +106,7 @@ Enemy.prototype.updateRender = function (dt, time, ctx) {
   this.moveAwayT -= dt;
   if (this.moveAwayT < 0.) {
     this.moveAway = !this.moveAway;
-    this.moveAwayT = (5 + Math.random() * 5) * (this.moveAway ? 0.5 : 1.);
+    this.moveAwayT = (5 + Math.random() * 5) * (this.moveAway ? 0.25 : 2.);
   }
 
   if (this.moveAway) {
