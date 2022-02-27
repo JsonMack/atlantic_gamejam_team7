@@ -8,9 +8,9 @@ window.ParticleSystem = function () {
   this.velocities = new Float32Array(MAX_PRT * 3);
   this.attr1 = new Float32Array(MAX_PRT * 4);
 
-  for (let i=0; i<MAX_PRT; i++) {
-      this.attr1[i*4+0] = -1000.;
-      this.attr1[i*4+1] = 1.;
+  for (let i = 0; i < MAX_PRT; i++) {
+    this.attr1[i * 4 + 0] = -1000;
+    this.attr1[i * 4 + 1] = 1;
   }
 
   this.posAttr = new THREE.BufferAttribute(this.positions, 3);
@@ -25,7 +25,7 @@ window.ParticleSystem = function () {
 
   this.material = new THREE.ShaderMaterial({
     uniforms: {
-      time: { value: 0. }
+      time: { value: 0 },
     },
     vertexShader: `
         //attribute vec3 offset;
@@ -93,46 +93,59 @@ window.ParticleSystem = function () {
   this.mesh.updateMatrixWorld(true);
 
   GAME.scene.add(this.mesh);
-
 };
 
-ParticleSystem.prototype.updateRender = function(dt, time, ctx) {
-    
-    this.material.uniforms.time.value = time;
-
+ParticleSystem.prototype.updateRender = function (dt, time, ctx) {
+  this.material.uniforms.time.value = time;
 };
 
-ParticleSystem.prototype.addParticle = function(p0, v0, size) {
-
-    let idx = this.addPtr;
-    this.addPtr = (this.addPtr + 1) % MAX_PRT;
-    this.positions[idx*3+0] = p0.x;
-    this.positions[idx*3+1] = p0.y;
-    this.positions[idx*3+2] = p0.z || 0.;
-    this.velocities[idx*3+0] = v0.x;
-    this.velocities[idx*3+1] = v0.y;
-    this.velocities[idx*3+2] = v0.z || 0.;
-    this.attr1[idx*4+0] = GAME.time;
-    this.attr1[idx*4+1] = 5.;//Math.sqrt(size) * 2;
-    this.attr1[idx*4+2] = size;
-    this.attr1[idx*4+3] = 0.;
-    this.posAttr.needsUpdate = true;
-    this.velAttr.needsUpdate = true;
-    this.at1Attr.needsUpdate = true;
-
+ParticleSystem.prototype.addParticle = function (p0, v0, size) {
+  let idx = this.addPtr;
+  this.addPtr = (this.addPtr + 1) % MAX_PRT;
+  this.positions[idx * 3 + 0] = p0.x;
+  this.positions[idx * 3 + 1] = p0.y;
+  this.positions[idx * 3 + 2] = p0.z || 0;
+  this.velocities[idx * 3 + 0] = v0.x;
+  this.velocities[idx * 3 + 1] = v0.y;
+  this.velocities[idx * 3 + 2] = v0.z || 0;
+  this.attr1[idx * 4 + 0] = GAME.time;
+  this.attr1[idx * 4 + 1] = 5; //Math.sqrt(size) * 2;
+  this.attr1[idx * 4 + 2] = size;
+  this.attr1[idx * 4 + 3] = 0;
+  this.posAttr.needsUpdate = true;
+  this.velAttr.needsUpdate = true;
+  this.at1Attr.needsUpdate = true;
 };
 
-ParticleSystem.prototype.explosion = function(center, size) {
+ParticleSystem.prototype.explosion = function (center, size) {
+  let count = size * Math.sqrt(size);
+  for (let i = 0; i < count; i++) {
+    this.addParticle(
+      center,
+      new THREE.Vector3(
+        Math.random() * 2 - 1,
+        Math.random() * 2 - 1,
+        Math.random() * 2 - 1
+      )
+        .normalize()
+        .multiplyScalar(size * Math.random() * 0.25),
+      4 * Math.sqrt(size) * (0.2 + Math.random() * 0.75)
+    );
+  }
 
-    let count = size*Math.sqrt(size);
-    for (let i=0; i<count; i++) {
-        this.addParticle(center, new THREE.Vector3(Math.random()*2-1, Math.random()*2-1, Math.random()*2-1).normalize().multiplyScalar(size * Math.random() * 0.25), 4. * Math.sqrt(size)*(0.2 + Math.random()*0.75));
-    }
+  let dist = Math.sqrt(
+    Math.pow(center.x - GAME.camera.position.x, 2),
+    Math.pow(center.y - GAME.camera.position.y, 2)
+  );
 
+  sounds['audio/og_boom.wav'].volume = Math.min(
+    0.5,
+    (0.05 * size) / Math.sqrt(dist)
+  );
+  sounds['audio/og_boom.wav'].playbackRate = 1 / Math.sqrt(size);
+  sounds['audio/og_boom.wav'].play();
 };
 
-ParticleSystem.prototype.destroy = function() {
-
-    GAME.scene.remove(this.mesh);
-
+ParticleSystem.prototype.destroy = function () {
+  GAME.scene.remove(this.mesh);
 };

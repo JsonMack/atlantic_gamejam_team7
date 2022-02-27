@@ -24,6 +24,8 @@ window.LOAD_IMAGES = [
   'BB_AA_Start_Screen_2.png',
   'BB_AA_Start_Button.png',
   'waterfront.png',
+  'ubisoft.png',
+  'bluenose.png',
 ]; //['building-blocks.jpg', 'texture.jpg', 'etc.png']; // => { "building-blocks": Image, "texture": Image, "etc": Image }
 
 // adding objects from Box2D library to window object for easier access
@@ -155,13 +157,19 @@ window.StartGame = function () {
 };
 
 window.LoadSound = function () {
-  sounds.load(['audio/theme.mp3', 'audio/gun_boom.wav']);
+  sounds.load(['audio/theme.mp3', 'audio/gun_boom.wav', 'audio/og_boom.wav']);
   sounds.whenLoaded = () => {
     sounds['audio/theme.mp3'].loop = true;
     sounds['audio/theme.mp3'].volume = 0.5;
     sounds['audio/theme.mp3'].play();
   };
-  window.LoadSound = () => {};
+  window.LoadSound = () => {
+    StartGame();
+    document
+      .getElementById('entry_animation')
+      .parentNode.removeChild(document.getElementById('entry_animation'));
+    window.LoadSound = () => {};
+  };
 };
 
 window.LoadGame = function (onDone) {
