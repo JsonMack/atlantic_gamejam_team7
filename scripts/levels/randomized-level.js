@@ -149,7 +149,7 @@ RandomizedLevel.prototype.renderLossScreen = (dt, time, ctx) => {
   ctx.globalAlpha = 0.5;
   ctx.fillRect(0, 0, width, height);
   ctx.globalAlpha = 1.0;
-  ctx.fontSize = 128;
+  ctx.font = '128px aldrich';
   ctx.fillStyle = 'white';
   ctx.textAlign = 'center';
   ctx.fillText("Game Over", width / 2, height / 2);
