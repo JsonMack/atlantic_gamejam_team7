@@ -43,12 +43,21 @@
       <img src="images/anim_title.png" id="anim_title" />
       <img id="BB_AA_Start_Screen" src="images/BB_AA_Start_Screen_2.png" />
 
+
       <img
         id="BB_AA_Start_Button"
         src="images/BB_AA_START_Button.png"
         onclick="/*StartGame(); // don't start-game here or the level will be initialized twice*/"
       />
     </div>
+
+    <div id="difficulty" style="display: none; color:white;text-align: center;" >
+     <h1 >Pick a difficulty </h1> 
+      <img src = "images/ufo-2.png"style="cursor:pointer; margin: 10px;" onclick="window.LEVEL_NUM = 1;LoadSound(); "/>
+      <img src = "images/ufo-2.png"style="cursor:pointer; margin: 10px;" onclick="window.LEVEL_NUM = 2;LoadSound();"/>
+      <img src = "images/ufo-2.png"style="cursor:pointer; margin: 10px;" onclick="window.LEVEL_NUM = 3;LoadSound();"/>
+    </div>
+      
     <canvas id="canvas2d"> </canvas>
     <canvas id="canvas3d"></canvas>
   </body>
