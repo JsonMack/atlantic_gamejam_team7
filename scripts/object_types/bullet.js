@@ -31,9 +31,16 @@ window.Bullet = function (player, fromBody, fromOffset, pos, angle, op) {
 
   this.life = 3;
 
-  sounds['audio/gun_boom.wav'].volume = op ? 1.5 : 0.5;
-  sounds['audio/gun_boom.wav'].playbackRate = op ? 0.45 : 1;
-  sounds['audio/gun_boom.wav'].play();
+  if (this.player) {
+    sounds['audio/gun_boom.wav'].volume = op ? 1.5 : 0.5;
+    sounds['audio/gun_boom.wav'].playbackRate = op ? 0.45 : 1;
+    sounds['audio/gun_boom.wav'].play();
+  }
+  else {
+    sounds['audio/alien_gun.wav'].volume = 0.25;
+    sounds['audio/alien_gun.wav'].playbackRate = 1;
+    sounds['audio/alien_gun.wav'].play();
+  }
 };
 
 Bullet.prototype.updateRender = function (dt, time, ctx) {

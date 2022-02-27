@@ -1,12 +1,6 @@
 window.GenerateUFO = function () {
-  setInterval(() => {
-    if (GAME.MAX_UFO_COUNT > GAME.CURRENT_UFO_COUNT) {
-      GAME.objects.add(new UFO(PLAYER_X + Math.random() * 50));
-      GAME.CURRENT_UFO_COUNT++;
-      console.log('current', GAME.CURRENT_UFO_COUNT);
-      console.log('max', GAME.MAX_UFO_COUNT);
-    }
-  }, 1000 / GAME.LEVEL_NUMBER);
+  GAME.objects.add(new UFO(PLAYER_X + Math.random() * 50));
+  GAME.CURRENT_UFO_COUNT++;
 };
 
 window.UFO = function (xpos) {
@@ -120,9 +114,9 @@ UFO.prototype.updateRender = function (dt, time, ctx) {
 
   // UFO falls in pit
   if (pos.y > 30 || pos.y < -40) {
-    this.onRemove();
     GAME.CURRENT_UFO_COUNT--;
     pos.y = 0; // workaround
+    return false;
   }
   this.body.ApplyForce(
     new b2Vec2(0, this.body.GetMass() * -14.99999),

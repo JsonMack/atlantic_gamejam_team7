@@ -2,12 +2,12 @@ window.PLAYER_X = 0;
 window.PLAYER_Y = 0;
 // images to load
 window.LOAD_IMAGES = [
-  'BB_AA_Alien_1.1.png',
-  'BB_AA_Alien_1.2.png',
-  'BB_AA_Alien_2.1.png',
-  'BB_AA_Alien_2.2.png',
-  'BB_AA_Alien_3.1.png',
-  'BB_AA_Alien_3.2.png',
+  'alien-1-1.png',
+  'alien-1-2.png',
+  'alien-2-1.png',
+  'alien-2-2.png',
+  'alien-3-1.png',
+  'alien-3-2.png',
   'BB_AA_Ship_1.1.png',
   'BB_AA_Ship_1.2.png',
   'BB_AA_Ship_2.1.png',
@@ -171,16 +171,16 @@ window.StartGame = function () {
 
 window.LoadSound = function () {
   sounds.load([
-    // 'audio/theme.mp3',
+    'audio/theme.mp3',
     'audio/gun_boom.wav',
     'audio/og_boom.wav',
     'audio/alien_gun.wav',
     'audio/ufo_gun.wav',
   ]);
   sounds.whenLoaded = () => {
-    sounds['audio/theme.mp3'].loop = true;
+    /*sounds['audio/theme.mp3'].loop = true;
     sounds['audio/theme.mp3'].volume = 0.5;
-    sounds['audio/theme.mp3'].play();
+    sounds['audio/theme.mp3'].play();*/
   };
   window.LoadSound = () => {
     StartGame();
@@ -211,20 +211,14 @@ window.LoadGame = function (onDone) {
 
     GAME.images['enemy-spritesheet'] = make_spritesheet(
       [
-        'billy-run-1',
-        'billy-run-2',
-        'billy-crouching',
-        'billy-guarding',
-        'billy-standing',
-        'billy-jump',
-        // 'BB_AA_Alien_1.1',
-        // 'BB_AA_Alien_1.2',
-        // 'BB_AA_Alien_2.1',
-        // 'BB_AA_Alien_2.2',
-        // 'BB_AA_Alien_3.1',
-        // 'BB_AA_Alien_3.2',
+        'alien-1-1',
+        'alien-1-2',
+        'alien-2-1',
+        'alien-2-2',
+        'alien-3-1',
+        'alien-3-2',
       ],
-      BT_SIZE_PIXELS,
+      BT_SIZE_PIXELS * 2,
       8,
       8
     );
