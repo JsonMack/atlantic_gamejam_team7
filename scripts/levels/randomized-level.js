@@ -53,21 +53,22 @@ RandomizedLevel.prototype.updateRender = function (dt, time, ctx) {
 
   const healthBarHeight = 20;
 
-  const backgroundColor = '0x000000';
+  const backgroundColor = 'black';
 
-  const fillColor = '0xFF0000';
+  const fillColor = 'red';
 
-  ctx.fillColor = backgroundColor;
+  ctx.fillStyle = backgroundColor;
   ctx.fillRect(healthBarX, healthBarY, healthBarWidth, healthBarHeight);
 
   const fillWidth = (GAME.cityHealth / GAME.maxCityHealth) * healthBarWidth;
 
-  ctx.fillColor = fillColor;
+  ctx.fillStyle = fillColor;
   ctx.fillRect(healthBarX, healthBarY, fillWidth, healthBarHeight);
 
-  ctx.fillStyle = '0x000000';
+  ctx.fillStyle = 'white';
   ctx.font = '20px Arial';
-  ctx.fillText(GAME.cityHealth + "/" + GAME.maxCityHealth, 20, 60);
+  ctx.fillText(GAME.cityHealth + "/" + GAME.maxCityHealth + ", " + fillWidth, 20, 80);
+
 };
 
 RandomizedLevel.prototype.onRemove = function () {
