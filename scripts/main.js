@@ -97,6 +97,7 @@ window.StartGame = function () {
       GAME.mouseClickLeft = true;
     }
   });
+  document.body.style.cursor = 'none';
   document.addEventListener('keydown', (e) => {
     e = e || window.event;
     switch (e.keyCode) {
@@ -280,6 +281,10 @@ window.GameLoop = function () {
     20,
     20
   );
+
+  GAME.ctx.fillStyle = '#ff0000';
+  GAME.ctx.fillRect(GAME.mouseScreen.x - 10, GAME.mouseScreen.y - 1, 20, 3);
+  GAME.ctx.fillRect(GAME.mouseScreen.x - 1, GAME.mouseScreen.y - 10, 3, 20);
 
   GAME.physicsDtAcc += GAME.dt;
 
