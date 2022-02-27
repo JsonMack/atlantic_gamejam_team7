@@ -20,6 +20,7 @@ window.RandomizedLevel = function (levelNo) {
     x += width + 6 + Math.round(Math.random() * 3);
   }
 
+  GAME.cityHealth /= 2;
   GAME.maxCityHealth = GAME.cityHealth;
 
   GenerateMainCharacter();
@@ -29,12 +30,15 @@ window.RandomizedLevel = function (levelNo) {
   this.nextEnemyIn = (10 + (Math.random() * 20) / Math.sqrt(levelNo)) / 3;
 };
 
+RandomizedLevel.prototype.lossConditionMet = function() {
+  return GAME.PLAYER_HEALTH == 0 || GAME.cityHealth <= 0;
+};
+
 RandomizedLevel.prototype.updateRender = function (dt, time, ctx) {
   // player dies
-  if (GAME.PLAYER_HEALTH == 0) {
+  if (this.lossConditionMet()) {
     this.renderLossScreen(dt, time, ctx);
-    // ctx.font = `96px minecraftiaregular`;
-    // ctx.fillText('You died', GAME.canvas2D.width / 4, 400);
+    return;
   }
 
   this.nextEnemyIn -= dt;
@@ -138,7 +142,7 @@ RandomizedLevel.prototype.onRemove = function () {
   GAME.objects.clear();
 };
 
-RandomizedLevel.prototype.renderLossScreen = (dt, time, ctx) => {
+RandomizedLevel.prototype.renderLossScreen = function(dt, time, ctx) {
   let canvas = GAME.canvas2D;
 
   let width = canvas.width;
@@ -161,4 +165,4 @@ RandomizedLevel.prototype.renderLossScreen = (dt, time, ctx) => {
     GAME.level.onRemove();
     GAME.level = new RandomizedLevel(1);
   }
-}
+};
