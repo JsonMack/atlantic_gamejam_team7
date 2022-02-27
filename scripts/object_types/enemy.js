@@ -75,13 +75,14 @@ window.Enemy = function (xpos) {
 
   this.fireT = Math.random() * 11;
 
-  this.moveAwayT = Math.random() * 10;
+  this.moveAwayT = 10 + Math.random() * 10;
   this.moveAway = false;
 
   GAME.scene.add(this.mesh);
 };
 
 Enemy.prototype.onRemove = function () {
+  GAME.CURRENT_ENEMY_COUNT--;
   GAME.scene.remove(this.mesh);
   this.body.DestroyFixture(this.fixture);
   GAME.world.DestroyBody(this.body);
@@ -98,7 +99,6 @@ Enemy.prototype.updateRender = function (dt, time, ctx) {
 
   // enemy falls in pit
   if (pos.y > 30) {
-    GAME.CURRENT_ENEMY_COUNT--;
     pos.y = 0;
     return false;
   }
@@ -106,10 +106,10 @@ Enemy.prototype.updateRender = function (dt, time, ctx) {
   this.moveAwayT -= dt;
   if (this.moveAwayT < 0.) {
     this.moveAway = !this.moveAway;
-    this.moveAwayT = (5 + Math.random() * 5) * (this.moveAway ? 0.5 : 1.);
+    this.moveAwayT = (5 + Math.random() * 5) * (this.moveAway ? 0.25 : 2.);
   }
 
-  if (this.moveAway) {
+  if (!this.moveAway) {
     if (PLAYER_X - pos.x <= 0) this.moveLeft();
     if (PLAYER_X - pos.x > 0) this.moveRight();
   }
