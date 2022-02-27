@@ -14,7 +14,9 @@ window.LOAD_IMAGES = [
   'billy-standing.png',
   'billy-jump.png',
   'bg-2.png',
-  'bg-1.png'
+  'bg-1.png',
+  'BB_AA_Start_Screen_2.png',
+  'BB_AA_Start_Button.png',
 ]; //['building-blocks.jpg', 'texture.jpg', 'etc.png']; // => { "building-blocks": Image, "texture": Image, "etc": Image }
 
 // adding objects from Box2D library to window object for easier access
@@ -70,6 +72,7 @@ window.StartGame = function () {
     1000
   );
   GAME.scene.add(GAME.camera);
+
   document.addEventListener('mousemove', (e) => {
     e = e || window.event;
     GAME.mouseScreen.x = e.pageX || 0;
@@ -250,7 +253,7 @@ window.GameLoop = function () {
       GAME.mouseScreen.y
     }, mouse world: ${GAME.mouseWorld.x},${GAME.mouseWorld.y}, mouse left: ${
       GAME.mouseLeft
-    }`,
+    }, HEALTH: ${PLAYER_HEALTH}`,
     20,
     20
   );

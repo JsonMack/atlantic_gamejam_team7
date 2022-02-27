@@ -27,8 +27,23 @@
     <script src="scripts/main.js"></script>
     <link rel="stylesheet" href="css/main.css" />
   </head>
-  <body onload="StartGame();">
-    <canvas id="canvas2d"></canvas>
+  <!-- onload="StartGame();" -->
+  <body>
+    <img
+      id="BB_AA_Start_Screen"
+      src="images/BB_AA_Start_Screen_2.png"
+      width="100%"
+      height="100%"
+    />
+    <img
+      id="BB_AA_Start_Button"
+      src="images/BB_AA_Start_Button.png"
+      width="300px"
+      height="120px"
+      onclick="StartGame();"
+      style="position: absolute; left: 60%; top: 80%; border-radius: 10px"
+    />
+    <canvas id="canvas2d"> </canvas>
     <canvas id="canvas3d"></canvas>
   </body>
 </html>
