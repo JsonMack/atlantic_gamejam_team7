@@ -29,7 +29,7 @@ window.MainCharacter = function () {
   //fixDef.shape.SetAsBox(BT_SIZE * 0.5, BT_SIZE * 0.5);
 
   fixDef.density = 1;
-  fixDef.fricton = 10;
+  fixDef.friction = 10;
   fixDef.restitution = 0.0;
   this.body = GAME.world.CreateBody(bodyDef);
   this.body._IsPlayer = true;
@@ -47,7 +47,7 @@ window.MainCharacter = function () {
       spriteNo: { value: 0 },
       hFlip: { value: 1 },
       tex: { value: this.texture },
-      chargeT: { value: 0. }
+      chargeT: { value: 0 },
     },
     vertexShader: `
               varying vec2 vUv;
@@ -88,7 +88,7 @@ window.MainCharacter = function () {
   GAME.scene.add(this.mesh);
 
   this.fireT = 0;
-  this.chargeT = 0.;
+  this.chargeT = 0;
 };
 
 MainCharacter.prototype.onRemove = function () {
@@ -102,7 +102,11 @@ MainCharacter.prototype.updateRender = function (dt, time, ctx) {
   if (pos.y > 30) PLAYER_HEALTH = 0; // if player falls in water
   window.PLAYER_X = pos.x;
   window.PLAYER_Y = pos.y;
-  this.mesh.position.set(pos.x + (Math.random()*2-1) * this.chargeT * 0.5, pos.y + (Math.random()*2-1) * this.chargeT * 0.5, 1);
+  this.mesh.position.set(
+    pos.x + (Math.random() * 2 - 1) * this.chargeT * 0.5,
+    pos.y + (Math.random() * 2 - 1) * this.chargeT * 0.5,
+    1
+  );
   this.mesh.rotation.set(0, 0, this.body.GetAngle(), 'ZXY');
 
   GAME.camera.position.set(window.PLAYER_X, 0, -10);
@@ -175,12 +179,12 @@ MainCharacter.prototype.fire = function () {
       this.radius * 1.1,
       new b2Vec2(pos.x, pos.y),
       angle,
-      this.chargeT >= 1.
+      this.chargeT >= 1
     )
   );
 
-  if (this.chargeT >= 1.) {
-    this.chargeT -= 1.;
+  if (this.chargeT >= 1) {
+    this.chargeT -= 1;
   }
   this.fireT = 1;
 };

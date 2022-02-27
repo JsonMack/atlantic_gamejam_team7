@@ -18,6 +18,10 @@ window.LOAD_IMAGES = [
   'BB_AA_Start_Screen_2.png',
   'BB_AA_Start_Button.png',
   'waterfront.png',
+  'BB_AA_Alien_1.1.png',
+  'BB_AA_Alien_1.2.png',
+  'BB_AA_Alien_2.1.png',
+  'BB_AA_Alien_2.2.png',
 ]; //['building-blocks.jpg', 'texture.jpg', 'etc.png']; // => { "building-blocks": Image, "texture": Image, "etc": Image }
 
 // adding objects from Box2D library to window object for easier access
@@ -152,11 +156,7 @@ window.LoadSound = function () {
     sounds['audio/theme.mp3'].volume = 0.5;
     sounds['audio/theme.mp3'].play();
   };
-  window.LoadSound = () => {
-    StartGame();
-    document.getElementById('entry_animation').parentNode.removeChild(document.getElementById('entry_animation'));
-    window.LoadSound = () => {};
-  };
+  window.LoadSound = () => {};
 };
 
 window.LoadGame = function (onDone) {
@@ -171,6 +171,18 @@ window.LoadGame = function (onDone) {
         'billy-guarding',
         'billy-standing',
         'billy-jump',
+      ],
+      BT_SIZE_PIXELS,
+      8,
+      8
+    );
+
+    GAME.images['enemy-spritesheet'] = make_spritesheet(
+      [
+        'BB_AA_Alien_1.1',
+        'BB_AA_Alien_1.2',
+        'BB_AA_Alien_2.1',
+        'BB_AA_Alien_2.2',
       ],
       BT_SIZE_PIXELS,
       8,

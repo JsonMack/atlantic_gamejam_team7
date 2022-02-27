@@ -9,21 +9,21 @@ window.RandomizedLevel = function (levelNo) {
 
   let x = -80;
 
-  while (x<80) {
+  while (x < 80) {
     let width = Math.round(Math.random() * 4 + 4);
 
-    if ((x+width) < -1 || x > 1) {
-      GenerateBuilding(x, width, Math.ceil(Math.random()*10+5));
+    if (x + width < -1 || x > 1) {
+      GenerateBuilding(x, width, Math.ceil(Math.random() * 10 + 5));
     }
 
     x += width + 3 + Math.round(Math.random());
   }
 
   GenerateMainCharacter();
+  // GenerateEnemyCharacter();
 };
 
-RandomizedLevel.prototype.updateRender = function (dt, time, ctx) {
-};
+RandomizedLevel.prototype.updateRender = function (dt, time, ctx) {};
 
 RandomizedLevel.prototype.onRemove = function () {
   GAME.objects.clear();
