@@ -15,6 +15,7 @@ window.GenerateMainCharacter = function () {
 };
 
 window.MainCharacter = function () {
+
   let bodyDef = new b2BodyDef();
   let fixDef = new b2FixtureDef();
 
@@ -101,6 +102,11 @@ MainCharacter.prototype.onRemove = function () {
 };
 
 MainCharacter.prototype.updateRender = function (dt, time, ctx) {
+  
+  if (GAME.level.winTime > 0.) {
+    return true;
+  }
+
   let pos = this.body.GetWorldCenter();
   if (pos.y > 30) GAME.PLAYER_HEALTH = 0; // if player falls in water
   window.PLAYER_X = pos.x;
