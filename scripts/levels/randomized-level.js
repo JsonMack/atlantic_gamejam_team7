@@ -119,13 +119,13 @@ RandomizedLevel.prototype.drawHealthBar = function (
   );
 
   ctx.fillStyle = 'white';
-  ctx.font = '16px minecraftiaregular';
+  ctx.font = '12px minecraftiaregular';
   ctx.textAlign = 'center';
 
   ctx.fillText(
     currentHealth + '/' + maxHealth,
     healthBarX + healthBarWidth / 2,
-    healthBarY + healthBarHeight / 2 + 6
+    healthBarY + healthBarHeight
   );
 
   ctx.textAlign = 'left';
