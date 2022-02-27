@@ -20,6 +20,8 @@ window.RandomizedLevel = function (levelNo) {
     x += width + 3 + Math.round(Math.random());
   }
 
+  GAME.maxCityHealth = GAME.cityHealth;
+
   GenerateMainCharacter();
   //GenerateUFO();
   //GenerateHostage();
