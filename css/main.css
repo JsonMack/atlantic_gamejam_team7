@@ -120,31 +120,24 @@ canvas {
 }
 
 #slide1 {
-  animation-name: slides1;
+  position: absolute;
+  animation-name: slides;
   animation-delay: 1s;
   width: 100%;
   visibility: hidden;
   animation-duration: 2s;
 }
 #slide2 {
+  position: absolute;
   animation-name: slides;
-  animation-delay: 5s;
+  animation-delay: 3s;
   width: 100%;
   visibility: hidden;
-  animation-duration: 2s;
+  animation-duration: 3s;
+  z-index: 100;
 }
 
-@keyframes slides1 {
-  from {
-    visibility: hidden;
-    opacity: 0;
-  }
-  to {
-    visibility: visible;
-    opacity: 100;
-  }
-}
-@keyframes slides2 {
+@keyframes slides {
   from {
     visibility: hidden;
     opacity: 0;
