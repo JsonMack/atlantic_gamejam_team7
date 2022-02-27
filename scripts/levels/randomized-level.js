@@ -153,5 +153,12 @@ RandomizedLevel.prototype.renderLossScreen = (dt, time, ctx) => {
   ctx.fillStyle = 'white';
   ctx.textAlign = 'center';
   ctx.fillText("Game Over", width / 2, height / 2);
+  ctx.font = '24px aldrich';
+  ctx.fillText("Click anywhere to restart", width / 2, height / 2 + 128);
   ctx.textAlign = 'left';
+
+  if (GAME.mouseClickLeft) {
+    GAME.level.onRemove();
+    GAME.level = new RandomizedLevel(1);
+  }
 }
