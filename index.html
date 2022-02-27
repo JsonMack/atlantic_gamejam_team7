@@ -29,7 +29,7 @@
     <link rel="stylesheet" href="css/main.css" />
   </head>
 
-  <body onClick="LoadSound(); if (document.getElementById('entry_animation')) { document.getElementById('entry_animation').style.display = 'block'; document.getElementById('play_button').style.display = 'none'; document.body.style.cursor = 'initial'; }">
+  <body onClick="LoadSound(); document.getElementById('entry_animation').style.display = 'block'; document.getElementById('play_button').style.display = 'none'; document.body.style.cursor = 'initial';">
     <img id="play_button" src="images/play.png"></div>
     <div id="entry_animation" style="display: none;">
       <img src="images/anim_ufo.png" id="anim_ufo" />
@@ -40,7 +40,7 @@
       <img
         id="BB_AA_Start_Button"
         src="images/BB_AA_Start_Button.png"
-        onclick=""
+        onclick="StartGame();"
       />
     </div>
     <canvas id="canvas2d"> </canvas>

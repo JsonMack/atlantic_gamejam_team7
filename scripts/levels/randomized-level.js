@@ -12,11 +12,9 @@ window.RandomizedLevel = function (levelNo) {
   while (x < 80) {
     let width = Math.round(Math.random() * 4 + 4);
 
-    while (!(x + width < -4 || x > 4)) {
-      x += 1;
+    if (x + width < -1 || x > 1) {
+      GenerateBuilding(x, width, Math.ceil(Math.random() * 10 + 5));
     }
-
-    GenerateBuilding(x, width, Math.ceil(Math.random() * 10 + 5));
 
     x += width + 3 + Math.round(Math.random());
   }
