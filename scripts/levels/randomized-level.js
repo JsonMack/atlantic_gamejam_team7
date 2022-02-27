@@ -21,6 +21,7 @@ window.RandomizedLevel = function (levelNo) {
 
   GenerateMainCharacter();
   GenerateEnemy();
+  GenerateUFO();
 };
 
 RandomizedLevel.prototype.updateRender = function (dt, time, ctx) {

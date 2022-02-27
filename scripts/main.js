@@ -68,7 +68,8 @@ window.StartGame = function () {
   };
   GAME.LEVEL_NUMBER = 1; // LEVEL SET HERE
   GAME.MAX_ENEMY_COUNT = GAME.LEVEL_NUMBER * 10;
-  GAME.CURRENT_ENEMY_COUNT = 0;
+  GAME.MAX_UFOCOUNT = GAME.LEVEL_NUMBER * 3;
+  GAME.CURRENT_UFO_COUNT = 0;
   GAME.gameHeight = GAME.gameWidth / 1.6;
   GAME.canvas2D = document.getElementById('canvas2d');
   GAME.canvas3D = document.getElementById('canvas3d');
@@ -191,6 +192,19 @@ window.LoadGame = function (onDone) {
     );
 
     GAME.images['enemy-spritesheet'] = make_spritesheet(
+      [
+        'billy-run-1',
+        'billy-run-2',
+        'billy-crouching',
+        'billy-guarding',
+        'billy-standing',
+        'billy-jump',
+      ],
+      BT_SIZE_PIXELS,
+      8,
+      8
+    );
+    GAME.images['ufo-spritesheet'] = make_spritesheet(
       [
         'billy-run-1',
         'billy-run-2',
