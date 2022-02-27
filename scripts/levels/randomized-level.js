@@ -58,7 +58,7 @@ RandomizedLevel.prototype.updateRender = function (dt, time, ctx) {
   );
 
   RandomizedLevel.prototype.drawHealthBar(ctx, GAME.canvas2D.width - 192, 16, 192, 24, 'black',
-        GAME.ufo.hp, GAME.maxHP, GAME.images['ufo-1']);
+        GAME.ufo.hp, GAME.ufo.maxHP, GAME.images['ufo-1']);
 };
 
 RandomizedLevel.prototype.drawHealthBar = function (
