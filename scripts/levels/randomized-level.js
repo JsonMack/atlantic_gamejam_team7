@@ -23,7 +23,7 @@ window.RandomizedLevel = function (levelNo) {
   GAME.maxCityHealth = GAME.cityHealth;
 
   GenerateMainCharacter();
-  //GenerateUFO();
+  GenerateUFO();
   //GenerateHostage();
 
   this.nextEnemyIn = (10 + Math.random() * 20 / Math.sqrt(levelNo)) / 3.;
