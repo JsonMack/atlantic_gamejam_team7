@@ -12,6 +12,7 @@
 * [Kanjurer](https://github.com/kanjurer)
 * [Chris Boudreau](https://github.com/chrisboudreau1999)
 * [Michelle](https://michellegaudet5.artstation.com/)
+* [Maury Chesterfield](https://maurychesterfield.bandcamp.com/)
 
 # [Play on Itch.io!](https://itch.io/jam/atlantic-game-jam/rate/1421264)
 
