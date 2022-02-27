@@ -39,6 +39,10 @@ window.Timestamp = function () {
 
 // starts the game, it is called onload body
 window.StartGame = function () {
+  // removing after start
+  document.getElementById('BB_AA_Start_Screen').style.display = 'none';
+  document.getElementById('BB_AA_Start_Button').style.display = 'none';
+
   window.GAME = {
     time: 0,
     dt: 1 / 60,
