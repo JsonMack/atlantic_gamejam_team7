@@ -44,9 +44,6 @@ window.b2PolygonShape = Box2D.Collision.Shapes.b2PolygonShape;
 window.b2CircleShape = Box2D.Collision.Shapes.b2CircleShape;
 window.b2ContactListener = Box2D.Dynamics.b2ContactListener;
 
-b2ContactListener.BeginContact = (contact) => {
-  console.log('What');
-};
 // gives time now in seconds
 window.Timestamp = function () {
   return new Date().getTime() / 1000;
