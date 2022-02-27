@@ -17,7 +17,7 @@ window.RandomizedLevel = function (levelNo) {
       GenerateBuilding(x, width, Math.ceil(Math.random() * 10 + 5));
     }
 
-    x += width + 3 + Math.round(Math.random());
+    x += width + 6 + Math.round(Math.random()*3);
   }
 
   GAME.maxCityHealth = GAME.cityHealth;
