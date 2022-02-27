@@ -368,8 +368,6 @@ window.GameLoop = function () {
     20,
     20
   );
-  GAME.ctx.fillText(`City Health: ${GAME.cityHealth}`, 20, 40);
-
   GAME.ctx.fillStyle = '#ff0000';
   GAME.ctx.fillRect(GAME.mouseScreen.x - 10, GAME.mouseScreen.y - 1, 20, 3);
   GAME.ctx.fillRect(GAME.mouseScreen.x - 1, GAME.mouseScreen.y - 10, 3, 20);
