@@ -82,6 +82,7 @@ window.Enemy = function (xpos) {
 };
 
 Enemy.prototype.onRemove = function () {
+  GAME.CURRENT_ENEMY_COUNT--;
   GAME.scene.remove(this.mesh);
   this.body.DestroyFixture(this.fixture);
   GAME.world.DestroyBody(this.body);
@@ -98,7 +99,6 @@ Enemy.prototype.updateRender = function (dt, time, ctx) {
 
   // enemy falls in pit
   if (pos.y > 30) {
-    GAME.CURRENT_ENEMY_COUNT--;
     pos.y = 0;
     return false;
   }
