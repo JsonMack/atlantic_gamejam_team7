@@ -356,7 +356,7 @@ window.GameLoop = function () {
   GAME.ctx.clearRect(0, 0, GAME.vpWidth, GAME.vpHeight);
   GAME.ctx.fillStyle = '#FFF';
   GAME.ctx.font = '20px Arial';
-  GAME.ctx.fillText(
+  /*GAME.ctx.fillText(
     `${Math.round(1 / GAME.dt)} fps - mouse screen: ${GAME.mouseScreen.x},${
       GAME.mouseScreen.y
     }, mouse world: ${GAME.mouseWorld.x},${GAME.mouseWorld.y}, mouse left: ${
@@ -364,7 +364,7 @@ window.GameLoop = function () {
     }`,
     20,
     GAME.canvas2D.height - 32
-  );
+  );*/
   GAME.ctx.fillStyle = '#ff0000';
   GAME.ctx.fillRect(GAME.mouseScreen.x - 10, GAME.mouseScreen.y - 1, 20, 3);
   GAME.ctx.fillRect(GAME.mouseScreen.x - 1, GAME.mouseScreen.y - 10, 3, 20);
