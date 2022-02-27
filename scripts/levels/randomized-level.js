@@ -22,7 +22,10 @@ window.RandomizedLevel = function (levelNo) {
     x += width + 6 + Math.round(Math.random() * 3);
   }
 
-  GAME.cityHealth /= 2;
+  console.log("Level no: " + levelNo);
+  console.log("Math: " + (.6 + Math.min(.4, GAME.LEVEL_NUMBER * .1)));
+
+  GAME.cityHealth = Math.floor(GAME.cityHealth * (.5 - Math.min(.4, GAME.LEVEL_NUMBER * .05)));
   GAME.maxCityHealth = GAME.cityHealth;
 
   GenerateMainCharacter();

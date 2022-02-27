@@ -275,7 +275,7 @@ window.LoadGame = function (onDone) {
     //};
     GAME.world.SetContactListener(GAME.contactListener);
 
-    GAME.level = new RandomizedLevel(window.LEVEL_);
+    GAME.level = new RandomizedLevel(GAME.LEVEL_NUMBER);
     GAME.camera.position.set(window.PLAYER_X, 0, -10);
     GAME.camera.up.set(0, -1, 0);
     GAME.camera.lookAt(new THREE.Vector3(window.PLAYER_X, 0, 0));
