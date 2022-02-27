@@ -6,6 +6,9 @@ window.EarthObject = function () {
 };
 
 EarthObject.prototype.updateRender = function (dt, time, ctx) {
+  this.objects.forEach((element) => {
+    element.updateRender(dt, time, ctx);
+  });
   return true;
 };
 

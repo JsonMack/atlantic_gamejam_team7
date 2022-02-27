@@ -34,40 +34,29 @@ window.ParticleSystem = function () {
         uniform float time;
         
         varying float vTime;
-
         void main() {
-
             vTime = (time - attr1.x) / attr1.y;
-
             if (vTime >= 0. && vTime < 1.) {
-
                 vec3 pos2 = position + (velocity - vec3(0., 300. / pow(attr1.z, 2.), 0.)) * pow(vTime, 0.5) + vec3(0., 1., 0.) * pow(time - attr1.x, 0.5);
-
                 if (pos2.y > 20.) {
                     pos2.y = 20.;
                 }
-
                 pos2.z = 0.;
                 
                 vec4 mvp = modelViewMatrix * vec4(pos2, 1.0);
                 gl_Position = projectionMatrix * mvp;
                 gl_PointSize = (attr1.z * (1. + pow(vTime, 0.5)*3.));
-
             }
             else {
-
                 gl_PointSize = 1.;
                 vec4 mvp = modelViewMatrix * vec4(vec3(0.), 1.0);
                 gl_Position = projectionMatrix * mvp;
-
             }
-
         }
     `,
     fragmentShader: `
         varying float vTime;
         uniform float time;
-
         void main() {
             if (vTime < 0. || vTime >= 1.) {
                 discard;
