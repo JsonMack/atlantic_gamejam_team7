@@ -45,18 +45,12 @@ RandomizedLevel.prototype.updateRender = function (dt, time, ctx) {
     this.nextEnemyIn = (10 + Math.random() * 20 / Math.sqrt(this.levelNo)) / 2.;
   }
 
-  const healthBarY = 16;
+  RandomizedLevel.prototype.drawHealthBar(ctx, 32, 16, 192, 24, 'black', GAME.cityHealth, GAME.maxCityHealth, GAME.images['skyline-small']);
+};
 
-  const healthBarWidth = 192;
-
-  const healthBarHeight = 24;
-
-  const healthBarX = 32;
-
-  const backgroundColor = 'black';
-
-  const percentage = (GAME.cityHealth / GAME.maxCityHealth);
-
+RandomizedLevel.prototype.drawHealthBar = function(ctx, healthBarX, healthBarY, healthBarWidth, 
+    healthBarHeight, backgroundColor, currentHealth, maxHealth, image) {
+  const percentage = (currentHealth / maxHealth);
 
   const fillColor = percentage < 0.3 ? 'red' 
           : percentage <= .5 ? 'yellow' 
@@ -67,21 +61,21 @@ RandomizedLevel.prototype.updateRender = function (dt, time, ctx) {
   ctx.fillStyle = backgroundColor;
   ctx.fillRect(healthBarX, healthBarY, healthBarWidth, healthBarHeight);
 
-  const fillWidth = (GAME.cityHealth / GAME.maxCityHealth) * healthBarWidth;
+  const fillWidth = percentage * healthBarWidth;
 
   ctx.fillStyle = fillColor;
+
   ctx.fillRect(healthBarX + 2, healthBarY + 2, fillWidth - 4, healthBarHeight - 4);
 
   ctx.fillStyle = 'white';
   ctx.font = '16px Arial';
   ctx.textAlign = 'center';
-  ctx.fillText(GAME.cityHealth + "/" + GAME.maxCityHealth, healthBarX + (healthBarWidth / 2), 
-      healthBarY + (healthBarHeight / 2) + 6);
+
+  ctx.fillText(currentHealth + "/" + maxHealth, healthBarX + (healthBarWidth / 2), healthBarY + (healthBarHeight / 2) + 6);
 
   ctx.textAlign = 'left';
-  ctx.drawImage(GAME.images['skyline-small'], healthBarX - 16, healthBarY - 4);
-
-};
+  ctx.drawImage(image, healthBarX - 16, healthBarY - 4);
+}
 
 RandomizedLevel.prototype.onRemove = function () {
   GAME.objects.clear();
