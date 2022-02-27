@@ -18,6 +18,8 @@ window.LOAD_IMAGES = [
   'BB_AA_Start_Screen_2.png',
   'BB_AA_Start_Button.png',
   'waterfront.png',
+  'ubisoft.png',
+  'bluenose.png'
 ]; //['building-blocks.jpg', 'texture.jpg', 'etc.png']; // => { "building-blocks": Image, "texture": Image, "etc": Image }
 
 // adding objects from Box2D library to window object for easier access
