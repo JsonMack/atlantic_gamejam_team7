@@ -32,8 +32,9 @@ window.RandomizedLevel = function (levelNo) {
 RandomizedLevel.prototype.updateRender = function (dt, time, ctx) {
   // player dies
   if (GAME.PLAYER_HEALTH == 0) {
-    ctx.font = `96px minecraftiaregular`;
-    ctx.fillText('You died', GAME.canvas2D.width / 4, 400);
+    this.renderLossScreen(dt, time, ctx);
+    // ctx.font = `96px minecraftiaregular`;
+    // ctx.fillText('You died', GAME.canvas2D.width / 4, 400);
   }
 
   this.nextEnemyIn -= dt;
@@ -136,3 +137,21 @@ RandomizedLevel.prototype.drawHealthBar = function (
 RandomizedLevel.prototype.onRemove = function () {
   GAME.objects.clear();
 };
+
+RandomizedLevel.prototype.renderLossScreen = (dt, time, ctx) => {
+  let canvas = GAME.canvas2D;
+
+  let width = canvas.width;
+
+  let height = canvas.height;
+
+  ctx.fillStyle = 'black';
+  ctx.globalAlpha = 0.5;
+  ctx.fillRect(0, 0, width, height);
+  ctx.globalAlpha = 1.0;
+  ctx.fontSize = 128;
+  ctx.fillStyle = 'white';
+  ctx.textAlign = 'center';
+  ctx.fillText("Game Over", width / 2, height / 2);
+  ctx.textAlign = 'left';
+}
