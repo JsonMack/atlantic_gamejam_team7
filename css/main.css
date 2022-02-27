@@ -120,15 +120,17 @@ canvas {
 }
 
 #slide1 {
+  position: absolute;
   animation-name: slides;
   animation-delay: 1s;
   width: 100%;
   visibility: hidden;
-  animation-duration: 3s;
+  animation-duration: 2s;
 }
 #slide2 {
+  position: absolute;
   animation-name: slides;
-  animation-delay: 1s;
+  animation-delay: 3s;
   width: 100%;
   visibility: hidden;
   animation-duration: 3s;
