@@ -27,6 +27,10 @@ window.Bullet = function(player, fromBody, fromOffset, pos, angle, op) {
 
     this.life = 3.;
 
+    sounds['audio/gun_boom.wav'].volume = op ? 1.5 : 0.5;
+    sounds['audio/gun_boom.wav'].playbackRate = op ? 0.45 : 1.;
+    sounds['audio/gun_boom.wav'].play();
+
 };
 
 Bullet.prototype.updateRender = function(dt, time, ctx) {

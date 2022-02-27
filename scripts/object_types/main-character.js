@@ -47,6 +47,7 @@ window.MainCharacter = function () {
       spriteNo: { value: 0 },
       hFlip: { value: 1 },
       tex: { value: this.texture },
+      chargeT: { value: 0. }
     },
     vertexShader: `
               varying vec2 vUv;
@@ -67,9 +68,11 @@ window.MainCharacter = function () {
     fragmentShader: `
               uniform sampler2D tex;
               varying vec2 vUv;
+              uniform float chargeT;
 
               void main() {
                   gl_FragColor = texture2D(tex, vUv);
+                  gl_FragColor.rgb = mix(gl_FragColor.rgb, vec3(1.), chargeT);
               }
           `,
   });
@@ -85,6 +88,7 @@ window.MainCharacter = function () {
   GAME.scene.add(this.mesh);
 
   this.fireT = 0;
+  this.chargeT = 0.;
 };
 
 MainCharacter.prototype.onRemove = function () {
@@ -98,7 +102,7 @@ MainCharacter.prototype.updateRender = function (dt, time, ctx) {
   if (pos.y > 30) PLAYER_HEALTH = 0; // if player falls in water
   window.PLAYER_X = pos.x;
   window.PLAYER_Y = pos.y;
-  this.mesh.position.set(pos.x, pos.y, 1);
+  this.mesh.position.set(pos.x + (Math.random()*2-1) * this.chargeT * 0.5, pos.y + (Math.random()*2-1) * this.chargeT * 0.5, 1);
   this.mesh.rotation.set(0, 0, this.body.GetAngle(), 'ZXY');
 
   GAME.camera.position.set(window.PLAYER_X, 0, -10);
@@ -139,6 +143,7 @@ MainCharacter.prototype.updateRender = function (dt, time, ctx) {
   } else {
     this.material.uniforms.spriteNo.value = BILLY_STAND;
   }
+  this.material.uniforms.chargeT.value = this.chargeT;
 
   this.body.SetLinearDamping(onGround ? 5.0 : 2);
 
@@ -160,11 +165,9 @@ MainCharacter.prototype.fire = function () {
   let dx = GAME.mouseWorld.x - pos.x,
     dy = GAME.mouseWorld.y - pos.y;
   let angle = Math.atan2(dy, dx);
-  sounds.load(['audio/gun_boom.wav']);
-  sounds.whenLoaded = () => {
-    sounds['audio/gun_boom.wav'].volume = 0.5;
-    sounds['audio/gun_boom.wav'].play();
-  };
+
+  this.chargeT += 1 / (4 + Math.random());
+
   GAME.objects.add(
     new Bullet(
       true,
@@ -172,9 +175,13 @@ MainCharacter.prototype.fire = function () {
       this.radius * 1.1,
       new b2Vec2(pos.x, pos.y),
       angle,
-      true
+      this.chargeT >= 1.
     )
   );
+
+  if (this.chargeT >= 1.) {
+    this.chargeT -= 1.;
+  }
   this.fireT = 1;
 };
 

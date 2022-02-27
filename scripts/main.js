@@ -152,7 +152,11 @@ window.LoadSound = function () {
     sounds['audio/theme.mp3'].volume = 0.5;
     sounds['audio/theme.mp3'].play();
   };
-  window.LoadSound = () => {};
+  window.LoadSound = () => {
+    StartGame();
+    document.getElementById('entry_animation').parentNode.removeChild(document.getElementById('entry_animation'));
+    window.LoadSound = () => {};
+  };
 };
 
 window.LoadGame = function (onDone) {
