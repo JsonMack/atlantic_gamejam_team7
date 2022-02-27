@@ -73,7 +73,7 @@ window.StartGame = function () {
     gravity: 15,
   };
   GAME.LEVEL_NUMBER = 1; // LEVEL SET HERE
-  GAME.MAX_ENEMY_COUNT = GAME.LEVEL_NUMBER * 10;
+  GAME.MAX_ENEMY_COUNT = GAME.LEVEL_NUMBER * 5;
   GAME.MAX_UFO_COUNT = GAME.LEVEL_NUMBER * 3;
   GAME.CURRENT_UFO_COUNT = 0;
   GAME.CURRENT_ENEMY_COUNT = 0;
@@ -167,7 +167,13 @@ window.StartGame = function () {
 };
 
 window.LoadSound = function () {
-  sounds.load(['audio/theme.mp3', 'audio/gun_boom.wav', 'audio/og_boom.wav']);
+  sounds.load([
+    // 'audio/theme.mp3',
+    'audio/gun_boom.wav',
+    'audio/og_boom.wav',
+    'audio/alien_gun.wav',
+    'audio/ufo_gun.wav',
+  ]);
   sounds.whenLoaded = () => {
     sounds['audio/theme.mp3'].loop = true;
     sounds['audio/theme.mp3'].volume = 0.5;

@@ -77,8 +77,6 @@ window.UFO = function (xpos) {
   this.mesh.rotation.set(0, 0, this.body.GetAngle(), 'ZXY');
 
   GAME.scene.add(this.mesh);
-
-  this.fireT = 0;
 };
 
 UFO.prototype.onRemove = function () {
@@ -148,36 +146,26 @@ UFO.prototype.updateRender = function (dt, time, ctx) {
     );
   if (PLAYER_X - pos.x <= 0) this.moveLeft();
   if (PLAYER_X - pos.x > 0) this.moveRight();
-
-  this.fireT -= dt * 2;
+  setInterval(() => this.fire(), 6000 * Math.random());
 
   return true;
 };
 
 UFO.prototype.fire = function () {
-  if (this.fireT > 0) {
-    return;
-  }
   let pos = this.body.GetWorldCenter();
-  let dx = GAME.mouseWorld.x - pos.x,
-    dy = GAME.mouseWorld.y - pos.y;
+  let dx = PLAYER_X * (1 + 1 / GAME.LEVEL_NUMBER) - pos.x,
+    dy = PLAYER_Y * (1 + 1 / GAME.LEVEL_NUMBER) - pos.y;
   let angle = Math.atan2(dy, dx);
-  sounds.load(['audio/gun_boom.wav']);
-  sounds.whenLoaded = () => {
-    sounds['audio/gun_boom.wav'].volume = 0.5;
-    sounds['audio/gun_boom.wav'].play();
-  };
+
   GAME.objects.add(
-    new Bullet(
+    new UFOBullet(
       true,
       this.body,
-      this.radius * 1.1,
+      this.radius * 0.6,
       new b2Vec2(pos.x, pos.y),
-      angle,
-      true
+      angle
     )
   );
-  this.fireT = 1;
 };
 
 UFO.prototype.moveLeft = function () {
