@@ -1,8 +1,8 @@
 window.EarthObject = function () {
   this.objects = [];
-  this.objects.push(new GroundObject(-200, 50));
+  this.objects.push(new GroundObject(-200, 200));
   this.objects.push(new WatersObject(-800, -200));
-  this.objects.push(new WatersObject(50, 800));
+  this.objects.push(new WatersObject(200, 800));
 };
 
 EarthObject.prototype.updateRender = function (dt, time, ctx) {

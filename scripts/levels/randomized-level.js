@@ -20,9 +20,11 @@ window.RandomizedLevel = function (levelNo) {
   }
 
   GenerateMainCharacter();
-  GenerateEnemy();
-  GenerateUFO();
-  GenerateHostage();
+  //GenerateUFO();
+  //GenerateHostage();
+
+  this.nextEnemyIn = (10 + Math.random() * 20 / Math.sqrt(levelNo)) / 3.;
+  
 };
 
 RandomizedLevel.prototype.updateRender = function (dt, time, ctx) {
@@ -30,6 +32,16 @@ RandomizedLevel.prototype.updateRender = function (dt, time, ctx) {
   if (PLAYER_HEALTH == 0) {
     ctx.fillText('You died', 50, 50);
   }
+
+  this.nextEnemyIn -= dt;
+  if (GAME.MAX_ENEMY_COUNT > GAME.CURRENT_ENEMY_COUNT && this.nextEnemyIn < 0) {
+    GAME.objects.add(new Enemy(PLAYER_X + Math.random() * 50));
+    GAME.CURRENT_ENEMY_COUNT++;
+    console.log('current', GAME.CURRENT_ENEMY_COUNT);
+    console.log('max', GAME.MAX_ENEMY_COUNT);
+    this.nextEnemyIn = (10 + Math.random() * 20 / Math.sqrt(this.levelNo)) / 2.;
+  }
+
 };
 
 RandomizedLevel.prototype.onRemove = function () {
