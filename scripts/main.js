@@ -149,61 +149,70 @@ window.LoadGame = function (onDone) {
   image_generator(LOAD_IMAGES, (images) => {
     GAME.images = images;
 
-    GAME.images['billy-spritesheet'] = make_spritesheet(
-      [
-        'billy-run-1',
-        'billy-run-2',
-        'billy-crouching',
-        'billy-guarding',
-        'billy-standing',
-        'billy-jump',
-      ],
-      BT_SIZE_PIXELS,
-      8,
-      8
-    );
-
-    InitBuildingMaterials();
-    GAME.timeStamp = Timestamp();
-    GAME.objects = new ObjectSystem();
-    GAME.particles = new ParticleSystem();
-    GAME.world = new b2World(new b2Vec2(0, GAME.gravity), false);
-
-    GAME.contactListener = new b2ContactListener();
-    GAME.contactListener.PreSolve = (contact) => {
-      let fixA = contact.GetFixtureA();
-      let fixB = contact.GetFixtureB();
-      let bodyA = fixA.GetBody();
-      let bodyB = fixB.GetBody();
-      if (bodyA._IsFallingBT && !bodyB._IsGround && !bodyB._IsBuildingBlock) {
-        contact.SetEnabled(false);
-      }
-      if (bodyB._IsFallingBT && !bodyA._IsGround && !bodyA._IsBuildingBlock) {
-        contact.SetEnabled(false);
-      }
-      if (bodyA._BulletOP && !bodyB._IsGround) {
-        contact.SetEnabled(false);
-      }
-      if (bodyB._BulletOP && !bodyA._IsGround) {
-        contact.SetEnabled(false);
-      }
-      if (bodyA._IsPlayer && bodyA.GetLinearVelocity().y < -1 && bodyB._IsLedge) {
-        contact.SetEnabled(false);
-      }
-      if (bodyB._IsPlayer && bodyB.GetLinearVelocity().y < -1 && bodyA._IsLedge) {
-        contact.SetEnabled(false);
-      }
+    sounds.load([
+      "audio/theme.mp3"
+    ]);
+    sounds.whenLoaded = () => {
+      sounds["audio/theme.mp3"].loop = true;
+      sounds["audio/theme.mp3"].volume = 0.5;
+      sounds["audio/theme.mp3"].play();
+  
+      GAME.images['billy-spritesheet'] = make_spritesheet(
+        [
+          'billy-run-1',
+          'billy-run-2',
+          'billy-crouching',
+          'billy-guarding',
+          'billy-standing',
+          'billy-jump',
+        ],
+        BT_SIZE_PIXELS,
+        8,
+        8
+      );
+  
+      InitBuildingMaterials();
+      GAME.timeStamp = Timestamp();
+      GAME.objects = new ObjectSystem();
+      GAME.particles = new ParticleSystem();
+      GAME.world = new b2World(new b2Vec2(0, GAME.gravity), false);
+  
+      GAME.contactListener = new b2ContactListener();
+      GAME.contactListener.PreSolve = (contact) => {
+        let fixA = contact.GetFixtureA();
+        let fixB = contact.GetFixtureB();
+        let bodyA = fixA.GetBody();
+        let bodyB = fixB.GetBody();
+        if (bodyA._IsFallingBT && !bodyB._IsGround && !bodyB._IsBuildingBlock) {
+          contact.SetEnabled(false);
+        }
+        if (bodyB._IsFallingBT && !bodyA._IsGround && !bodyA._IsBuildingBlock) {
+          contact.SetEnabled(false);
+        }
+        if (bodyA._BulletOP && !bodyB._IsGround) {
+          contact.SetEnabled(false);
+        }
+        if (bodyB._BulletOP && !bodyA._IsGround) {
+          contact.SetEnabled(false);
+        }
+        if (bodyA._IsPlayer && bodyA.GetLinearVelocity().y < -1 && bodyB._IsLedge) {
+          contact.SetEnabled(false);
+        }
+        if (bodyB._IsPlayer && bodyB.GetLinearVelocity().y < -1 && bodyA._IsLedge) {
+          contact.SetEnabled(false);
+        }
+      };
+      //GAME.contactListener.PostSolve = (contact) => {
+  
+      //};
+      GAME.world.SetContactListener(GAME.contactListener);
+  
+      GAME.level = new RandomizedLevel(1);
+      GAME.camera.position.set(window.PLAYER_X, 0, -10);
+      GAME.camera.up.set(0, -1, 0);
+      GAME.camera.lookAt(new THREE.Vector3(window.PLAYER_X, 0, 0));
+      onDone();
     };
-    //GAME.contactListener.PostSolve = (contact) => {
-
-    //};
-    GAME.world.SetContactListener(GAME.contactListener);
-
-    GAME.level = new RandomizedLevel(1);
-    GAME.camera.position.set(window.PLAYER_X, 0, -10);
-    GAME.camera.up.set(0, -1, 0);
-    GAME.camera.lookAt(new THREE.Vector3(window.PLAYER_X, 0, 0));
-    onDone();
   });
 };
 
