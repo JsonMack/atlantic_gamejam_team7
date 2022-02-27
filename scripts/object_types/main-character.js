@@ -24,6 +24,8 @@ window.MainCharacter = function () {
   bodyDef.position.x = 0;
   bodyDef.position.y = (GROUND_LEVEL - 2) * BT_SIZE - 20 + BT_SIZE * 1.5;
 
+  window.PLAYER_HEALTH = 100;
+
   this.radius = BT_SIZE * 0.5;
   fixDef.shape = new b2CircleShape(this.radius);
   //fixDef.shape.SetAsBox(BT_SIZE * 0.5, BT_SIZE * 0.5);
@@ -48,6 +50,7 @@ window.MainCharacter = function () {
       hFlip: { value: 1 },
       tex: { value: this.texture },
       chargeT: { value: 0 },
+      damage: { value: 0 }
     },
     vertexShader: `
               varying vec2 vUv;
@@ -68,10 +71,11 @@ window.MainCharacter = function () {
     fragmentShader: `
               uniform sampler2D tex;
               varying vec2 vUv;
-              uniform float chargeT;
+              uniform float chargeT, damage;
 
               void main() {
                   gl_FragColor = texture2D(tex, vUv);
+                  gl_FragColor.rgb = mix(gl_FragColor.rgb, vec3(1., 0., 0.), damage);
                   gl_FragColor.rgb = mix(gl_FragColor.rgb, vec3(1.), chargeT);
               }
           `,
@@ -140,6 +144,37 @@ MainCharacter.prototype.updateRender = function (dt, time, ctx) {
     c = c.next;
   }
 
+  c = firstContact;
+  while (c) {
+    if (c.contact.IsTouching()) {
+      let fixA = c.contact.GetFixtureA();
+      let fixB = c.contact.GetFixtureB();
+      let otherBody = null;
+      if (fixA != this.fixture) {
+        otherBody = fixA.GetBody();
+      } else {
+        otherBody = fixB.GetBody();
+      }
+      if (otherBody._IsBullet && (c.contact.IsEnabled() || otherBody._BulletOP)) {
+        PLAYER_HEALTH -= 10;
+        if (!otherBody._BulletOP) {
+          otherBody._BulletDestroyed = true;
+        }
+        else {
+          PLAYER_HEALTH -= 10;
+        }
+      }
+      if (otherBody._IsEnemy) {
+        PLAYER_HEALTH -= dt * 5;
+      }
+    }
+    c = c.next;
+  }
+
+  if (PLAYER_HEALTH < 0) {
+    PLAYER_HEALTH = 0;
+  }
+
   if (!onGround) {
     this.material.uniforms.spriteNo.value = BILLY_JUMP;
   } else if (GAME.keyLeft || GAME.keyRight) {
@@ -149,6 +184,7 @@ MainCharacter.prototype.updateRender = function (dt, time, ctx) {
     this.material.uniforms.spriteNo.value = BILLY_STAND;
   }
   this.material.uniforms.chargeT.value = this.chargeT;
+  this.material.uniforms.damage.value = Math.max(0, 1 - PLAYER_HEALTH / 100);
 
   this.body.SetLinearDamping(onGround ? 5.0 : 2);
 
@@ -159,7 +195,11 @@ MainCharacter.prototype.updateRender = function (dt, time, ctx) {
 
   this.fireT -= dt * 2;
 
-  return true;
+  if (!(PLAYER_HEALTH > 0)) {
+    GAME.particles.explosion(new THREE.Vector3(pos.x, pos.y, 0), 40) ;
+  }
+
+  return PLAYER_HEALTH > 0;
 };
 
 MainCharacter.prototype.fire = function () {
