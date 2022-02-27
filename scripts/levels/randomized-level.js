@@ -45,13 +45,13 @@ RandomizedLevel.prototype.updateRender = function (dt, time, ctx) {
     this.nextEnemyIn = (10 + Math.random() * 20 / Math.sqrt(this.levelNo)) / 2.;
   }
 
-  const healthBarX = 20;
-
   const healthBarY = 40;
 
-  const healthBarWidth = 200;
+  const healthBarWidth = 320;
 
-  const healthBarHeight = 20;
+  const healthBarHeight = 32;
+
+  const healthBarX = (GAME.canvas2D.width / 2) - (healthBarWidth / 2);
 
   const backgroundColor = 'black';
 
@@ -66,8 +66,10 @@ RandomizedLevel.prototype.updateRender = function (dt, time, ctx) {
   ctx.fillRect(healthBarX, healthBarY, fillWidth, healthBarHeight);
 
   ctx.fillStyle = 'white';
-  ctx.font = '20px Arial';
-  ctx.fillText(GAME.cityHealth + "/" + GAME.maxCityHealth + ", " + fillWidth, 20, 80);
+  ctx.font = '16px Arial';
+  ctx.textAlign = 'center';
+  ctx.fillText(GAME.cityHealth + "/" + GAME.maxCityHealth, healthBarX + (healthBarWidth / 2), 60);
+  ctx.textAlign = 'left';
 
 };
 
