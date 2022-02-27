@@ -2,6 +2,12 @@ window.PLAYER_X = 0;
 window.PLAYER_Y = 0;
 // images to load
 window.LOAD_IMAGES = [
+  'BB_AA_Alien_1.1.png',
+  'BB_AA_Alien_1.2.png',
+  'BB_AA_Alien_2.1.png',
+  'BB_AA_Alien_2.2.png',
+  'BB_AA_Alien_3.1.png',
+  'BB_AA_Alien_3.2.png',
   'building-wall.png',
   'building-ledge.png',
   'building-scafolding.png',
@@ -18,8 +24,6 @@ window.LOAD_IMAGES = [
   'BB_AA_Start_Screen_2.png',
   'BB_AA_Start_Button.png',
   'waterfront.png',
-  'ubisoft.png',
-  'bluenose.png'
 ]; //['building-blocks.jpg', 'texture.jpg', 'etc.png']; // => { "building-blocks": Image, "texture": Image, "etc": Image }
 
 // adding objects from Box2D library to window object for easier access
@@ -60,6 +64,9 @@ window.StartGame = function () {
     mouseLeft: false,
     gravity: 15,
   };
+  GAME.LEVEL_NUMBER = 1; // LEVEL SET HERE
+  GAME.MAX_ENEMY_COUNT = GAME.LEVEL_NUMBER * 10;
+  GAME.CURRENT_ENEMY_COUNT = 0;
   GAME.gameHeight = GAME.gameWidth / 1.6;
   GAME.canvas2D = document.getElementById('canvas2d');
   GAME.canvas3D = document.getElementById('canvas3d');
@@ -148,17 +155,13 @@ window.StartGame = function () {
 };
 
 window.LoadSound = function () {
-  sounds.load(['audio/theme.mp3', 'audio/gun_boom.wav', 'audio/og_boom.wav']);
+  sounds.load(['audio/theme.mp3', 'audio/gun_boom.wav']);
   sounds.whenLoaded = () => {
     sounds['audio/theme.mp3'].loop = true;
     sounds['audio/theme.mp3'].volume = 0.5;
     sounds['audio/theme.mp3'].play();
   };
-  window.LoadSound = () => {
-    StartGame();
-    document.getElementById('entry_animation').parentNode.removeChild(document.getElementById('entry_animation'));
-    window.LoadSound = () => {};
-  };
+  window.LoadSound = () => {};
 };
 
 window.LoadGame = function (onDone) {
@@ -166,6 +169,20 @@ window.LoadGame = function (onDone) {
     GAME.images = images;
 
     GAME.images['billy-spritesheet'] = make_spritesheet(
+      [
+        'billy-run-1',
+        'billy-run-2',
+        'billy-crouching',
+        'billy-guarding',
+        'billy-standing',
+        'billy-jump',
+      ],
+      BT_SIZE_PIXELS,
+      8,
+      8
+    );
+
+    GAME.images['enemy-spritesheet'] = make_spritesheet(
       [
         'billy-run-1',
         'billy-run-2',
@@ -335,7 +352,7 @@ window.GameLoop = function () {
 
   GAME.particles.updateRender(GAME.dt, GAME.time, GAME.ctx);
 
-  GAME.level.updateRender(GAME.dt, GAME.time, GAME.ctx);
+  GAME.level.updateRender(GAME.dt, GAME.time, GAME.ctx); // looping updates of game
 
   GAME.renderer.render(GAME.scene, GAME.camera); // render the scene and camera (one time thing)
 
