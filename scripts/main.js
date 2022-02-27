@@ -1,3 +1,4 @@
+window.LEVEL_NUM = 0;
 window.PLAYER_X = 0;
 window.PLAYER_Y = 0;
 // images to load
@@ -51,10 +52,6 @@ window.Timestamp = function () {
 
 // starts the game, it is called onload body
 window.StartGame = function () {
-  // removing after start
-  document.getElementById('BB_AA_Start_Screen').style.display = 'none';
-  document.getElementById('BB_AA_Start_Button').style.display = 'none';
-
   window.GAME = {
     time: 0,
     dt: 1 / 60,
@@ -71,7 +68,7 @@ window.StartGame = function () {
     gravity: 15,
     cityHealth: 0,
   };
-  GAME.LEVEL_NUMBER = 1; // LEVEL SET HERE
+  GAME.LEVEL_NUMBER = LEVEL_NUM; // LEVEL SET HERE
   GAME.MAX_ENEMY_COUNT = GAME.LEVEL_NUMBER * 5;
   GAME.MAX_UFO_COUNT = GAME.LEVEL_NUMBER * 3;
   GAME.CURRENT_UFO_COUNT = 0;
@@ -180,11 +177,16 @@ window.LoadSound = function () {
     sounds['audio/theme.mp3'].play();
   };
   window.LoadSound = () => {
-    StartGame();
     document
       .getElementById('entry_animation')
       .parentNode.removeChild(document.getElementById('entry_animation'));
-    window.LoadSound = () => {};
+    document.getElementById('difficulty').style.display = 'block';
+    window.LoadSound = () => {
+      if (LEVEL_NUM) {
+        StartGame();
+        window.LoadSound = () => {};
+      }
+    };
   };
 };
 
@@ -270,7 +272,7 @@ window.LoadGame = function (onDone) {
     //};
     GAME.world.SetContactListener(GAME.contactListener);
 
-    GAME.level = new RandomizedLevel(1);
+    GAME.level = new RandomizedLevel(window.LEVEL_);
     GAME.camera.position.set(window.PLAYER_X, 0, -10);
     GAME.camera.up.set(0, -1, 0);
     GAME.camera.lookAt(new THREE.Vector3(window.PLAYER_X, 0, 0));
