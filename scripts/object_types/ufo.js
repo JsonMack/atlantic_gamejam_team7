@@ -16,14 +16,14 @@ window.UFO = function (xpos) {
   bodyDef.type = b2Body.b2_dynamicBody;
   bodyDef.fixedRotation = true;
   bodyDef.position.x = xpos;
-  bodyDef.position.y = (GROUND_LEVEL - 1) * BT_SIZE - 20 + BT_SIZE * 1.5;
+  bodyDef.position.y = -10;
 
   this.radius = BT_SIZE * 0.5;
   fixDef.shape = new b2CircleShape(this.radius);
   //fixDef.shape.SetAsBox(BT_SIZE * 0.5, BT_SIZE * 0.5);
 
   fixDef.density = 1;
-  fixDef.friction = 1;
+  fixDef.friction = 10;
   fixDef.restitution = 0.0;
   this.body = GAME.world.CreateBody(bodyDef);
   this.body._IsPlayer = true;
@@ -121,14 +121,31 @@ UFO.prototype.updateRender = function (dt, time, ctx) {
     Math.floor(time * 15) % 2 ? BILLY_RUN_1 : BILLY_RUN_2;
 
   // UFO falls in pit
-  if (pos.y > 30) {
+  if (pos.y > 30 || pos.y < -40) {
     this.onRemove();
     GAME.CURRENT_UFO_COUNT--;
+    pos.y = 0; // workaround
   }
   this.body.ApplyForce(
-    new b2Vec2(this.body.GetMass() * 10, 0),
+    new b2Vec2(0, this.body.GetMass() * -14.99999),
     this.body.GetWorldCenter()
   );
+  if (PLAYER_Y - pos.y < 0)
+    this.body.ApplyForce(
+      new b2Vec2(0, this.body.GetMass() * -4),
+      this.body.GetWorldCenter()
+    );
+
+  if (pos.y + 10 > 0)
+    this.body.ApplyForce(
+      new b2Vec2(0, this.body.GetMass() * -3),
+      this.body.GetWorldCenter()
+    );
+  if (pos.y + 10 < 0)
+    this.body.ApplyForce(
+      new b2Vec2(0, this.body.GetMass() * 3),
+      this.body.GetWorldCenter()
+    );
   if (PLAYER_X - pos.x <= 0) this.moveLeft();
   if (PLAYER_X - pos.x > 0) this.moveRight();
 
@@ -166,7 +183,7 @@ UFO.prototype.fire = function () {
 UFO.prototype.moveLeft = function () {
   this.material.uniforms.hFlip.value = -1;
   this.body.ApplyForce(
-    new b2Vec2(-this.body.GetMass() * 30, 0),
+    new b2Vec2(-this.body.GetMass() * 10, 0),
     this.body.GetWorldCenter()
   );
 };
@@ -174,7 +191,7 @@ UFO.prototype.moveLeft = function () {
 UFO.prototype.moveRight = function () {
   this.material.uniforms.hFlip.value = 1;
   this.body.ApplyForce(
-    new b2Vec2(this.body.GetMass() * 30, 0),
+    new b2Vec2(this.body.GetMass() * 10, 0),
     this.body.GetWorldCenter()
   );
 };

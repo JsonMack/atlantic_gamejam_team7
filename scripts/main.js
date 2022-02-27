@@ -8,6 +8,12 @@ window.LOAD_IMAGES = [
   'BB_AA_Alien_2.2.png',
   'BB_AA_Alien_3.1.png',
   'BB_AA_Alien_3.2.png',
+  'BB_AA_Ship_1.1.png',
+  'BB_AA_Ship_1.2.png',
+  'BB_AA_Ship_2.1.png',
+  'BB_AA_Ship_2.2.png',
+  'BB_AA_Ship_3.1.png',
+  'BB_AA_Ship_3.2.png',
   'building-wall.png',
   'building-ledge.png',
   'building-scafolding.png',
@@ -68,8 +74,11 @@ window.StartGame = function () {
   };
   GAME.LEVEL_NUMBER = 1; // LEVEL SET HERE
   GAME.MAX_ENEMY_COUNT = GAME.LEVEL_NUMBER * 10;
-  GAME.MAX_UFOCOUNT = GAME.LEVEL_NUMBER * 3;
+  GAME.MAX_UFO_COUNT = GAME.LEVEL_NUMBER * 3;
   GAME.CURRENT_UFO_COUNT = 0;
+  GAME.CURRENT_ENEMY_COUNT = 0;
+  GAME.MAX_HOSTAGE_COUNT = GAME.LEVEL_NUMBER * 5;
+  GAME.CURRENT_HOSTAGE_COUNT = GAME.MAX_HOSTAGE_COUNT;
   GAME.gameHeight = GAME.gameWidth / 1.6;
   GAME.canvas2D = document.getElementById('canvas2d');
   GAME.canvas3D = document.getElementById('canvas3d');
@@ -199,6 +208,12 @@ window.LoadGame = function (onDone) {
         'billy-guarding',
         'billy-standing',
         'billy-jump',
+        // 'BB_AA_Alien_1.1',
+        // 'BB_AA_Alien_1.2',
+        // 'BB_AA_Alien_2.1',
+        // 'BB_AA_Alien_2.2',
+        // 'BB_AA_Alien_3.1',
+        // 'BB_AA_Alien_3.2',
       ],
       BT_SIZE_PIXELS,
       8,
@@ -212,6 +227,12 @@ window.LoadGame = function (onDone) {
         'billy-guarding',
         'billy-standing',
         'billy-jump',
+        // 'BB_AA_Ship_1.1',
+        // 'BB_AA_Ship_1.2',
+        // 'BB_AA_Ship_2.1',
+        // 'BB_AA_Ship_2.2',
+        // 'BB_AA_Ship_3.1',
+        // 'BB_AA_Ship_3.2',
       ],
       BT_SIZE_PIXELS,
       8,

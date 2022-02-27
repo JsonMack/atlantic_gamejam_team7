@@ -22,11 +22,13 @@ window.RandomizedLevel = function (levelNo) {
   GenerateMainCharacter();
   GenerateEnemy();
   GenerateUFO();
+  GenerateHostage();
 };
 
 RandomizedLevel.prototype.updateRender = function (dt, time, ctx) {
   // player dies
   if (PLAYER_HEALTH == 0) {
+    ctx.fillText('You died', 50, 50);
   }
 };
 
