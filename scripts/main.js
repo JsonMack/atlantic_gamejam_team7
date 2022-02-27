@@ -28,6 +28,7 @@ window.LOAD_IMAGES = [
   'waterfront.png',
   'ubisoft.png',
   'bluenose.png',
+  'skyline-small.png'
 ]; //['building-blocks.jpg', 'texture.jpg', 'etc.png']; // => { "building-blocks": Image, "texture": Image, "etc": Image }
 
 // adding objects from Box2D library to window object for easier access
@@ -366,7 +367,7 @@ window.GameLoop = function () {
       GAME.mouseLeft
     }, HEALTH: ${PLAYER_HEALTH}`,
     20,
-    20
+    GAME.canvas2D.height - 32
   );
   GAME.ctx.fillStyle = '#ff0000';
   GAME.ctx.fillRect(GAME.mouseScreen.x - 10, GAME.mouseScreen.y - 1, 20, 3);

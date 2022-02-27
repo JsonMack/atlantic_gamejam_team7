@@ -45,17 +45,17 @@ RandomizedLevel.prototype.updateRender = function (dt, time, ctx) {
     this.nextEnemyIn = (10 + Math.random() * 20 / Math.sqrt(this.levelNo)) / 2.;
   }
 
-  const healthBarY = 40;
+  const healthBarY = 16;
 
-  const healthBarWidth = 320;
+  const healthBarWidth = 192;
 
-  const healthBarHeight = 32;
+  const healthBarHeight = 24;
 
-  const healthBarX = (GAME.canvas2D.width / 2) - (healthBarWidth / 2);
+  const healthBarX = 32;
 
   const backgroundColor = 'black';
 
-  const fillColor = 'red';
+  const fillColor = 'blue';
 
   ctx.fillStyle = backgroundColor;
   ctx.fillRect(healthBarX, healthBarY, healthBarWidth, healthBarHeight);
@@ -63,13 +63,16 @@ RandomizedLevel.prototype.updateRender = function (dt, time, ctx) {
   const fillWidth = (GAME.cityHealth / GAME.maxCityHealth) * healthBarWidth;
 
   ctx.fillStyle = fillColor;
-  ctx.fillRect(healthBarX, healthBarY, fillWidth, healthBarHeight);
+  ctx.fillRect(healthBarX + 2, healthBarY + 2, fillWidth - 4, healthBarHeight - 4);
 
   ctx.fillStyle = 'white';
   ctx.font = '16px Arial';
   ctx.textAlign = 'center';
-  ctx.fillText(GAME.cityHealth + "/" + GAME.maxCityHealth, healthBarX + (healthBarWidth / 2), 60);
+  ctx.fillText(GAME.cityHealth + "/" + GAME.maxCityHealth, healthBarX + (healthBarWidth / 2), 
+      healthBarY + (healthBarHeight / 2) + 6);
+
   ctx.textAlign = 'left';
+  ctx.drawImage(GAME.images['skyline-small'], healthBarX - 16, healthBarY - 4);
 
 };
 
