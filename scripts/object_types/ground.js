@@ -162,7 +162,7 @@ window.GroundObject = function (lcoordinate, rcoordinate) {
 
 GroundObject.prototype.updateRender = function (dt, time, ctx) {
   this.mesh3.position.set(
-    0,
+    -10,
     (GROUND_LEVEL - 2) * BT_SIZE -
       20 +
       BT_SIZE * 0.5 +
