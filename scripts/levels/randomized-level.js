@@ -26,8 +26,7 @@ window.RandomizedLevel = function (levelNo) {
   GenerateUFO();
   //GenerateHostage();
 
-  this.nextEnemyIn = (10 + Math.random() * 20 / Math.sqrt(levelNo)) / 3.;
-  
+  this.nextEnemyIn = (10 + (Math.random() * 20) / Math.sqrt(levelNo)) / 3;
 };
 
 RandomizedLevel.prototype.updateRender = function (dt, time, ctx) {
@@ -42,25 +41,47 @@ RandomizedLevel.prototype.updateRender = function (dt, time, ctx) {
     GAME.CURRENT_ENEMY_COUNT++;
     console.log('current', GAME.CURRENT_ENEMY_COUNT);
     console.log('max', GAME.MAX_ENEMY_COUNT);
-    this.nextEnemyIn = (10 + Math.random() * 20 / Math.sqrt(this.levelNo)) / 2.;
+    this.nextEnemyIn =
+      (10 + (Math.random() * 20) / Math.sqrt(this.levelNo)) / 2;
   }
 
-  RandomizedLevel.prototype.drawHealthBar(ctx, 32, 16, 192, 24, 'black', 
-        GAME.cityHealth, GAME.maxCityHealth, GAME.images['skyline-small']);
+  RandomizedLevel.prototype.drawHealthBar(
+    ctx,
+    32,
+    16,
+    192,
+    24,
+    'black',
+    GAME.cityHealth,
+    GAME.maxCityHealth,
+    GAME.images['skyline-small']
+  );
 
-  RandomizedLevel.prototype.drawHealthBar(ctx, GAME.canvas2D.width - 192, 16, 192, 24, 'black', 
+  RandomizedLevel.prototype.drawHealthBar(ctx, GAME.canvas2D.width - 192, 16, 192, 24, 'black',
         GAME.ufo.hp, GAME.maxHP, GAME.images['ufo-1']);
 };
 
-RandomizedLevel.prototype.drawHealthBar = function(ctx, healthBarX, healthBarY, healthBarWidth, 
-    healthBarHeight, backgroundColor, currentHealth, maxHealth, image) {
-  const percentage = (currentHealth / maxHealth);
+RandomizedLevel.prototype.drawHealthBar = function (
+  ctx,
+  healthBarX,
+  healthBarY,
+  healthBarWidth,
+  healthBarHeight,
+  backgroundColor,
+  currentHealth,
+  maxHealth,
+  image
+) {
+  const percentage = currentHealth / maxHealth;
 
-  const fillColor = percentage < 0.3 ? 'red' 
-          : percentage <= .5 ? 'yellow' 
-          : percentage <= .8 ? 'orange'
-          : 'green';
-
+  const fillColor =
+    percentage < 0.3
+      ? 'red'
+      : percentage <= 0.5
+      ? 'yellow'
+      : percentage <= 0.8
+      ? 'orange'
+      : 'green';
 
   ctx.fillStyle = backgroundColor;
   ctx.fillRect(healthBarX, healthBarY, healthBarWidth, healthBarHeight);
@@ -69,13 +90,22 @@ RandomizedLevel.prototype.drawHealthBar = function(ctx, healthBarX, healthBarY, 
 
   ctx.fillStyle = fillColor;
 
-  ctx.fillRect(healthBarX + 2, healthBarY + 2, fillWidth - 4, healthBarHeight - 4);
+  ctx.fillRect(
+    healthBarX + 2,
+    healthBarY + 2,
+    fillWidth - 4,
+    healthBarHeight - 4
+  );
 
   ctx.fillStyle = 'white';
-  ctx.font = '16px minecraftregular';
+  ctx.font = '16px minecraftiaregular';
   ctx.textAlign = 'center';
 
-  ctx.fillText(currentHealth + "/" + maxHealth, healthBarX + (healthBarWidth / 2), healthBarY + (healthBarHeight / 2) + 6);
+  ctx.fillText(
+    currentHealth + '/' + maxHealth,
+    healthBarX + healthBarWidth / 2,
+    healthBarY + healthBarHeight / 2 + 6
+  );
 
   ctx.textAlign = 'left';
   ctx.drawImage(image, healthBarX - 16, healthBarY - 4, 32, 32);

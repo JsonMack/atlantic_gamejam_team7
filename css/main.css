@@ -1,3 +1,10 @@
+@font-face {
+  font-family: 'minecraftiaregular';
+  src: url('minecraftia-regular-webfont.woff2') format('woff2'),
+    url('minecraftia-regular-webfont.woff') format('woff');
+  font-weight: normal;
+  font-style: normal;
+}
 html,
 body {
   margin: 0px;
@@ -15,6 +22,7 @@ canvas {
   top: 0px;
   left: 0px;
   pointer-events: none;
+  font-family: minecraftiaregular !important;
 }
 #canvas3d {
   z-index: 2;
