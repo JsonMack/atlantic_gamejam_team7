@@ -17,6 +17,7 @@ window.LOAD_IMAGES = [
   'bg-1.png',
   'BB_AA_Start_Screen_2.png',
   'BB_AA_Start_Button.png',
+  'waterfront.png',
 ]; //['building-blocks.jpg', 'texture.jpg', 'etc.png']; // => { "building-blocks": Image, "texture": Image, "etc": Image }
 
 // adding objects from Box2D library to window object for easier access
@@ -99,6 +100,7 @@ window.StartGame = function () {
       GAME.mouseClickLeft = true;
     }
   });
+  document.body.style.cursor = 'none';
   document.addEventListener('keydown', (e) => {
     e = e || window.event;
     switch (e.keyCode) {
@@ -282,6 +284,10 @@ window.GameLoop = function () {
     20,
     20
   );
+
+  GAME.ctx.fillStyle = '#ff0000';
+  GAME.ctx.fillRect(GAME.mouseScreen.x - 10, GAME.mouseScreen.y - 1, 20, 3);
+  GAME.ctx.fillRect(GAME.mouseScreen.x - 1, GAME.mouseScreen.y - 10, 3, 20);
 
   GAME.physicsDtAcc += GAME.dt;
 
