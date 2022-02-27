@@ -119,12 +119,12 @@ Enemy.prototype.updateRender = function (dt, time, ctx) {
 
   this.material.uniforms.spriteNo.value =
     Math.floor(time * 15) % 2 ? BILLY_RUN_1 : BILLY_RUN_2;
-};
 
-// enemy falls in pit
-if (pos.y > 30) {
-  this.onRemove();
-  GAME.CURRENT_ENEMY_COUNT--;
+  // enemy falls in pit
+  if (pos.y > 30) {
+    this.onRemove();
+    GAME.CURRENT_ENEMY_COUNT--;
+  }
 
   if (PLAYER_X - pos.x <= 0) this.moveLeft();
   if (PLAYER_X - pos.x > 0) this.moveRight();
@@ -132,7 +132,7 @@ if (pos.y > 30) {
   this.fireT -= dt * 2;
 
   return true;
-}
+};
 
 Enemy.prototype.fire = function () {
   if (this.fireT > 0) {
