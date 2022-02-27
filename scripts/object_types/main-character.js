@@ -27,7 +27,7 @@ window.MainCharacter = function () {
   this.radius = BT_SIZE * 0.5;
   fixDef.shape = new b2CircleShape(this.radius);
   //fixDef.shape.SetAsBox(BT_SIZE * 0.5, BT_SIZE * 0.5);
-  
+
   fixDef.density = 1;
   fixDef.fricton = 10;
   fixDef.restitution = 0.0;
@@ -84,7 +84,7 @@ window.MainCharacter = function () {
 
   GAME.scene.add(this.mesh);
 
-  this.fireT = 0.;
+  this.fireT = 0;
 };
 
 MainCharacter.prototype.onRemove = function () {
@@ -152,15 +152,30 @@ MainCharacter.prototype.updateRender = function (dt, time, ctx) {
   return true;
 };
 
-MainCharacter.prototype.fire = function() {
-  if (this.fireT > 0.) {
+MainCharacter.prototype.fire = function () {
+  if (this.fireT > 0) {
     return;
   }
   let pos = this.body.GetWorldCenter();
-  let dx = GAME.mouseWorld.x - pos.x, dy = GAME.mouseWorld.y - pos.y;
+  let dx = GAME.mouseWorld.x - pos.x,
+    dy = GAME.mouseWorld.y - pos.y;
   let angle = Math.atan2(dy, dx);
-  GAME.objects.add(new Bullet(true, this.body, this.radius * 1.1, new b2Vec2(pos.x, pos.y), angle, true));
-  this.fireT = 1.;
+  sounds.load(['audio/gun_boom.wav']);
+  sounds.whenLoaded = () => {
+    sounds['audio/gun_boom.wav'].volume = 0.5;
+    sounds['audio/gun_boom.wav'].play();
+  };
+  GAME.objects.add(
+    new Bullet(
+      true,
+      this.body,
+      this.radius * 1.1,
+      new b2Vec2(pos.x, pos.y),
+      angle,
+      true
+    )
+  );
+  this.fireT = 1;
 };
 
 MainCharacter.prototype.moveLeft = function (onGround) {
