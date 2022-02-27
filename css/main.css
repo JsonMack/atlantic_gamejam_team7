@@ -25,3 +25,78 @@ canvas {
 #BB_AA_Start_Button:hover {
   cursor: pointer;
 }
+
+#BB_AA_Start_Button {
+  visibility: hidden;
+  animation-name: showGame;
+  animation-delay: 8s;
+  animation-duration: 4s;
+  animation-fill-mode: forwards;
+  width: 300px;
+  height: 120px;
+
+  position: absolute;
+  left: 60%;
+  top: 80%;
+  border-radius: 10px;
+}
+
+#BB_AA_Start_Screen {
+  visibility: hidden;
+  animation-name: showGame;
+  animation-delay: 7s;
+  animation-duration: 4s;
+  animation-fill-mode: forwards;
+  width: 100vw;
+  height: 100vh;
+}
+
+#anim_ufo {
+  position: absolute;
+  visibility: hidden;
+  border-radius: 50%;
+  margin: 10px;
+  animation-name: boom;
+  animation-duration: 1s;
+  animation-delay: 1s;
+  right: 10%;
+}
+#anim_boy {
+  position: absolute;
+  visibility: hidden;
+  margin: 10px;
+  backdrop-filter: blur(10px);
+  animation-name: boom;
+  animation-delay: 2.5s;
+  animation-duration: 1.5s;
+}
+#anim_title {
+  position: absolute;
+  visibility: hidden;
+  top: 10%;
+  width: 100%;
+  animation-name: boom;
+  animation-duration: 6s;
+  animation-delay: 4.5s;
+}
+
+@keyframes boom {
+  from {
+    visibility: visible;
+    opacity: 100;
+  }
+  to {
+    opacity: 0;
+  }
+}
+
+@keyframes showGame {
+  from {
+    visibility: hidden;
+    opacity: 0;
+  }
+  to {
+    visibility: visible;
+    opacity: 100;
+  }
+}
