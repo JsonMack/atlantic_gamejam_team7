@@ -13,9 +13,9 @@ window.Enemy = function (xpos) {
   fixDef.shape = new b2CircleShape(this.radius);
   //fixDef.shape.SetAsBox(BT_SIZE * 0.5, BT_SIZE * 0.5);
 
-  fixDef.density = 1;
+  fixDef.density = 0.2;
   fixDef.friction = 1;
-  fixDef.restitution = 0.0;
+  fixDef.restitution = 0.5;
   this.body = GAME.world.CreateBody(bodyDef);
   this.body._IsEnemy = true;
   this.fixture = this.body.CreateFixture(fixDef);
