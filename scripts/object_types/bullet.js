@@ -22,8 +22,8 @@ window.Bullet = function (player, fromBody, fromOffset, pos, angle, op) {
   let speed = op ? 30 : 20;
   this.body.SetLinearVelocity(
     new b2Vec2(
-      Math.cos(angle) * speed + this.fromBody.GetLinearVelocity().x * 0.1,
-      Math.sin(angle) * speed + this.fromBody.GetLinearVelocity().y * 0.1
+      Math.cos(angle) * speed + (this.fromBody ? this.fromBody.GetLinearVelocity().x * 0.1 : 0),
+      Math.sin(angle) * speed + (this.fromBody ? this.fromBody.GetLinearVelocity().y * 0.1 : 0)
     )
   );
   this.fixture = this.body.CreateFixture(fixDef);
@@ -54,7 +54,8 @@ Bullet.prototype.updateRender = function (dt, time, ctx) {
     )
       .normalize()
       .multiplyScalar(this.radius * 1 * Math.random() * 0.25),
-    (this.op ? 2 : 1) * 30 * this.radius * (1 + Math.random())
+    (this.op ? 2 : 1) * 30 * this.radius * (1 + Math.random()),
+    this.player ? false : true
   );
   if (this.body._BulletDestroyed) {
     this.life = 0;

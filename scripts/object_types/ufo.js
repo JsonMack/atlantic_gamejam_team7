@@ -75,6 +75,21 @@ UFO.prototype.updateRender = function (dt, time, ctx) {
       this.up = false;
       this.toY = -30;
       this.timeDown = Math.random() * 5 + 5;
+      let pos = {x: this.x, y: this.y * BT_SIZE};
+      let dx = PLAYER_X - pos.x,
+          dy = PLAYER_Y - pos.y;
+      let angle = Math.atan2(dy, dx);
+    
+      GAME.objects.add(
+        new Bullet(
+          false,
+          null,
+          BT_SIZE*2,
+          new b2Vec2(pos.x, pos.y),
+          angle,
+          true
+        )
+      );
     }
   }
   else {
@@ -92,7 +107,7 @@ UFO.prototype.updateRender = function (dt, time, ctx) {
   this.material.uniforms.spriteNo.value = Math.floor(time * 5) % 2;
   this.mesh.position.set(this.x + (Math.random() * 2 - 1) * this.material.uniforms.damage.value* 0.5, (this.y + Math.sin(time*Math.PI)) * BT_SIZE + (Math.random() * 2 - 1) * this.material.uniforms.damage.value*0.5, 0.);
   if (!(this.hp > 0)) {
-    GAME.particles.explosion(new THREE.Vector3(this.x, this.y * BT_SIZE, 0.), 150);
+    GAME.particles.explosion(new THREE.Vector3(this.x, this.y * BT_SIZE, 0.), 150, true);
     GAME.ufoDefeated = true;
   }
   return this.hp > 0;

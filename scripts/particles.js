@@ -33,7 +33,7 @@ window.ParticleSystem = function () {
         attribute vec4 attr1; // vec4(start_time, life, radius, not used)
         uniform float time;
         
-        varying float vTime;
+        varying float vTime, vGreen;
         void main() {
             vTime = (time - attr1.x) / attr1.y;
             if (vTime >= 0. && vTime < 1.) {
@@ -46,6 +46,7 @@ window.ParticleSystem = function () {
                 vec4 mvp = modelViewMatrix * vec4(pos2, 1.0);
                 gl_Position = projectionMatrix * mvp;
                 gl_PointSize = (attr1.z * (1. + pow(vTime, 0.5)*3.));
+                vGreen = attr1.w;
             }
             else {
                 gl_PointSize = 1.;
@@ -55,14 +56,14 @@ window.ParticleSystem = function () {
         }
     `,
     fragmentShader: `
-        varying float vTime;
+        varying float vTime, vGreen;
         uniform float time;
         void main() {
             if (vTime < 0. || vTime >= 1.) {
                 discard;
             }
             else {
-                gl_FragColor = mix(vec4(1., 0.25, 0.125, 0.5), vec4(0.25, 0.25, 0.25, 0.), vTime) * clamp(1. - length(gl_PointCoord.xy - vec2(0.5)) / 0.5, 0., 1.);
+                gl_FragColor = mix(vGreen > 0.5 ? vec4(0.125, 1., 0.25, 0.5) : vec4(1., 0.25, 0.125, 0.5), vec4(0.25, 0.25, 0.25, 0.), vTime) * clamp(1. - length(gl_PointCoord.xy - vec2(0.5)) / 0.5, 0., 1.);
             }
         }
     `,
@@ -88,7 +89,7 @@ ParticleSystem.prototype.updateRender = function (dt, time, ctx) {
   this.material.uniforms.time.value = time;
 };
 
-ParticleSystem.prototype.addParticle = function (p0, v0, size) {
+ParticleSystem.prototype.addParticle = function (p0, v0, size, green) {
   let idx = this.addPtr;
   this.addPtr = (this.addPtr + 1) % MAX_PRT;
   this.positions[idx * 3 + 0] = p0.x;
@@ -100,13 +101,13 @@ ParticleSystem.prototype.addParticle = function (p0, v0, size) {
   this.attr1[idx * 4 + 0] = GAME.time;
   this.attr1[idx * 4 + 1] = 5; //Math.sqrt(size) * 2;
   this.attr1[idx * 4 + 2] = size;
-  this.attr1[idx * 4 + 3] = 0;
+  this.attr1[idx * 4 + 3] = green ? 1 : 0;
   this.posAttr.needsUpdate = true;
   this.velAttr.needsUpdate = true;
   this.at1Attr.needsUpdate = true;
 };
 
-ParticleSystem.prototype.explosion = function (center, size) {
+ParticleSystem.prototype.explosion = function (center, size, green) {
   let count = size * Math.sqrt(size);
   for (let i = 0; i < count; i++) {
     this.addParticle(
@@ -118,7 +119,8 @@ ParticleSystem.prototype.explosion = function (center, size) {
       )
         .normalize()
         .multiplyScalar(size * Math.random() * 0.25),
-      4 * Math.sqrt(size) * (0.2 + Math.random() * 0.75)
+      4 * Math.sqrt(size) * (0.2 + Math.random() * 0.75),
+      !!green
     );
   }
 

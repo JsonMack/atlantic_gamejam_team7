@@ -157,7 +157,7 @@ Enemy.prototype.updateRender = function (dt, time, ctx) {
 
   if (!(this.hp > 0)) {
     for (let k=0; k<5; k++) {
-      GAME.particles.explosion(new THREE.Vector3(this.body.GetWorldCenter().x, this.body.GetWorldCenter().y, 0.), 30);
+      GAME.particles.explosion(new THREE.Vector3(this.body.GetWorldCenter().x, this.body.GetWorldCenter().y, 0.), 30, true);
     }
   }
 
