@@ -26,7 +26,7 @@ window.MainCharacter = function () {
   GAME.PLAYER_HEALTH = 100;
 
   this.radius = BT_SIZE * 0.5;
-  fixDef.shape = new b2CircleShape(this.radius);
+  fixDef.shape = new b2CircleShape(this.radius * 0.95);
   //fixDef.shape.SetAsBox(BT_SIZE * 0.5, BT_SIZE * 0.5);
 
   fixDef.density = 1;
