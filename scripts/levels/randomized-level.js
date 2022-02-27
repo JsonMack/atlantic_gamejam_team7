@@ -61,7 +61,7 @@ RandomizedLevel.prototype.updateRender = function (dt, time, ctx) {
 
   RandomizedLevel.prototype.drawHealthBar(
     ctx,
-    GAME.canvas2D.width - 192,
+    GAME.canvas2D.width - 192 - 16,
     16,
     192,
     24,
