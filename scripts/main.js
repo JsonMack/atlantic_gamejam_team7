@@ -14,7 +14,8 @@ window.LOAD_IMAGES = [
   'billy-standing.png',
   'billy-jump.png',
   'bg-2.png',
-  'bg-1.png'
+  'bg-1.png',
+  'waterfront.png'
 ]; //['building-blocks.jpg', 'texture.jpg', 'etc.png']; // => { "building-blocks": Image, "texture": Image, "etc": Image }
 
 // adding objects from Box2D library to window object for easier access
