@@ -1,6 +1,6 @@
 window.RandomizedLevel = function (levelNo) {
   GAME.objects.clear();
-
+  GAME.LEVEL_NUMBER = levelNo;
   this.levelNo = levelNo;
   this.earth = new EarthObject();
   GAME.objects.add(this.earth);
@@ -20,10 +20,14 @@ window.RandomizedLevel = function (levelNo) {
   }
 
   GenerateMainCharacter();
-  // GenerateEnemyCharacter();
+  GenerateEnemy();
 };
 
-RandomizedLevel.prototype.updateRender = function (dt, time, ctx) {};
+RandomizedLevel.prototype.updateRender = function (dt, time, ctx) {
+  // player dies
+  if (PLAYER_HEALTH == 0) {
+  }
+};
 
 RandomizedLevel.prototype.onRemove = function () {
   GAME.objects.clear();

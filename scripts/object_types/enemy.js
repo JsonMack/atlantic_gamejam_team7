@@ -1,14 +1,21 @@
 window.GenerateEnemy = function () {
-  GAME.objects.add(new Enemy());
+  setInterval(() => {
+    if (GAME.MAX_ENEMY_COUNT > GAME.CURRENT_ENEMY_COUNT) {
+      GAME.objects.add(new Enemy(PLAYER_X + Math.random() * 50));
+      GAME.CURRENT_ENEMY_COUNT++;
+      console.log('current', GAME.CURRENT_ENEMY_COUNT);
+      console.log('max', GAME.MAX_ENEMY_COUNT);
+    }
+  }, 1000 / GAME.LEVEL_NUMBER);
 };
 
-window.Enemy = function () {
+window.Enemy = function (xpos) {
   let bodyDef = new b2BodyDef();
   let fixDef = new b2FixtureDef();
 
   bodyDef.type = b2Body.b2_dynamicBody;
   bodyDef.fixedRotation = true;
-  bodyDef.position.x = 0;
+  bodyDef.position.x = xpos;
   bodyDef.position.y = (GROUND_LEVEL - 2) * BT_SIZE - 20 + BT_SIZE * 1.5;
 
   this.radius = BT_SIZE * 0.5;
@@ -16,7 +23,7 @@ window.Enemy = function () {
   //fixDef.shape.SetAsBox(BT_SIZE * 0.5, BT_SIZE * 0.5);
 
   fixDef.density = 1;
-  fixDef.friction = 10;
+  fixDef.friction = 1;
   fixDef.restitution = 0.0;
   this.body = GAME.world.CreateBody(bodyDef);
   this.body._IsPlayer = true;
@@ -82,17 +89,10 @@ Enemy.prototype.onRemove = function () {
 
 Enemy.prototype.updateRender = function (dt, time, ctx) {
   let pos = this.body.GetWorldCenter();
-  if (pos.y > 30) PLAYER_HEALTH = 0; // if player falls in water
-  window.PLAYER_X = pos.x;
-  window.PLAYER_Y = pos.y;
+
   this.mesh.position.set(pos.x, pos.y, 1);
   this.mesh.rotation.set(0, 0, this.body.GetAngle(), 'ZXY');
 
-  GAME.camera.position.set(window.PLAYER_X, 0, -10);
-  GAME.camera.up.set(0, -1, 0);
-  GAME.camera.lookAt(new THREE.Vector3(window.PLAYER_X, 0, 0));
-
-  let onGround = false;
   let firstContact = this.body.GetContactList();
   let c = firstContact;
   while (c) {
@@ -111,31 +111,28 @@ Enemy.prototype.updateRender = function (dt, time, ctx) {
             (fixA == this.fixture ? 1 : -1)
         ) < 0.5
       ) {
-        onGround = true;
         break;
       }
     }
     c = c.next;
   }
 
-  if (!onGround) {
-    this.material.uniforms.spriteNo.value = BILLY_JUMP;
-  } else if (GAME.keyLeft || GAME.keyRight) {
-    this.material.uniforms.spriteNo.value =
-      Math.floor(time * 15) % 2 ? BILLY_RUN_1 : BILLY_RUN_2;
-  } else {
-    this.material.uniforms.spriteNo.value = BILLY_STAND;
-  }
+  this.material.uniforms.spriteNo.value =
+    Math.floor(time * 15) % 2 ? BILLY_RUN_1 : BILLY_RUN_2;
+};
 
-  this.body.SetLinearDamping(onGround ? 5.0 : 2);
+// enemy falls in pit
+if (pos.y > 30) {
+  this.onRemove();
+  GAME.CURRENT_ENEMY_COUNT--;
 
-  if (GAME.keyLeft) this.moveLeft(onGround);
-  if (GAME.keyRight) this.moveRight(onGround);
+  if (PLAYER_X - pos.x <= 0) this.moveLeft();
+  if (PLAYER_X - pos.x > 0) this.moveRight();
 
   this.fireT -= dt * 2;
 
   return true;
-};
+}
 
 Enemy.prototype.fire = function () {
   if (this.fireT > 0) {
@@ -163,22 +160,18 @@ Enemy.prototype.fire = function () {
   this.fireT = 1;
 };
 
-Enemy.prototype.moveLeft = function (onGround) {
+Enemy.prototype.moveLeft = function () {
   this.material.uniforms.hFlip.value = -1;
-  if (window.PLAYER_X > window.PLAYER_MIN_X) {
-    this.body.ApplyForce(
-      new b2Vec2(-this.body.GetMass() * (onGround ? 70 : 30), 0),
-      this.body.GetWorldCenter()
-    );
-  }
+  this.body.ApplyForce(
+    new b2Vec2(-this.body.GetMass() * 30, 0),
+    this.body.GetWorldCenter()
+  );
 };
 
-Enemy.prototype.moveRight = function (onGround) {
+Enemy.prototype.moveRight = function () {
   this.material.uniforms.hFlip.value = 1;
-  if (window.PLAYER_X < window.PLAYER_MAX_X) {
-    this.body.ApplyForce(
-      new b2Vec2(this.body.GetMass() * (onGround ? 70 : 20), 0),
-      this.body.GetWorldCenter()
-    );
-  }
+  this.body.ApplyForce(
+    new b2Vec2(this.body.GetMass() * 30, 0),
+    this.body.GetWorldCenter()
+  );
 };

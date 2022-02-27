@@ -29,7 +29,7 @@ window.MainCharacter = function () {
   //fixDef.shape.SetAsBox(BT_SIZE * 0.5, BT_SIZE * 0.5);
 
   fixDef.density = 1;
-  fixDef.friction = 10;
+  fixDef.friction = 1;
   fixDef.restitution = 0.0;
   this.body = GAME.world.CreateBody(bodyDef);
   this.body._IsPlayer = true;
@@ -109,6 +109,7 @@ MainCharacter.prototype.updateRender = function (dt, time, ctx) {
   );
   this.mesh.rotation.set(0, 0, this.body.GetAngle(), 'ZXY');
 
+  // auto scrolling
   GAME.camera.position.set(window.PLAYER_X, 0, -10);
   GAME.camera.up.set(0, -1, 0);
   GAME.camera.lookAt(new THREE.Vector3(window.PLAYER_X, 0, 0));

@@ -2,6 +2,12 @@ window.PLAYER_X = 0;
 window.PLAYER_Y = 0;
 // images to load
 window.LOAD_IMAGES = [
+  'BB_AA_Alien_1.1.png',
+  'BB_AA_Alien_1.2.png',
+  'BB_AA_Alien_2.1.png',
+  'BB_AA_Alien_2.2.png',
+  'BB_AA_Alien_3.1.png',
+  'BB_AA_Alien_3.2.png',
   'building-wall.png',
   'building-ledge.png',
   'building-scafolding.png',
@@ -18,10 +24,6 @@ window.LOAD_IMAGES = [
   'BB_AA_Start_Screen_2.png',
   'BB_AA_Start_Button.png',
   'waterfront.png',
-  'BB_AA_Alien_1.1.png',
-  'BB_AA_Alien_1.2.png',
-  'BB_AA_Alien_2.1.png',
-  'BB_AA_Alien_2.2.png',
 ]; //['building-blocks.jpg', 'texture.jpg', 'etc.png']; // => { "building-blocks": Image, "texture": Image, "etc": Image }
 
 // adding objects from Box2D library to window object for easier access
@@ -62,6 +64,9 @@ window.StartGame = function () {
     mouseLeft: false,
     gravity: 15,
   };
+  GAME.LEVEL_NUMBER = 1; // LEVEL SET HERE
+  GAME.MAX_ENEMY_COUNT = GAME.LEVEL_NUMBER * 10;
+  GAME.CURRENT_ENEMY_COUNT = 0;
   GAME.gameHeight = GAME.gameWidth / 1.6;
   GAME.canvas2D = document.getElementById('canvas2d');
   GAME.canvas3D = document.getElementById('canvas3d');
@@ -179,10 +184,12 @@ window.LoadGame = function (onDone) {
 
     GAME.images['enemy-spritesheet'] = make_spritesheet(
       [
-        'BB_AA_Alien_1.1',
-        'BB_AA_Alien_1.2',
-        'BB_AA_Alien_2.1',
-        'BB_AA_Alien_2.2',
+        'billy-run-1',
+        'billy-run-2',
+        'billy-crouching',
+        'billy-guarding',
+        'billy-standing',
+        'billy-jump',
       ],
       BT_SIZE_PIXELS,
       8,
@@ -345,7 +352,7 @@ window.GameLoop = function () {
 
   GAME.particles.updateRender(GAME.dt, GAME.time, GAME.ctx);
 
-  GAME.level.updateRender(GAME.dt, GAME.time, GAME.ctx);
+  GAME.level.updateRender(GAME.dt, GAME.time, GAME.ctx); // looping updates of game
 
   GAME.renderer.render(GAME.scene, GAME.camera); // render the scene and camera (one time thing)
 
