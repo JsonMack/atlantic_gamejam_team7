@@ -1,6 +1,7 @@
 window.RandomizedLevel = function (levelNo) {
-  this.lossTime = 0;
-  this.winTime = 0;
+
+  this.lossTime = 0.;
+  this.winTime = 0.;
   GAME.objects.clear();
   GAME.LEVEL_NUMBER = levelNo;
   this.levelNo = levelNo;
@@ -28,9 +29,7 @@ window.RandomizedLevel = function (levelNo) {
   //console.log("Level no: " + levelNo);
   //console.log("Math: " + (.6 + Math.min(.4, GAME.LEVEL_NUMBER * .1)));
 
-  GAME.cityHealth = Math.floor(
-    GAME.cityHealth * (0.5 - Math.min(0.4, GAME.LEVEL_NUMBER * 0.05))
-  );
+  GAME.cityHealth = Math.floor(GAME.cityHealth * (.5 - Math.min(.4, GAME.LEVEL_NUMBER * .05)));
   GAME.maxCityHealth = GAME.cityHealth;
 
   GenerateMainCharacter();
@@ -40,7 +39,7 @@ window.RandomizedLevel = function (levelNo) {
   this.nextEnemyIn = (10 + (Math.random() * 20) / Math.sqrt(this.levelNo)) / 3;
 };
 
-RandomizedLevel.prototype.lossConditionMet = function () {
+RandomizedLevel.prototype.lossConditionMet = function() {
   return GAME.PLAYER_HEALTH == 0 || GAME.cityHealth <= 0;
 };
 
@@ -49,7 +48,8 @@ RandomizedLevel.prototype.updateRender = function (dt, time, ctx) {
   if (this.lossConditionMet()) {
     this.renderLossScreen(dt, time, ctx);
     return;
-  } else if (GAME.ufo.hp <= 0) {
+  }
+  else if (GAME.ufo.hp <= 0) {
     this.renderWinScreen(dt, time, ctx);
     return;
   }
@@ -116,12 +116,10 @@ RandomizedLevel.prototype.drawHealthBar = function (
 
   const fillColor =
     percentage < 0.3
-      ? 'red'
-      : percentage <= 0.5
-      ? 'yellow'
+      ? 'darkred'
       : percentage <= 0.8
-      ? 'orange'
-      : 'green';
+      ? 'darkorange'
+      : 'darkgreen';
 
   ctx.fillStyle = backgroundColor;
   ctx.fillRect(healthBarX, healthBarY, healthBarWidth, healthBarHeight);
@@ -155,7 +153,7 @@ RandomizedLevel.prototype.onRemove = function () {
   GAME.objects.clear();
 };
 
-RandomizedLevel.prototype.renderLossScreen = function (dt, time, ctx) {
+RandomizedLevel.prototype.renderLossScreen = function(dt, time, ctx) {
   let canvas = GAME.canvas2D;
 
   let width = canvas.width;
@@ -169,9 +167,9 @@ RandomizedLevel.prototype.renderLossScreen = function (dt, time, ctx) {
   ctx.font = '128px aldrich';
   ctx.fillStyle = 'white';
   ctx.textAlign = 'center';
-  ctx.fillText('Game Over', width / 2, height / 2);
+  ctx.fillText("Game Over", width / 2, height / 2);
   ctx.font = '24px aldrich';
-  ctx.fillText('Click anywhere to restart', width / 2, height / 2 + 128);
+  ctx.fillText("Click anywhere to restart", width / 2, height / 2 + 128);
   ctx.textAlign = 'left';
 
   this.lossTime += dt || 0;
@@ -182,7 +180,7 @@ RandomizedLevel.prototype.renderLossScreen = function (dt, time, ctx) {
   }
 };
 
-RandomizedLevel.prototype.renderWinScreen = function (dt, time, ctx) {
+RandomizedLevel.prototype.renderWinScreen = function(dt, time, ctx) {
   let canvas = GAME.canvas2D;
 
   let width = canvas.width;
@@ -196,9 +194,9 @@ RandomizedLevel.prototype.renderWinScreen = function (dt, time, ctx) {
   ctx.font = '128px aldrich';
   ctx.fillStyle = 'white';
   ctx.textAlign = 'center';
-  ctx.fillText('You Win!', width / 2, height / 2);
+  ctx.fillText("You Win!", width / 2, height / 2);
   ctx.font = '24px aldrich';
-  ctx.fillText('Click anywhere to continue', width / 2, height / 2 + 128);
+  ctx.fillText("Click anywhere to continue", width / 2, height / 2 + 128);
   ctx.textAlign = 'left';
 
   this.winTime += dt || 0;
