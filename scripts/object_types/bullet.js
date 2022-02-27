@@ -2,7 +2,7 @@ window.Bullet = function(player, fromBody, fromOffset, pos, angle, op) {
 
     this.player = player;
     this.radius = 0.25;
-    this.op = op;
+    this.op = !!op;
     this.fromBody = fromBody;
 
     let pos2 = new b2Vec2(
@@ -19,8 +19,9 @@ window.Bullet = function(player, fromBody, fromOffset, pos, angle, op) {
     fixDef.density = 5.0;
     fixDef.restitution = 0.0;
     this.body = GAME.world.CreateBody(bodyDef);
-    let speed = op ? 50. : 20.;
-    this.body.SetLinearVelocity(new b2Vec2(Math.cos(angle) * speed + this.fromBody.GetLinearVelocity().x, Math.sin(angle) * speed + this.fromBody.GetLinearVelocity().y));
+    this.body._BulletOP = !!op;
+    let speed = op ? 30. : 20.;
+    this.body.SetLinearVelocity(new b2Vec2(Math.cos(angle) * speed + this.fromBody.GetLinearVelocity().x * 0.1, Math.sin(angle) * speed + this.fromBody.GetLinearVelocity().y * 0.1));
     this.fixture = this.body.CreateFixture(fixDef);
     this.body._IsBullet = true;
 
@@ -30,15 +31,25 @@ window.Bullet = function(player, fromBody, fromOffset, pos, angle, op) {
 
 Bullet.prototype.updateRender = function(dt, time, ctx) {
 
-    GAME.particles.addParticle(this.body.GetWorldCenter(), new THREE.Vector3(Math.random()*2-1, Math.random()*2-1, Math.random()*2-1).normalize().multiplyScalar(this.radius * 1. * Math.random() * 0.25), 30. * this.radius * (1 + Math.random()));
+    GAME.particles.addParticle(this.body.GetWorldCenter(), new THREE.Vector3(Math.random()*2-1, Math.random()*2-1, Math.random()*2-1).normalize().multiplyScalar(this.radius * 1. * Math.random() * 0.25), (this.op ? 2. : 1) * 30. * this.radius * (1 + Math.random()));
     if (this.body._BulletDestroyed) {
         this.life = 0.;
     }
     let firstContact = this.body.GetContactList();
     let c = firstContact;
     while (c) {
-      if (c.contact.IsTouching()) {
-        this.life = Math.min(this.life, 0.01);
+      if (c.contact.IsTouching() && c.contact.IsEnabled()) {
+        let fixA = c.contact.GetFixtureA();
+        let fixB = c.contact.GetFixtureB();
+        let otherBody = null;
+        if (fixA != this.fixture) {
+          otherBody = fixA.GetBody();
+        } else {
+          otherBody = fixB.GetBody();
+        }
+        if (!this.op || otherBody._IsGround) {
+            this.life = Math.min(this.life, 0.01);
+        }
       }
       c = c.next;
     }

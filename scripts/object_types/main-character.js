@@ -106,7 +106,7 @@ MainCharacter.prototype.updateRender = function (dt, time, ctx) {
   let firstContact = this.body.GetContactList();
   let c = firstContact;
   while (c) {
-    if (c.contact.IsTouching()) {
+    if (c.contact.IsTouching() && c.contact.IsEnabled()) {
       let fixA = c.contact.GetFixtureA();
       let fixB = c.contact.GetFixtureB();
       let otherBody = null;
@@ -156,7 +156,7 @@ MainCharacter.prototype.fire = function() {
   let pos = this.body.GetWorldCenter();
   let dx = GAME.mouseWorld.x - pos.x, dy = GAME.mouseWorld.y - pos.y;
   let angle = Math.atan2(dy, dx);
-  GAME.objects.add(new Bullet(true, this.body, this.radius * 1.1, new b2Vec2(pos.x, pos.y), angle, false));
+  GAME.objects.add(new Bullet(true, this.body, this.radius * 1.1, new b2Vec2(pos.x, pos.y), angle, true));
   this.fireT = 1.;
 };
 

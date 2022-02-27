@@ -32,7 +32,7 @@ window.InitBuildingMaterials = function () {
 
                 void main() {
                     gl_FragColor = texture2D(tex, vUv * vec2(1., -1.));
-                    ${falling ? `gl_FragColor.rgb *= 0.5;` : ``}
+                    ${falling ? `gl_FragColor.rgb = pow(gl_FragColor.rgb, vec3(3.)) * 0.5; gl_FragColor.r *= 2.;` : ``}
                 }
             `,
     });
@@ -148,6 +148,7 @@ window.BuildingTile = function (
   fixDef.density = 5.0;
   fixDef.restitution = 0;
   this.body = GAME.world.CreateBody(bodyDef);
+  this.body._IsFallingBT = this.falling;
 
   this.fixture = this.body.CreateFixture(fixDef);
   this.body.ResetMassData();
@@ -238,7 +239,7 @@ BuildingTile.prototype.updateRender = function (dt, time, ctx) {
       let firstContact = this.body.GetContactList();
       let c = firstContact;
       while (c) {
-        if (c.contact.IsTouching()) {
+        if (c.contact.IsTouching() && c.contact.IsEnabled()) {
           let fixA = c.contact.GetFixtureA();
           let fixB = c.contact.GetFixtureB();
           let otherBody = null;
@@ -256,7 +257,9 @@ BuildingTile.prototype.updateRender = function (dt, time, ctx) {
           }
           if (otherBody._IsBullet) {
             this.hp = 0.;
-            otherBody._BulletDestroyed = true;
+            if (!otherBody._BulletOP) {
+              otherBody._BulletDestroyed = true;
+            }
           }
         }
         c = c.next;
@@ -277,9 +280,11 @@ BuildingTile.prototype.updateRender = function (dt, time, ctx) {
         } else {
           otherBody = fixB.GetBody();
         }
-        if (otherBody._IsBullet) {
+        if (otherBody._IsBullet && (c.contact.IsEnabled() || otherBody._BulletOP)) {
           this.explode();
-          otherBody._BulletDestroyed = true;
+          if (!otherBody._BulletOP) {
+            otherBody._BulletDestroyed = true;
+          }
         }
       }
       c = c.next;
