@@ -32,7 +32,8 @@ window.RandomizedLevel = function (levelNo) {
 RandomizedLevel.prototype.updateRender = function (dt, time, ctx) {
   // player dies
   if (GAME.PLAYER_HEALTH == 0) {
-    ctx.fillText('You died', 50, 50);
+    ctx.font = `96px minecraftiaregular`;
+    ctx.fillText('You died', GAME.canvas2D.width / 4, 400);
   }
 
   this.nextEnemyIn -= dt;
