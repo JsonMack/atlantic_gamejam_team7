@@ -1,4 +1,5 @@
 # Billy Bluenose: Battle of The Atlantic
+We won 2nd prize in Atlantic Game Jam organized by Ubisoft and ShiftKey Labs
 
 ## Asset Credits
 * [gun_boom.wav](https://freesound.org/s/415080/)
